@@ -1,0 +1,82 @@
+\section{Introduction}
+Brief but concise review of the first four "W"s.
+
+Applications: security-driven video surveillance in public environements, surveillance of children or the elderly in assisted living environments, patient monitoring, video retrieval (content-based video indexing) , human-computer interaction, robotics.
+
+Requirement: Automated recognition of high-level actions.
+
+Because of large variations in used datasets and evaluation practice, approaches are discussed conceptually.
+
+Focus on Deep Learning approaches, since conventional methods have been surveyed in many articles before (see related work section).
+
+
+\subsection{Situation Awareness from video data}
+General Definition of Situation Awareness in the context of autonomous systems.
+
+Placement of Action Recognition among other vision-based methods, i.e. Action Prediction, Anomaly Detection, Event and Action Detection, Person/Pedestrian Detection, Gesture Recognition.
+
+Definitions of the above methods.
+
+Simple case: Video contains the performance of a single human action which needs to be classified into one of several preknown classses.
+
+General real-world case: System operates on a video stream and needs to perform continuous recognition of human actions, including detection of beginning and endings times of containing acions.
+
+General Processing Pipeline for Action Recognition: Person Detection -> Tracking -> Action Detection -> Segmentation -> Action recognition.
+
+Action Recognition: A part of Computer Vision research, it's goal is to automatically analyze human actions/actitvities from video-data. 
+
+Other sensory input than video possible: 
+
+
+\subsection{Survey Papers in Action Recognition (Related work)}
+
+Review of most important/recent review papers in Action Recognition with traditional and Deep Learning approaches.
+
+\subsubsection{A survey on vision-based human action recognition, Ronald Poppe (2010)}
+
+\textbf{Definition of action:} Uses the hierarchical classification of human motion in action primitives, actions and activities as given in Moeslund et al. (cite ??)
+
+Action primitives are atomic movements at the limb-level.
+
+Actions are possibly cyclic whole body movements and consist of multiple action primitives.
+
+Activities consist of multiple actions whose subsequent execution make the movement interpretable.
+
+Example: Action primitives: Left/right leg forward -> Action: Starting, Running, Jumping -> Activity: Jumping hurdles.
+
+\textbf{Scope:} Gives a very good classification of conventional methods in human action recognition.
+
+The discussion is split according to video representations and classification methods.
+
+Challenges of the domain are described very well.
+
+\textbf{Deficits:} No Deep Learning methods are discussed. 
+
+Datasets and benchmarks are discussed only very briefly.
+
+\subsubsection{Human Activity Analysis: A Review -- Aggarwal and Ryoo (2011)}
+
+Gives an approach-based taxonomy.
+
+\subsubsection{A survey on vision-based methods for action representation, segmentation and recognition -- Weinland et al. (2011)}
+
+\subsubsection{A review of unsupervised feature learning and deep learning for time-series modeling -- Längkvist et al. (2014)}
+
+\subsubsection{Going Deeper into Action Recognition: A survey -- Herath et al. (2016)}
+
+\textbf{Definition of action:} 
+
+\subsection{Challenges in Action Recognition}
+Action Recognition is a classification-task.
+
+Intra- and inter-class variances.
+
+Background and recording settings.
+
+Temporal variations.
+
+Obtaining and labeling training data.
+
+Difference to face/gate recognition: Generalize over person characteristics.
+
+Main task of action recognition research: Overcome these challenges and built systems, that recognize actions robustly, even when performed by different persons in differently lighted environments at different speeds.
