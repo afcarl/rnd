@@ -5,7 +5,7 @@ The operation of autonomous mobile systems in public, uncontrolled environments 
 
 Humans are perfectly able to act and move in unknown, crowded environments and even react successfully to new situations because they are aware of their surroundings.
 
-An important part of Situation Awareness is the knowledge of what actions are currently performed by persons in the vicinity of an agent.
+An important part of Situation Awareness is the knowledge of what actions are currently performed by persons in the vicinity of an agent. This knowledge enables the agent to derive a suitable policy for its own future actions.
 
 Actions of interest are single-person actions, person-person interactions, person-object interactions and group activities.
 
@@ -23,15 +23,13 @@ Requirement: Automated recognition of high-level actions.
 
 Situation awareness is an abstract concept, which includes lots of independent manifestations and involves multiple sensory inputs.
 
-This work focuses on approaches that process time-sequential video data, because video-cameras represent a cost-effective and widely used technology in many existing systems and are able to capture a lot of information.
+This work focuses on approaches that process time-sequential video data, because video-cameras represent a cost-effective and widely used technology in many existing systems.
+
+Motivation for using videos: Promising results in classfication tasks from images. Video adds another (temporal) dimension, which conveys a lot of information that can be accessed for classification as well. Video provides natural data augmentation cite:simnoyan two-stream paper (??)
 
 \subsection{Situation Awareness from video data}
 
-General Definition of Situation Awareness in the context of autonomous systems.
-
-Placement of Action Recognition among other vision-based methods, i.e. Action Prediction, Anomaly Detection, Event and Action Detection, Person/Pedestrian Detection, Gesture Recognition.
-
-Definitions of the above methods.
+META: General Definition of Situation Awareness in the context of autonomous systems. Placement of Action Recognition among other vision-based methods, i.e. Action Prediction, Anomaly Detection, Event and Action Detection, Person/Pedestrian Detection, Gesture Recognition. Definitions of the above methods.
 
 Simple case: Video contains the performance of a single human action which needs to be classified into one of several preknown classses.
 
@@ -43,6 +41,22 @@ Action Recognition: A part of Computer Vision research, it's goal is to automati
 
 Other sensory input than video possible 
 
+\subsection{The Action Recognition Problem}
+Action Recognition is a classification-task.
+
+Difference to face/gate recognition: Generalize over person characteristics.
+
+Intra- and inter-class variances.
+
+Background and recording settings.
+
+Temporal variations.
+
+Obtaining and labeling training data.
+
+Main task of action recognition research: Overcome these challenges and built systems, that recognize actions robustly, even when performed by different persons in differently lighted environments at different speeds.
+
+Main components: (i) A discriminative architecture that is able to recognise the general characteristics of different action classes while ignoring personal characteristics of different performers. (ii) Large datasets that provide this information by containing many different examples for each action class.
 
 \subsection{Survey Papers in Action Recognition (Related work)}
 
@@ -84,19 +98,3 @@ Gives an approach-based taxonomy.
 
 \textbf{Definition of action:} 
 
-\subsection{Challenges in Action Recognition}
-Action Recognition is a classification-task.
-
-Intra- and inter-class variances.
-
-Background and recording settings.
-
-Temporal variations.
-
-Obtaining and labeling training data.
-
-Difference to face/gate recognition: Generalize over person characteristics.
-
-Main task of action recognition research: Overcome these challenges and built systems, that recognize actions robustly, even when performed by different persons in differently lighted environments at different speeds.
-
-Main components: (i) A discriminative architecture that is able to recognise the general characteristics of different action classes while ignoring personal characteristics of different performers. (ii) Large datasets that provide this information by containing many different examples for each action class.

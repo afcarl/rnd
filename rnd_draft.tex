@@ -3,7 +3,7 @@
 % arara: pdflatex
 % arara: pdflatex
 %\documentclass[12pt, a4paper, parskip=half, listof=totoc, bibliography = totoc]{scrartcl}
-\documentclass{scrartcl}
+\documentclass[a4paper, 11pt, listof=totoc, bibliography=totoc]{scrartcl}
 
 \usepackage[english]{babel} 
 \usepackage[T1]{fontenc} %latex Ausgabefont
@@ -18,12 +18,13 @@
 %---Packages---
 \usepackage{graphicx}
 \usepackage{float}
-\usepackage[format = hang, figurename = {Abb.}, tablename = {Tab.}, font = small, labelfont= it, position = below]{caption}
+\usepackage[format = hang, figurename = {Figure}, tablename = {Table}, font = small, labelfont= it, position = below]{caption}
 \usepackage[format = hang, indention = 0.0cm]{subcaption}
 \usepackage{url}
 \usepackage{tabularx}
 \usepackage{textcomp}
 \usepackage{amsmath}
+\usepackage{amsfonts}
 \usepackage{wrapfig}
 \usepackage{parskip}
 
