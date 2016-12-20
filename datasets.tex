@@ -10,16 +10,41 @@ Even the largest available datasets such as CCV (9,317 videos and 20 classes) an
 ``Action recognition methods are usually directly compared although they use different testing protocols or/and datasets (KTH1 or KTH2), which distorts the conclusions.''
 cite sequential deep learning for human action recognition.
 
+``Unfortunately,
+since the creation of the dataset, about 7\% of the videos have been removed by users. We use the remaining 1.1 million videos for the experiments below.
+Although Sports-1M is the largest publicly available video dataset, the annotations that it provides are at video level.
+No information is given about the location of the class of interest.
+Moreover, the videos in this dataset are unconstrained.
+This means that the camera movements are not guaranteed to be well-behaved, which means that unlike UCF-101, where camera motion is constrained, the optical flow quality varies wildly between videos.''
+
+Recent research focuses on realistic datasets collected from movies [20, 22], web videos [21,31], TV shows [28], etc. These datasets impose significant challenges on action recognition, e.g., background clutter, fast irregular motion, occlusion, viewpoint changes. [improved dense trajectories 2013]
+
+``Another large scale dataset is the THUMOS dataset [8] that has over 45M frames. Though, only a small fraction of these actually contain the labelled action and thus are useful for supervised feature learning.'' Feichtenhofer 2016
+
+Due to the label noise, learning spatiotemporal ConvNets still largely relies on smaller, but temporally consistent datasets such as UCF101 [24] or HMDB51 [13] which contain short videos of actions.
+This facilitates learning, but comes with the risk of severe overfitting to the training data. Feichtenhofer 2016
+
+UCF101 is considered extremely small. cite Towards good practices for very deep two-stream ConvNets -- wang 2015.
+
 \subsection{Review of Datasets for Human Action Classification}
 Review of the most important currently existing datasets, focus on newest ones (since 2013)
 
 Reference dataset survey paper.
+
+THUMOS is a large scale dataset (Feichtenhofer)
 
 \subsection{Alternative Benchmarks for Action Recognition Algorithms}
 
 \subsection{Data Augmentation}
 
 refer to Imagenet classification with deep convolutional neural networks.
+
+RGB colour Jittering
+
+the improved data augmentation scheme (different aspect-ratio, fixed crops)
+from [61] for all our methods and baselines.
+61: Wang, L., Xiong, Y., Wang, Z., Qiao, Y.: Towards good practices for very
+deep two-stream convnets. arXiv preprint arXiv:1507.02159 (2015)
 
 \subsection{Inter-Dataset Approaches}
 
@@ -33,4 +58,7 @@ A. S. Razavian, H. Azizpour, J. Sullivan, and S. Carls-
 son. CNN features off-the-shelf: an astounding baseline for
 recognition
 
+N. Zhang, M. Paluri, M. Ranzato, T. Darrell, and L. Bourdev. Panda: Pose aligned networks for deep attribute modeling. In CVPR, 2014.
+
+B. Zhou, A. Lapedriza, J. Xiao, A. Torralba, and A. Oliva. Learning deep features for scene recognition using places database. In NIPS, 2014.
 \subsubsection{Unsupervised pre-training}
