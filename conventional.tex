@@ -1,14 +1,12 @@
 \section{Conventional Methods in Action Recognition}
-META: 
-Condensed overview and description of conventional Methods in action Recognition using the taxonomy of Aggarwal and Ryoo's fine survey paper.
-More detailed description of methods using local-features, since these have become the standard approach in action recognition after Aggarwal and Ryoo's overview.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{img_conventional/taxonomy_conventional_methods.png}
-    \caption{Approach-based taxonomy for conventional methods in human activity recognition as given by Aggarwal and Ryoo\cite{aggarwal_human_2011}}
-    \label{fig:conventional_taxonomy}
-\end{figure}
+This section provides a description of conventional methods in action recognition, which do not leverage deep learning techniques and mostly rely on the extraction of hand-crafted features from input-videos.
+Due to the availability of several high-quality survey publications in this area, as described in the related work section \ref{sec:relatedwork}, we provide a condensed overview of these methods by describing the main research directions using the taxonomy of \textcite{aggarwal_human_2011} released in 2011.
+For a more detailed description of specific approaches in this area we also refer to \cite{aggarwal_human_2011}.
+Additionally we focus on the Bag of Visual Words (BoVW) paradigm, which has become the standard approach in action recognition using hand-crafted features since.
+We furthermore identify state-of-the art approaches, that employ this standard approach and describe them in more detail.
+
+%---------------------------------------
 
 3 Main components in action recognition using local features: Feature Extraction, Representation Building, Classification.
 
@@ -29,9 +27,6 @@ tionBank for action recognition [33]. Recently, Wang et al.
 proposed improved Dense Trajectories (iDT) [44] which is
 currently the state-of-the-art hand-crafted feature. Tran 2015
 
-other iDT-based methods: Beyond gaussian pyramid: Multi-skip feature stacking for action recognition.
-Bag of visual words and fusion methods for action recognition: Comprehensive study and good practice.
-
 Recently, interest point detectors and local descriptors have
 been extended from images to videos. Laptev and Linde-
 berg [13] introduced space-time interest points by extend-
@@ -43,9 +38,133 @@ jets), gradient information, optical flow, and brightness in-
 formation [5, 14, 24] to spatio-temporal extensions of image descriptors, such as 3D-SIFT [25], HOG3D [11], extended
 SURF [33], or Local Trinary Patterns [34]. Action Recognition by dense trajectories -- Wang 2011
 
-\subsection{Overview}
 
-\subsection{Local Features}
+\subsection{Taxonomy-based Overview}
+
+Approach-based taxonomy
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img_conventional/taxonomy_conventional_methods.png}
+    \caption{Approach-based taxonomy for conventional methods in human action recognition as given by Aggarwal and Ryoo \cite{aggarwal_human_2011}}
+    \label{fig:conventional_taxonomy}
+\end{figure}
+
+Divide the field of activity/action recognition into:
+\begin{description}
+    \item[Single-layered Approaches] recognize an action directly from raw video-data, i.e.\ based on sequences of video frames.
+    \item[Hierarchical Approaches] model an action as a sequence of explicitly defined and individually recognized atomic sub-actions.
+\end{description}
+
+2nd level of distinction (single layer):
+\begin{description}
+    \item[Space-time approaches] interpret a video as a 3D space-time volume, that results from stacking the individual video-frames along the temporal dimension..
+    \item[Sequential approaches] interpret a video as a sequence of observations, i.e.\ feature vectors extracted from individual frames.
+\end{description}
+
+2nd Level distinction hierarchical approaches:
+\begin{description}
+    \item[Statistical approaches] construct hierarchically stacked statistical state-based models, such as layerd Hidden Markov Models.
+    \item[Syntactic approaches] use a grammar syntax such as stochastic context-free grammar.
+    \item[Description-based approaches] describe atomic sub-actions and their temporal, spatial and logical structure.
+\end{description}
+
+
+\subsubsection{Space-time Approaches}
+Space-time approaches can be further distinguished by what kind of features from the video volume they use.
+Space-time volume approaches employ the video volume or parts of it directly for creating a representation of the video, which is then compared with other video volume representations.
+Trajectory approaches use motion trajectories of tracked points inside the volume for the recognition of ongoing actions.
+Space-time feature approaches extract features around interest-points locally and aggregate them into a representation of the video volume.
+
+
+\textbf{Action recognition using space-time volumes} \\
+A typical approach for action recognition with space-time volumes uses template matching:
+Given a similarity measure for video volumes, the algorithm constructs or selects template video volumes from the training dataset for each action class that has to be recognized.
+The template video volumes then act as representations for the action classes.
+When presented with a test-video, the algorithm constructs the representation for the new video and compares it to the training templates by using the similarity measure.
+The action class, that corresponds to the most similiar training template is selected as output class.
+
+Approaches in this category mainly differ by how a representation is built and how they are compared.
+\textcite{bobick_recognition_2001} create templates from the raw video volumes by stacking the silhouettes of persons that perform an action into 2D images.
+The resulting binary \textit{motion-energy image} and skalar-valued \textit{motion-history image}, as displayed in figure \ref{fig:spacetimevolumes_meimhi}, are then classified by template matching as described above.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.6\textwidth]{img_conventional/spacetimevolumes_meimhi}
+    \caption{Motion-energy image (MEI) and motion-history image (MHI) and example frame of three ballet actions \cite{bobick_recognition_2001}}
+    \label{fig:spacetimevolumes_meimhi}
+\end{figure}
+
+\textbf{Action recognition using trajectories} \\
+The underlying idea of trajectory-based approaches is, that the motion of a person's joint positions are sufficient for recognizing the performed action \cite{johansson_visual_1975}.
+Algorithms that follow this approach use space-time trajectories to represent an action.
+More specifically the joint positions of a person are tracked in the video volume while performing an action.
+The resulting trajectories then represent the performed action and can be used for classification, by either comparing the trajectories directly or by extracting features along the trajectories.
+
+\textcite{sheikh_exploring_2005} classified actions by using the trajectories of $13$ tracked points directly as displayed in figure \ref{fig:trajectories_sheikh}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img_conventional/trajectories_sheikh}
+    \caption{Trajectories of a person's tracked joint positions while performing an action. Trajectories shown in XYZ space (a) and XYT space (b) \cite{sheikh_exploring_2005}}
+    \label{fig:trajectories_sheikh}
+\end{figure}
+
+
+\textbf{Action recognition using space-time features}
+Ohhhh yeeeeeeeeeeeahhhH!!!!
+
+\subsubsection{Sequential Approaches}
+In single-layered sequential approaches an action is processed as a sequence of observations, specifically as a sequence of feature vectors.
+Therefore, as a first step in sequential approaches, feature vectors need to be extracted from each frame in the video that contains the action.
+\textcite{aggarwal_human_2011} describe using the degrees of joint-angles as suitable feature vectors to describe the status of a person while performing an action.
+Given the sequence of feature vectors, sequential approaches usually calculate the likelihood of action classes producing the observed sequence of feature vectors.
+The action class with the highest likelihood is assigned to input video, i.e.\ to the sequence of feature vector observations.
+
+\textcite{aggarwal_human_2011} further differentiate sequential approaches into exemplar-based and state model-based approaches.
+
+\textbf{Exemplar-based approaches}
+Exemplar-based approaches store template sequences of feature vectors for each action class (exemplars).
+A presented unkown action in an input video is then recognized, by comparing its sequence of feature vectors to the stored templates.
+The action class, whose template is most similar to the feature sequence of the input video is assigned to the input.
+The approach has to take into account, that the feature sequences may vary because of different execution styles of action among different persons.
+The Dynamic Time Warping algorithm (DTW) has been used widely for matching varying sequences in sequential exemplar-based approaches\cite{darrell_space-time_1993}\cite{gavrila_towards_1995}\cite{veeraraghavan_function_2006}.
+
+\textbf{State model-based approaches}
+Sequential state model-based approaches construct models, which are trained to generate sequences of feature vectors.
+
+
+
+\subsubsection{Hierarchical Approaches}
+The main idea of hierarchical approaches is to model complex actions as a hierarchy of simpler sub-actions \cite{aggarwal_human_2011}.
+Sub-actions themselves can be further decomposed, until the initial complex action is represented as a sequence of non-decomposable atomic sub-actions.
+A complex action is interpreted as a process that generates sub-actions which can be observed and classified individually.
+Most hierarchical approaches thereby employ non-hierarchical single-layered action recognition approaches to recognize the observable low-level sub-actions.
+
+\textcite{aggarwal_human_2011} further differentiate hierarchical approaches into statistical approaches, syntactic approaches and desciption-based approaches.
+
+\textbf{Statistical approaches} \\
+Hierarchical statistical approaches use stacked state-based models such as Hidden Markov Models (HMMs) \cite{oliver_layered_2002}\cite{zhang_modeling_2004} or Dynamic Bayesian Networks (DBNs) \cite{dai_group_2008}\cite{gong_recognition_2003} for action recognition.
+Typically two layers of such models are used, where the bottom layer recognizes simple actions from sequences of feature vectors and the top layer recognizes high-level actions from the resulting sequence of simple actions.
+The layered hidden markov model approach of \textcite{oliver_layered_2002} is said to be one of the most fundamental forms of hierarchical statistical approaches \cite{aggarwal_human_2011}.
+
+\textbf{Syntactic approaches} \\
+In hierarchical syntactic approaches, a high-level action is represented as a string of symbols.
+Each symbol therein corresponds to a simpler, possibly atomic, sub-action as described previously.
+Equivalently to hierarchical statistical approaches, syntactic approaches require the recongition of sub-actions by using any of the previously described methods in order to obtain the string of symbols.
+An action class is represented as a set of production rules from context-free grammars or stochastic context-free grammars \cite{ivanov_recognition_2000}\cite{moore_recognizing_2002}\cite{minnen_expectation_2003}\cite{joo_attribute_2006}, that generate sequences of symbols corresponding to the action class.
+Syntactic approaches then use parsing techniques from the field of programming languages \cite{hopcroft_introduction_1979} to recognize high-level actions.
+
+\textbf{Description-based approaches} \\
+The definition of description-based approaches by \textcite{aggarwal_human_2011} states: ``A description-based approach is a recognition approach, that explicitly maintains human activities' spatio-temporal structure.''
+High-level actions are represented by occurences of their underlying sub-actions, while temporal, spatial and logical relationships between the sub-actions are explicitly specified.
+The temporal relations between sub-actions are usually specified by associating a time interval with an occuring action.
+\textcite{allen_maintaining_1983}\cite{allen_actions_1994} introduced seven predicates to describe temporal relations between time intervals: \textit{before, meets, overlaps, during, starts, finishes} and \textit{equals}, which have been widely used for hierarchical description-based approaches \cite{pinhanez_human_1998}\cite{siskind_grounding_2001}\cite{nevatia_hierarchical_2003}\cite{ryoo_recognition_2006}.
+
+
+\subsection{Bag of Visual Words}
+
+Defintion of local features: ``primitive events corresponding to moving two-dimensional image structures at moments of non-constant motion'' Schuldt 2004 KTH paper
 
 Interest point detection: Space-time interest points ``I. Laptev. On space-time interest points. IJCV, 64(2-3), 2005.''
 
@@ -59,11 +178,13 @@ Three main questions:
     \item How to aggregate the extracted feature (vectors) into a global fixed-size representation of the video.
 \end{enumerate}
 
-\subsubsection{Feature extractors}
+``standard approach'' karpathy large-scale
+
+\subsubsection{Feature Extraction}
 
 Cuboids ``P. Dollár, V. Rabaud, G. Cottrell, and S. Belongie. Behavior recognition via sparse spatio-temporal features. In VS-PETS, 2005.''
 
-\subsubsection{Aggregation Methods}
+\subsubsection{Feature Encoding}
 
 \textbf{Bag of visual Words paradigm}
 
@@ -73,7 +194,11 @@ Can be improved with a multi-channel approach as in ``M. M. Ullah, S. N. Parizi,
 
 One limitation of these local features is that they lack semantics and discriminative capacity. Therefore mid-level and high-level features were proposed (cite TDD).
 
-\subsection{State of the Art Approaches using locaf features}
+\textbf{VLAD}
+
+\subsubsection{Classification}
+
+\subsection{State of the Art Approaches using local features}
 
 \subsubsection{Action Recognition by Dense Trajectories -- Wang et al. (2011)}
 
@@ -183,10 +308,17 @@ On the KTH dataset, the approach yields competitive results.
 
 \subsubsection{Action recognition with improved trajectories -- Wang et al. (2013)}
 \cite{wang_action_2013}
+``Recently, Wang et al. proposed improved Dense Trajectories (iDT) [44] which is currently the state-of-the-art hand-crafted feature'' tran learning spatio-temporal features with 3D convolutional networks.
 
 \subsubsection{Multi-view super vector for action recognition -- Cai et al. (2014)}
 \cite{cai_multi-view_2014}
 
 \subsubsection{Bag of visual words and fusion methods for action recognition: Comprehensive study and good practice -- Peng et al. (2014)}
 \cite{peng_bag_2014}
+
+\subsection{Beyond gaussian pyramid: Multi-skip feature stacking for action recognition}
+UCF 101 - 89.1\%
+
+other iDT-based methods: Beyond gaussian pyramid: Multi-skip feature stacking for action recognition.
+Bag of visual words and fusion methods for action recognition: Comprehensive study and good practice.
 

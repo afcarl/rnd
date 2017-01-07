@@ -1,10 +1,13 @@
 \section{Deep Learning Methods in Action Recognition}
 META: Review of approaches that use Deep Learning methods.
 
-The naive approach: using framewise information, classfying it with a CNN and average the results. Elaborate further\ldots ??
+Taxonomy of approaches.
+
 
 \subsection{3D-Convolutional Networks}
 I.e. convolutional methods.
+
+The naive approach: using framewise information, classifying it with a CNN and average the results. Elaborate further\ldots ??
 
 ``Video analysis provides more information to the recognition task by adding a temporal component through which motion and other information can be additionally used. At
 the same time, the task is much more computationally de-
@@ -20,227 +23,259 @@ ily confuse classes especially if there are fine-grained dis-
 tinctions or portions of the video irrelevant to the action of
 interest.'' Beyond Short Snippets: Deep Networks for Video Classification
 
-\subsubsection{3D Convolutional Neural Networks for Human Action Recognition -- Ji et al. (2010/2013)}
-NOTE:Paper was first published in 2010, the publication of 2013 is more popular however.
+explain: feature maps
 
-In this work \cite{ji_3d_2013} the authors porpose 3D convolution for action recognition from video, which processes spatial as well as temporal information in a convolutional layer.
+Treated as an additional spatial dimension.
 
-In regular convolutional neural networks 2D convolutions are applied in the convolutional layers to extract features from the feature maps in the previous layer. More formally in the notation of the authors, the value of feature map $j$ in the $i$th layer at spatial position $(x,y)$ is given by:
 
+\subsubsection{3D Convolutional Neural Networks for Human Action Recognition (2010/2013)}
+
+\textcite{ji_3d_2013} propose 3D convolutions for action recognition from video with convolutional neural networks (CNNs).
+3D convolutions are able to process spatial as well as temporal information in a convolutional layer.
+
+In regular 2D CNNs the convolutional layers apply 2D convolutional kernels to the previous layers to extract features from them.
+More formally, in the notation of the authors, the value $v_{ij}^{xy}$ at spatial position $(x,y)$ of feature map $j$ in convolutional layer $i$ of the network is given by:
 \begin{align*}
     v_{ij}^{xy} = \tanh \left( b_{ij} + \sum_m \sum_{p=0}^{P_i -1} \sum_{q = 0}^{Q_i - 1} w_{ijm}^{pq} v_{(i-1)m}^{(x+p)(y+q)} \right)
 \end{align*}
+The two inner sums over $p$ and $q$ carry out the convolutional operation on feature map $v_{(i-1)m}$ of the previous layer $i-1$ with the 2 dimensional convolutional kernel $w_{ijm}$ (spatial indices omitted).
+Thereby $w$ is a tensor-like object, which contains all 2 dimensional convolutional kernels in the network, that produce feature maps through convolution
+Specifically, $w_{ijm}^{pq}$ denotes the value at spatial positions $(p,q)$ of the 2D convolutional kernel, which is applied to feature map $m$ of the previous layer $i-1$.
+Feature map $j$ in layer $i$ is finally obtained by summing the results of all the convolutions performed on the feature maps of layer $i-1$ over $m$, adding a bias and passing it into a non-linear function (here $\tanh(\cdot)$).
 
-$w_{ijm}^{pq}$ denotes the value at position $(p,q)$ of the kernel, that performs convolution on feature map $m$ of the previous layer, resulting in feature map $j$ in layer $i$.
-$P_i$ and $Q_i$ denote the dimensions of the kernel in x- and y-direction respectively.
-Tensor $w$ therefore represents all kernels that produce the feature maps in layer $i$ through convolution.
+$P_i$ and $Q_i$ denote the dimensions of the kernels in $x$ and $y$-direction respectively.
+The convolutional operation used here is called \textit{cross-correlation}, which differs from the mathematical discrete convolution in that the convolutional kernel is not flipped. This results in a non-commutative operation as described in chapter 9 of \cite{goodfellow_deep_2016}.
 
-The two inner sums carry out the convolutional operation on feature map $m$ of the previous layer, which is then combined with the results for the other feature maps by summation over $m$, added with a bias and fed into a non-linear function ($\tanh(\cdot)$) to result in the value of the current feature map.
-
-Note: The convolutional operation used here is called cross-correlation, which differs from mathematical discrete convolutions in that the kernel is not flipped. This results in a non-commutative operation as described in chapter 9 of cite deep learning book ??
-
-The authors propose an extension of 2D convolutions by using a three dimensional kernel. More formally, in the notation as above, the value of feature map $j$ in the $i$th layer at position $(x,y,z)$ is given by:
-
+\textcite{ji_3d_2013} propose an extension of 2D convolutions by using three dimensional kernels, i.e.\ two spatial dimensions as above and an additional temporal dimension.
+More formally the value $v_{ij}^{xyz}$ of feature map $j$ at spatio-temporal position $(x,y,z)$ in convolutional layer $i$ is given by:
 \begin{align*}
     v_{ij}^{xyz} = \tanh \left( b_{ij} + \sum_m \sum_{p=0}^{P_i -1} \sum_{q = 0}^{Q_i - 1} \sum_{r = 0}^{R_i - 1} w_{ijm}^{pqr} v_{(i-1)m}^{(x+p)(y+q)(z+r)} \right)
 \end{align*}
+As above, $w_{ijm}^{pqr}$ denotes the value of the now three dimensional kernel at spatio-temporal position $(p,q,r)$, which performs convolution on the $m$th feature map of the previous layer $i-1$ to obtain feature map $j$ in convolutional layer $i$.
+$R_i$ additionally denotes the dimension of the kernel in temporal direction. 
 
-As above, $w_{ijm}^{pqr}$ denotes the value of the now three dimensional kernel at position $(p,q,r)$, which performs convolution on the $m$th feature map of the previous layer.
-$R_i$ denotes the dimension of the kernel in temporal direction. 
-
-Based on the 3D convolution, the authors design a neural network architecture, that takes an input of 7 frames of size 60x40.
-
-The network is evaluated as part of an action detection and recognition system on the TRECVID (TREC Video Retrieval Evaluation) data, which consists of surveillance videos recorded at London Gatwick Airport.
-
-The details of the architecture are described below:
+Based on 3D convolutions, the authors design a neural network architecture, that takes an input of $7$ video-frames of size $60 \times 40$ pixels.
+The details of the architecture as shown in figure \ref{fig:3dconv_architecture} are described below:
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{img_deep/3dconv_architecture}
-    \caption{3D CNN architecture developed for human action recognition on the TRECVID 2008 development dataset \cite{ji_3d_2013}}
+    \caption{3D CNN architecture developed for human action recognition \cite{ji_3d_2013}}
     \label{fig:3dconv_architecture}
 \end{figure}
+The architecture contains one hard-wired layer, three convolutional layers \textit{C2, C4} and \textit{C6}, two subsampling layers for dimensionality reduction \textit{S3} and \textit{S5} and one fully connected layer for classification.
 
-At first, hard wired kernels are applied to the input frames, which extract gray values, gradients along the horizontal and vertical direction in the frames and the optical flow between two consecutive frames. This results in 33 feature maps, organized in 5 different channels: gray, gradient-x, gradient-y, optflow-x and optflow-y.
+At first, hard wired connections are applied to the input frames, in order to extract gray values of the input frames, gradients along the horizontal and vertical direction and the optical flow between two consecutive frames. This results in 33 feature maps in layer $H1$, organized in five different channels: \textit{gray, gradient-x, gradient-y, optflow-x} and \textit{optflow-y}.
 
-In the first convolutional layer (C2) two 3D kernels with dimesions 7x7x3 (7x7 in the spatial dimension and 3 in the temporal dimension) are applied at each of the five channels separately. 
-This results in 2x5 channels with a total of 46 feature maps.
-The first convolutional layer therefore necessitates $2 \times 5 \times 7 \times 7 \times 3 \text{ (kernel-weights) } + 2 \times 5 \text{ (biases) } = 1480$ trainable parameters. 
+The first convolutional layer \textit{C2} applies two 3D kernels with dimesions $7\times7\times3$ ($7\times7$ pixels in the spatial dimension and $3$ frames in the temporal dimension) to each of the five channels in layer $H1$ separately. 
+This results in $2\times5$ channels with a total of 46 feature maps in layer \textit{C2}.
+The first convolutional layer therefore requires $\text{(kernel-weights)} + \text{(biases)} = 2 \times 5 \times 7 \times 7 \times 3 + 2 \times 5 = 1480$ trainable parameters. 
 
-After subsampling layer S3, three different kernels with size 7x7x3 are applied to each of the 2x5 channels of the previous layer.
+After subsampling layer \textit{S3}, three different 3D kernels with size $7 \times 7 \times 3$ are applied to each of the $2 \times 5$ channels of the previous layer to get the feature maps in layer \textit{C4}.
+The last convolutional layer \textit{C6} performs 2D convolutions to obtain $128$ feature maps of dimension $1 \times 1$.
 
-The last convolutional layer then performs, after 3x3 subsampling, 2D convolutions to obtain 128 feature maps of dimension 1x1.
-These feature maps can be seen as a 128 dimensional feature-vector representation of the input.
+The resulting vector of these 128 feature maps in layer $C6$ is interpreted as a 128-dimensional feature representation of the input.
+This feature representation is then classified by a fully connected layer into the required number of output classes.
 
-The resulting feature-vector is classified by a fully connected layer (into three different classes).
+In total the architecture contains $295,458$ trainable parameters, which are initialized randomly and learned by online error back-propagation as done by \textcite{lecun_gradient-based_1998-1}.
+The authors tried other architectural layouts but conclude that the one described above works best.
 
-The architecture has 295.458 trainable parameters in total, which are initialized randomly and learned by online error back-propagation as in cite lecun 1998 ??.
-NOTE: Perhaps add comparison to recent image recognition networks here. ??
+The network is evaluated as part of an action detection and recognition system, using the TRECVID 2008 development dataset \cite{rose_trecvid_2009}.
+Additionally, it's performance is measured as stand-alone approach on the KTH benchmarking datset \cite{schuldt_recognizing_2004}.
 
-The authors tried other layouts but conclude that the one described above works best. The performance was evaluated on the TRECVID 2008 development dataset ?? and on the KTH dataset ??.
-
-\textbf{TRECVID:}\\
-The TRECVID 2008 development dataset contains 49-hour annotated surveillance videos from five different cameras on five days.
-The authors train their model to recognize three different action classes from the dataset: CellToEar, ObjectPut and Pointing.
-The other classes were used to generate negative training examples.
+\textbf{Evaluation on TRECVID:} \\
+The TRECVID 2008 development dataset \cite{rose_trecvid_2009} contains 49 hours of surveillance videos continuously recorded by five different cameras on five days at London Gatwick Airport.
+The datset is annotated for surveillance event detection, i.e.\ what events occur where.
+The authors train their model to recognize three action classes from the dataset: \textit{CellToEar}, \textit{ObjectPut} and \textit{Pointing}.
+The other action classes provided by the dataset were used to generate negative training examples.
+The distribution of training examples sorted by date is shown in figure \ref{fig:3dconv_dataset}.
+Example frames of the datset are shown in figure \ref{fig:3dconv_sampletracking}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{img_deep/3dconv_dataset}
-    \caption{Number of samples per class from the TRECVID 2008 development dataset \cite{ji_3d_2013}}
+    \caption{Number of action samples per class from the TRECVID 2008 development dataset \cite{ji_3d_2013}}
     \label{fig:3dconv_dataset}
 \end{figure}
 
-Since the dataset provides continuous videos with several persons in a real-world scence, the authors apply a human detector and a detection-driven tracker, to keep track of the heads in the scene.
+Since the dataset provides continuous videos with several persons in a real-world scence, \textcite{ji_3d_2013} apply a human detector and a detection-driven tracker, to keep track of the heads in the scene.
 This information is used to extract a bounding box around a person, as soon as an action is performed. 
-Six other equally sized bounding boxes are sampled at the same location from three frames before and after the intial frame.
-Between those samples, one frame is omitted which results in a temporal step size of 2.
+Six additional bounding boxes are sampled from three frames before and three frames after the action was detected with a temporal step size of two frames.
+The bounding boxes have the same size and are sampled at the same spatial location as the initial bounding box.
 
-The contents of these 7 bounding boxes are stacked and taken as input to the 3D CNN architecture for classification.
+The contents of these 7 bounding boxes are stacked and used as input of the 3D CNN architecture in order to classify the performed action.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{img_deep/3dconv_sampletracking}
-    \caption{Example scenes taken by different cameras with the results of the human detection and tracking \cite{ji_3d_2013}}
+    \caption{Example scenes of the TRECVID 2008 development dataset with results of human detection and tracking \cite{ji_3d_2013}}
     \label{fig:3dconv_sampletracking}
 \end{figure}
 
-In order to compare their 3D CNN model to other techniques, the authors also evaluate:
+To evaluate the performance of the 3D CNN model, the authors compare it to three other baseline approaches in the detection and recognition system:
 \begin{enumerate}
-    \item A frame based 2D CNN model
-    \item Extraction of dense SIFT features from the gray images of the 3D CNN input cube, which are then aggregated using the BoW-Paradigm and classified through a linear SVM
-    \item Extraction of dense SIFT features from the motion edge history images (MEHI) of the 3D CNN input cube, which are then aggregated as above.
+    \item A frame-based 2D CNN model, which averages the action class predictions over individual frames.
+    \item Extraction of dense SIFT features \cite{lowe_distinctive_2004} from the seven (grayscaled) input frames, which are then aggregated using the BoW-Paradigm and classified through a linear SVMs.
+    \item Extraction of dense SIFT features \cite{lowe_distinctive_2004} from motion edge history images (MEHI)\cite{yang_human_2009} of the input frames, which are then aggregated as above.
 \end{enumerate}
 
-The 3D CNN model outperfomed the other approaches on the TRECVID 2008 development dataset on all classes except Pointing, where the 2D frame-based CNN performed best.
-The authors note, that the positive example for Pointing are significantly larger than for the other classes and conclude, that their architecture performs best, when little positive examples are present.
+The 3D CNN model outperfoms the other approaches on the TRECVID 2008 development dataset significantly for all classes except \textit{Pointing}, where the 2D frame-based CNN performed best.
+The authors note, that the number of training examples for \textit{Pointing} are significantly larger than for any other class and conclude, that their architecture performs best, when few positive examples are present.
 
-\textbf{KTH:}\\
-Additionally, the 3D CNN model was evaluated on the KTH dataset.
-It achieves an overall accuracy of 90.2\%.
+\textbf{Evaluation on KTH:}\\
+Furhermore, the stand-alone 3D CNN architecture was evaluated on the KTH dataset \cite{schuldt_recognizing_2004}.
+It achieves an overall accuracy of $90.2\%$ on that benchmark.
+In comparison: \textcite{schindler_action_2008} achieved $92.7\%$ and \textcite{jhuang_biologically_2007} achieved $91.7\%$ several years earlier.
 
-DISCUSSION: Authors cite the work of schindler and van gool from 2008 and state, that 5-7 frames are enough for action recognition.
-Schindler and van gool: 5-7 frames are enough to recognize SIMPLE actions.
+\textcite{ji_3d_2013} showed, that 3D convolutions yield competitive performace compared to state-of-the-art approaches at that time as shown on the KTH benchmark \cite{schuldt_recognizing_2004}.
+Although the authors reference the work of \textcite{schindler_action_2008} which states, that 5-7 video-frames are enough for recognizing simple actions, this short temporal extend is often identified as a deficit of the approach and addressed in following approaches, e.g.\ by \textcite{baccouche_sequential_2011}.
 
-\subsubsection{Sequential Deep Learning for Human Action Recognition -- Baccouche et al. (2011)}
-\textcite{baccouche_sequential_2011} identify two issues with the previous approaches for extending convolutional neural networks to the video domain, i.e. 3D convolutions as in \cite{ji_3d_2013} and \cite{kim_human_2007}:
 
+\subsubsection{Sequential Deep Learning for Human Action Recognition (2011)}
+\textcite{baccouche_sequential_2011} identify two deficits of previous approaches for extending CNNs to the video domain, specifically the approach of 3D convolutions such as \cite{ji_3d_2013} and \cite{kim_human_2007}:
 \begin{enumerate}
-    \item They rely on hand crafted inputs (hard wired preprocessing of the data to produce image gradients or optical flow in the first processing layer).
+    \item They still rely on hand crafted inputs (hard wired pre-processing of the data to produce image gradients and optical flow in the first processing layer).
     \item The models typically process less than 15 input frames, and therefore only classify short sub-clips, not the entire video.
 \end{enumerate}
 
-To address these issues, the authors design a two-step deep architecture consisting of:
-
+To address these issues, the authors design a two-step deep architecture, which is shown in figure \ref{fig:sequentialdeep_overview} and consists of:
 \begin{enumerate}
     \item A convolutional spatio-temporal feature extractor network, based on 3D convolutions.
-    \item A recurrent neural network classifier, that incorporates LSTM cells \cite{hochreiter_long_1997}, to classify the entire sequence of previously extracted spatio-temporal features.
+    \item A recurrent neural network (RNN) classifier, which incorporates LSTM cells \cite{hochreiter_long_1997} to classify the entire sequence of previously extracted spatio-temporal features.
 \end{enumerate}
-
-The architecture is trained and evaluated on the KTH dataset.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{img_deep/sequentialdeep_overview.png}
-    \caption{Overview of the two-steps architecture consisting of a 3D ConvNet and a RNN classifier. \cite{baccouche_sequential_2011}}
+    \caption{Overview of the two-step architecture consisting of a 3D ConvNet and a recurrent neural network classifier. \cite{baccouche_sequential_2011}}
     \label{fig:sequentialdeep_overview}
 \end{figure}
 
-The ConvNet architecture of this approach is depicted in figure \ref{fig:sequentialdeep_overview}.
-It is comparable to the one of \textcite{ji_3d_2013} in that it incorporates 3D convolutions, but works on raw input pixels instead of hand-crafted inputs.
+\textcite{baccouche_sequential_2011} incorporate the work of \textcite{ji_3d_2013} by using a 3D ConvNet as feature extraction stage, which processes raw pixel values instead of hand-crafted inputs.
+To compensate the problem of temporally short inputs and to take the temporal evolution of movements during an action into account, a RNN classifier is added, because they are able to process input sequences of arbitrary length.
+The RNN classifies a sequence of feature representations, previously extracted by applying the 3D ConvNet to temporally adjacent patches of the input video, in order to recognize an action. 
+Similarly to \cite{ji_3d_2013}, the overall approach is evaluated on the KTH dataset \cite{schuldt_recognizing_2004}.
 
+Details of the 3D ConvNet architecture are shown in figure \ref{fig:sequentialdeep_cnnarchitecture}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{img_deep/sequentialdeep_cnnarchitecture}
-    \caption{3D ConvNet architecture for the extraction of spatio-temporal features \cite{baccouche_sequential_2011}}
+    \caption{Detailed architecture of the 3D ConvNet for later use with an RNN classifier. \cite{baccouche_sequential_2011}}
     \label{fig:sequentialdeep_cnnarchitecture}
 \end{figure}
 
-Input to the network is formed by stacking 9 succesive frames of spatial size 34x54, which results in an input cube of dimension 34x54x9.
+The input to the 3D ConvNet is formed by stacking $9$ successive frames from the input video of spatial resolution $34\times54$ pixels.
+The network contains three convolutional layers \textit{C1, C2} and \textit{C3}.
+The first two convolutional layers are followed by rectification and subsampling layers \textit{R1, S1} and \textit{R2, S2}.
+A rectification layer simply computes the absolute value of its input \cite{baccouche_sequential_2011}.
+The third convolutional layer is followed by two neuron layers (fully-connected layers) \textit{N1} and \textit{N2}.
 
-The configuration of it's layers is as follows:
+The ConvNet model, as shown in figure \ref{fig:sequentialdeep_cnnarchitecture} embeds $17,169$ trainable parameters in total, which is about 15 times less than the $295,458$ parameters used by \textcite{ji_3d_2013}.
 
+Specifically, the layers are configured as follows:
 \begin{enumerate}
-    \item First convolutional layers C1 computes 7 feature maps, by convolving a 3D 7x7x5 kernel for each feature map with the input cube.
-    \item Layer R1 and S1 perform rectification (building of the absolute value) and subsampling with a spatial factor of 2 respectively.
-    \item Second convolutional layer C2 computes 35 feature maps. Each of the 7 feature maps in layer S1 is connected to two different feature maps in C2 (resulting in 14 feature maps) and each pair of different feature maps of S1 is connected to one feature map in C2 (resulting in additional 21 feature maps, leaving a total of 35 feature maps).
-    \item Layer R1 and S2 are equivalent to R1 and S1.
-    \item Third (and last) convolutional layer C3 computes five features maps, which are fully connected to all feature maps in previous layer S2 by 3x3x3 kernels. These five feature maps have dimension 3x8x1, rendering the raw input encoded into a 120 dimensional feature vector.
-    \item For training the individual ConvNet model, the 120D feature vector is finally fed into two fully connected layers with 6 output neurons (one for each class of the KTH dataset).
+    \item Convolutional layer \textit{C1} computes $7$ feature maps, by convolving $7$ 3D $7\times7\times5$ kernels with the stacked input frames.
+    \item Layer \textit{R1} and \textit{S1} perform rectification (building of the absolute value) and subsampling with a spatial factor of 2 respectively.
+    \item Convolutional layer \textit{C2} computes $35$ feature maps (the $7$ feature maps in layer \textit{S1} are connected to two different convolutional kernels, which results in $14$ feature maps and pairs of different feature maps in \textit{S1} are connected to one convolutional kernel each, which results in additional $21$ feature maps, summing to a total of $35$ feature maps).
+    \item Convolutional layer \textit{C3} computes $5$ features maps, which are fully connected to all feature maps in previous layer \textit{S2} by $3\times3\times3$ convolutional kernels. These five feature maps have dimension $3\times8\times1$, rendering the raw input encoded as a 120 dimensional feature vector.
 \end{enumerate}
 
-The ConvNet model embeds a total of 17,169 trainable parameters, which is about 15 times less than the number of parameters trained by \textcite{ji_3d_2013} (295,458 parameters).
+The 3D ConvNet is trained individually on the KTH dataset before employing the RNN classifier.
+For training, the 120 dimensional feature vector is fed into two fully connected layers \textit{N1} and \textit{N2} with 6 output neurons, one for each class of the KTH dataset.
+The authors use the same training algorithm as \textcite{ji_3d_2013}: online Backpropagation with momentum adapted to weight-sharing.
 
-The authors use the same training algorithm as Ji et al., which was proposed by cite lecun 1998 ??: online Backpropagation with momentum adapted to weight-sharing.
+For training the RNN classifier with online backpropagation through time \cite{gers_learning_2002}, the fully connected layers \textit{N1} and \textit{N2} of the 3D ConvNet are removed.
+The 120 output values of the third convolutional layer \textit{C3} are fed into the recurrent neural network as input at each time step.
+Several configurations were tested by the authors and a single hidden layer with 50 LSTM cells were found to be a good compromise between training time and performance.
+The LSTM cells are fully connected to the outputs of layer \textit{C3}.
 
-In order to take the temporal evolution of movements in a video into account, the authors propose to train a recurrent neural network with one hidden layer of LSTM cells for classifying sequences of previously extracted CNN feature-vector representations.
-
-Several configurations were tested and 50 LSTM cells in the hidden layer were found to be a good compromise between training time and performance.
-
-The output of the third convolutional layer C3 of the ConvNet architecture is fed into the recurrent neural network as input at each time step.
-
-The LSTM cells in the hidden layer are fully connected with the input and have recurrent connections among each other. 
-
-The output layer is connected to the outputs of the LSTM cells.
-
-The RNN is trained as part of the two-step architecture using online backpropagation through time with momentum.
-
-The architecture is evaluated on the KTH dataset. To build the inputs to the network, the following simple pre-processing steps are applied: down-sampling by a factor of 2 horizontally and vertically, extraction of the bounding boxes around persons, application of 3D Local Contrast Normalization on a 7x7x7 neigbourhoood.
-
-The authors find the 3D ConvNet model to yield a recognition rate of 91.04\%, when the classification is done by majority voting over several short sub-sequences of the test-video (without using the LSTM classifier).
-Which is comparable to other deep learning approaches at that time and almost the same result as obtained by \textcite{ji_3d_2013} (90.2\%), although the model requires about 15 times less paramerters.
-
-When using the LSTM classifier network, performance increases of about 3\%. The combined two-steps architecture consistently outperformed other deep models at that time.
-
-Evaluation scheme: five best results averages over 30 trials.
+The authors find their 3D ConvNet model alone, without adding the recurrent LSTM classifier, to yield a recognition rate of $91.04\%$ on KTH, when the classification is done by majority voting over several short sub-sequences of the test-video.
+This result is comparable to other approaches at that time and almost the same as obtained by \textcite{ji_3d_2013} ($90.2\%$), although the model requires about 15 times less paramerters.
+When using the LSTM classifier network, recognition performance increases to $92.17\%$.
 
 
-\subsubsection{Large-scale Video Classification with Convolutional Neural Networks -- Karpathy et al. (2014)}
-% full video frames?
-% when are 3d convolutions used, when 2d convolutions?
-
-The author's contribution in \cite{karpathy_large-scale_2014} is four-fold:
+\subsubsection{Large-scale Video Classification with Convolutional Neural Networks (2014)}
+\textcite{karpathy_large-scale_2014} provide a comprehensive examination of techniques to apply convolutional neural networks to the domain of action recognition from video.
+More specifically, their contribution is four-fold:
 \begin{enumerate}
-    \item They gather the Sports-1M dataset containing a collection of 1 million automatically annotated sports videos from YouTube.
-    \item They study multiple approaches for extending convolutional neural networks to incorporate spatio-temporal information.
-    \item They propose a multiresolution convolutional architecture with the goal of speeding up the training at no cost in accuracy.
-    \item They retrain the top layers of a network on the UCF-101 dataset, which has previously been trained on the Sports-1M dataset and thereby achieve significant increase in performance towards training the network on UCF-101 alone (transfer learning).
+    \item They gather the Sports-1M dataset containing a collection of 1 million automatically annotated sports videos from YouTube (further described in section \ref{chap:datasets} of this work).
+    \item They evaluate several approaches besides three dimensional convolutions for extending CNNs to process spatio-temporal data in a consistent and therefore comparable manner. These methods are called \textit{fusion methods} in the phrasing of the authors, since temporal motion information has to be fused with spatial motion information while propagating through a network.
+    \item They propose a generic multiresolution convolutional architecture in oder to speed up training time at no cost in accuracy.
+    \item They retrain the top layers of a network on the UCF-101 dataset, which has previously been trained on the Sports-1M dataset and thereby achieve a significant increase in performance against training the network on UCF-101 alone (transfer learning).
 \end{enumerate}
 
-Here, the architectures will be reviewed (contributions 2. and 3.), for a description and review of the Sports-1M dataset and the transfer learning paradigm see section \ref{chap:datasets} of this work.
-
-To obtain fixed-sized inputs for their architectures, the authors interpret an entire video as a set of short, fixed-sized video clips.
-
-The authors first implement a baseline CNN architecture to classify videos based on a single frame.
-The model is similar to the winning network of the 2012 ImageNet Classification Challenge cite ??, but receives slightly smaller inputs (here 170x170x3 against 224x224x3 in the ImageNet model).
-
+The authors first implement a baseline CNN architecture, which classifies human action videos by processing a single frame at a time, i.e.\ without considering temporal relationship between frames.
 Based on the single frame architecture, several extensions for processing temporal information in the network are being investigated. These types of fusion methods are depicted in figure \ref{fig:largescale_fusionmethods}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{img_deep/largescale_fusionmethods}
-    \caption{Different methods for fusing temporal with spatial information in convolutional neural network architectures. Red, green and blue denotes convolutional, normalization and pooling-layers. Grey colored inputs are single video frames. \cite{karpathy_large-scale_2014}}
+    \caption{Different methods for fusing temporal with spatial information in convolutional neural network architectures. Red, green and blue denotes convolutional, normalization and pooling-layers. Grey colored inputs are single RGB video frames. Yellow layers are fully-connected for classification. \cite{karpathy_large-scale_2014}}
     \label{fig:largescale_fusionmethods}
 \end{figure}
 
-\textbf{Early Fusion:} \\
-Temporal information is incorporated in the network on the pixel level by extending the convolutional kernel in the first layer to be of dimension $11 \times 11 \times 3 \times T$, where T is the temporal extend (here used: $T = 10$).
+\textbf{Single Frame}\\
+The CNN model used in the single frame approach is a deep convolutional neural network with 2D convolutions, that recognizes actions by classifying frames of a given input sequence individually and reporting the averaged prediction.
+The architecture is similar to AlexNet, which won the 2012 ImageNet Classification Challenge \cite{krizhevsky_imagenet_2012-1}, but receives slightly smaller inputs: $170\times170\times3$ instead of $224\times224\times3$ in the ImageNet model.
+The first two dimensions thereby corresprond to the spatial resolution of the video, the third dimension to the RGB color channels of a video-frame.
+This approach is evaluated as a baseline in order to measure the improvement when using temporal information, i.e.\ several frames, in the recognition process. 
 
-\textbf{Late Fusion:} \\
-Two separate single-frame networks with shared parameters and without their individual classification layers are used on input frames with a temporal distance of 15 frames.
+\textbf{Early Fusion}\\
+In the early fusion approach temporal information is incorporated in the network on the pixel level by extending the convolutional kernels in the first layer to be of dimension $11 \times 11 \times 3 \times T$, where $T$ is the temporal extend, i.e.\ the number of input frames to the network.
+The authors set $T = 10$ which corresponds to a third of a second.
+Note that the temporal information is completely flattened after the first convolutional layer, since the kernel has the same temporal dimension as number of inputs frames.
+Therefore only the kernels in the first convolutional layer are three dimensional in nature.
+
+\textbf{Late Fusion}\\
+In the late fusion methods, two separate single-frame networks with shared parameters and without their individual classification layers are used on input frames with a temporal distance of $15$ frames.
 Two shared fully connected layers then merge the individual network's information and classify the input. 
 The fully connected layers are able to compute motion information by comparing the feature representations of the two single-frame networks.
 
-\textbf{Slow Fusion:} \\
-Temporal information is processed throughout the network by extending the kernels of each convolutional layer in time, as done in the first layer of the Early Fusion approach.
-Thereby higher layers progressively processes more spatio-temporal information of the input frames.
-These kinds of convolutions have also been applied in \cite{ji_3d_2013} and baccouche ??.
-The first convolutional layer uses a temporal extend of $T = 4$, while the second convolutional layer uses a temporal extend of $T = 2$, which allows the third layer to access the information of all 10 input frames.
+\textbf{Slow Fusion}\\
+Temporal information is processed throughout the network by extending the kernels of each convolutional layer in time, as done in the first layer of the \textit{Early Fusion} approach.
+Thereby higher layers progressively process more temporal information along the input frames.
+The \textit{Slow Fusion} approach applys 3D convolutions as done by \textcite{ji_3d_2013} and \textcite{baccouche_sequential_2011}.
+The first convolutional layer incorporates a temporal extend of $T = 4$ in its kernels, while the second convolutional layer uses a temporal extend of $T = 2$.
+This allows the third convolutional layer layer to access the information of all 10 input frames.
 
-Since the training time of a network heavily influences the amount of experiments that can be conducted on different hyperparameter settings, it is of great interest to reduce the training time for neural networks (for CNNs: in the order of weeks) while maintaining the accuracy.
+\textbf{Evaluation on the Sports-1M dataset}\\
+The recognition performance of the different fusion methods is evaluated on the Sports-1M dataset.
+The authors use downpour stochastic gradient descent \cite{dean_large_2012} for training the models in a distributed way on a computing cluster.
+For the evaluation $70\%$ of the dataset were used as training data, $10\%$ as validation set and $20\%$ as test set.
 
-The authors propose a multiresolution architecture as shown in figure \ref{fig:largescale_multiresolution}.
+To obtain fixed-sized inputs for the models, the authors interpret an entire video as a set of short, fixed-sized video clips.
+At test time, 20 short clips are sampled from the current test-video and each clip is presented to the network individually.
+Each clip is passed through the network 4 times, each time using different crops and flips and the result is averaged to produce a robust class prediction.
+The video-level predictions (examples shown in figure \ref{fig:largescale_classification}) are computed from the clip-level predictions simply by averaging.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img_deep/largescale_classification}
+    \caption{Classification of videos in the Sports-1M dataset. Blue label is the ground truth, below class predictions are shown with decreasing confidence. \cite{karpathy_large-scale_2014}}
+    \label{fig:largescale_classification}
+\end{figure}
+
+In addition to comparing different fusion methods, the authors also implement a hand-crafted feature baseline approach, that extracts multiple kinds of hand-crafted local features from each video and aggregates them according to the bag-of-words paradigm.
+The resulting feature histogram representations are classified into action classes using a multilayer neural network, with rectified linear activation units.
+
+The performance of the studied approaches is shown in table \ref{tab:largescale_results}:
+\begin{table}[H]
+    \centering
+    \includegraphics{img_deep/largescale_results}
+    \caption{Results of different architectures on the Sports-1M dataset. Hit@$k$ denotes the percentage of test samples, that had at least one of their class labels included in the top $k$ predictions. \cite{karpathy_large-scale_2014}}
+    \label{tab:largescale_results}
+\end{table}
+
+The results show, that the deep models (\textit{early}, \textit{late} and \textit{slow-fusion}) consistently outperform the hand-crafted feature baseline.
+Compared to each other, the deep models perform similarly well, despite their different convolutional architectures.
+The \textit{slow fusion} model, that uses 3D convolutions in all convolutional layers, outperforms the other fusion approaches by a small margin.
+\textcite{karpathy_large-scale_2014} describe the performance difference of between fusion models as ``surprisingly insignificant''\cite{karpathy_large-scale_2014}.
+The single-frame model performs noticably well on it's own.
+The authors suspect, that the motion aware networks suffer from camera movements such as translations or zoom.
+
+Since the training time of a network heavily influences the amount of evaluations that can be conducted using different hyperparameter settings, it is of great interest to reduce the training time for neural networks, which lies in the in the order of weeks for CNNs\cite{karpathy_large-scale_2014}, while maintaining accuracy.
+
+The authors therefore propose a multiresolution architecture, that is shown in figure \ref{fig:largescale_multiresolution}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{img_deep/largescale_multiresolution.png}
@@ -248,97 +283,60 @@ The authors propose a multiresolution architecture as shown in figure \ref{fig:l
     \label{fig:largescale_multiresolution}
 \end{figure}
 
-The overall multi-resolution network processes videos of size 178x178 pixel as input.
+The multi-resolution network processes input videos with a resolution of $178\times178$ pixel.
+The context stream receives a downsampled version of the input frames, which contain the complete field of view but have a decreased resolution of $89\times89$ pixel.
+The fovea stream works on just the $89\times89$ pixel sized center of the original input frames.
+Both streams are implemented as the same CNN architecture and the outputs of both streams are fed into two fully connected layers, where their information is merged and a class prediction is calculated.
 
-The context stream receives a downsampled version of the input frames, which has half the size of the original input (89x89 pixel).
-The fovea stream works on just the 89x89 pixel sized center of the original input frames.
-
-Both streams are implemented as the same CNN architecture.
-
-The outputs of both streams are fed into the first of two fully connected layers, where their information is merged and a class prediction is calculated.
-
-The multiresolution architecture recquires half the input dimensionality compared to processing the raw 178x178 pixel input video in one stream.
-
-Thereby the authors achieved a reduction in training time by a factor of 2-4.
-
-The authors use downpour stochastic gradient descent cite ?? for training the networks on the Sports-1M dataset using a computing cluster.
-70\% of the dataset were used as training data, 10\% as the validation set and 20\% as the test set.
-
-At testing time, 20 short clips are sampled from the current test-video and each clip is presented to the network individually.
-Each clip is passed through the network 4 times (with different crops and flips) and the result is averaged to produce a robust class prediction.
-The video-level predictions are computed from the clip-level predictions simply by averaging.
-
-In addition to comparing different CNN architectures, the authors also implement a feature-histogram baseline approach by extracting multiple kinds of hand-crafted features from each video and aggregating them according to the bag-of-words paradigm.
-The resulting feature vector is classified using multilayer neural network, with rectified linear activation units.
-
-The performance of the studied architectures is shown in table \ref{tab:largescale_results}:
-
-\begin{table}[H]
-    \centering
-    \includegraphics{img_deep/largescale_results}
-    \caption{Results of different architectures on the Sports-1M dataset. Hit@$k$ denotes the fraction of test samples, that had at least one of their class labels included in the top $k$ predictions. \cite{karpathy_large-scale_2014}}
-    \label{tab:largescale_results}
-\end{table}
-
-The authors find their deep models to consistently outperform the hand-crafted feature based baseline.
-
-Compared to each other, the deep models performed similarly well, despite their different convolutional architectures. The slow fusion model however performed best, by a small margin.
-
-According to the authors interpretation, the ``variation among different CNN architectures turns out to be surprisingly insignificant''\cite{karpathy_large-scale_2014}.
-
-The single-frame model performs noticably well on it's own. The authors suspect, that the motion aware networks suffer from camera movements such as translations or zoom.
-
-``we find that a single-frame model already displays very strong performance, suggesting that local motion cues may not be critically important, even for a dynamic dataset such as Sports. An alternative theory is that more careful treatment of camera motion may be necessary (for example by extracting features in the local coordinate system of a tracked point, as seen in [25]).''
+The input dimensionality of the multiresolution architecture is decreased by a factor of $2$ compared to processing the raw $178\times178$ pixel input video in one stream.
+The authors achieved a reduction in training time by a factor of 2-4, while maintaining the accuracy of the system (see table \ref{tab:largescale_results}).
 
 
-\subsubsection{Learning Spatiotemporal Features with 3D Convolutional Networks -- Tran et al. (2015)}
+\subsubsection{Learning Spatiotemporal Features with 3D Convolutional Networks (2015)}
+\textcite{tran_learning_2015} create a generic spatio-temporal feature extractor, by training a very deep 3D ConvNet on the large-scale action recognition dataset Sports-1M \cite{karpathy_large-scale_2014}.
+Given a human action video as input, the activations of the ConvNet's last fully connected layer form a descriptive feature vector, which represents the input.
+The authors show, that the extracted feature representation, which they call \textit{C3D}, is generic enough to be reused on other vision tasks without requiring task-specific fine tuning of the model.
+Merely a classifier (the authors use linear SVMs) has to be trained on the extracted \textit{C3D} features, given a video-based vision task.
+The approach is evaluated for action recognition, action similarity labeling (ASLAN, see section \ref{chap:datasets} of this work), scene classification and object recognition.
 
-\textcite{tran_learning_2015} propose to create a generic spatio-temporal feature extractor, by training a very deep 3D convolutional network on a large-scale action recognition dataset.
-
-The activations of the network's last fully connected layer given an input video-clip build the descriptive feature-vector.
-
-The authors evaluate their model and show that the extracted features, which they call \textit{C3D}, are generic enough to be reused in other vision tasks without requiring task-specific fine tuning of the model. 
-
-?? Their model processes full video frames and does not require any pre-processing. It is therefore easily scalable to large datasets.
-
-Reviewing the evaluation of several fusion methods for temporal information in CNNs made by \textcite{karpathy_large-scale_2014}, the authors conclude that 3D convolutions are best suited for preserving the temporal information in the processing stages of deep CNNs, because they result in an output volume keeping a temporal dimension.
-
+Using a model based on 3D convolutions for \textit{C3D} is motivated by the recent review of fusion methods, published by \textcite{karpathy_large-scale_2014}, which showed that using 3D convolutions in all convolutional layers of a CNN performs best for action recognition (\textit{Slow Fustion}).  
+The authors conclude that 3D convolutions preserve temporal information along the processing stages of a deep CNN, because they result in a 3 dimensional feature map.
+In contrast 2D convolutions the temporal relations among frames after each convolutional layer by only processing frames spatially.
+This is illustrated in following figure \ref{fig:c3d_2dconv3dconv}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{img_deep/c3d_2dconv3dconv}
-\caption{Dimensionality of convolutions: a) 2D convolution on a single image results in a 2D feature map, b) 2D convolution on multiple frames, interpreted as different channels, results in a 2D feature map, c) 3D convolution on multiple frames results in a 3D feature map preserving the temporal dimension \cite{karpathy_large-scale_2014}}
+\caption{Dimensionality of convolutions: a) 2D convolution on a single image results in a 2D feature map. b) 2D convolution on multiple frames, interpreted as different channels of the input, results in a 2D feature map because results of individual frames are summed. c) 3D convolution on multiple frames results in a 3D feature map, therefore preserving the temporal dimension \cite{karpathy_large-scale_2014}}
     \label{fig:c3d_2dconv3dconv}
 \end{figure}
 
-The authors search for the best architecture with 3D convolutions by experimenting on the medium-scale dataset UCF-101, because using a large-scale dataset would be too time-consuming.
-Recent findings regarding 2D convolutional neural networks suggest that 3x3 convolution kernels yield best results in deep architectures \cite{simonyan_very_2014}. The authors therefore fix the spatial kernel size in their 3D convolutions to 3x3 and vary the temporal depth of the kernel to find the best architecture.
-
-All trained network versions take inputs of fixed-size 128x171x16 (frame width x frame height x number of frames) in three channels (RGB).
-
-The evaluation networks are designed as follows:
+To find the best performing architecture, the authors first perform experiments on the medium-scale dataset UCF-101\cite{soomro_ucf101:_2012}, because using a large-scale dataset would be too time-consuming.
+For these experiments, all trained networks take inputs of dimension $128\times171\times16$ (\textit{frame width} $\times$ \textit{frame height} $\times$ \textit{number of frames}, in three color channels each).
+More specifically, the network architecture is designed as follows:
 \begin{itemize}
-    \item 5 convolutional layers with 64, 128, 256, 256 and 256 filters from layer 1 to 5.
-    \item Each convolutional layer is followed by a max-pooling layer with filter size 2x2x2 (except for the first layer, which has a filter size of 1x2x2 to not collapse the temporal information too early).
-    \item Two fully connected layers with 2048 neuraons each and a softmax layer in the end to estimate action labels.
+    \item 5 convolutional layers with 64, 128, 256, 256 and 256 filters respectively.
+    \item Each convolutional layer is followed by a max-pooling layer with filter size $2\times2\times2$ (except for the first layer, which has a filter size of $1\times2\times2$ for not collapsing the temporal information too early).
+    \item Two fully connected layers with 2048 neuraons each at the end and an additional softmax layer with one output per action class for training.
 \end{itemize}
 
-For finding the best architecture only the convolutional kernel depth $d$ is varied by following two methods:
+The work of \textcite{simonyan_very_2014}, regarding 2D convolutional neural networks, suggests that $3\times3$ convolutional kernels yield best results in deep architectures .
+The authors therefore fix the spatial kernel size in their 3D convolutions to $3\times3$ and vary the temporal depth of the kernel $d$.
+For finding the best parameter, the depth $d$ is varied according to the following two methods, results are shown in figure \ref{fig:c3d_temporaldeptheval}:
 \begin{enumerate}
     \item Homogeneous temporal depth: The kernels across all convolutional layers have the same temporal depth. Four networks are evaluated with $d \in \{1, 3, 5, 7\}$.
-    \item Varying temporal depth: The temporal depth changes across the convolutional layers. Two schemes are being evaluated. Increasing temproal depth (3-3-5-5-7) and decreasing temporal depth (7-5-5-3-3).
+    \item Varying temporal depth: The temporal depth changes across the convolutional layers. Two schemes are being evaluated. Increasing temproal depth $3-3-5-5-7$ and decreasing temporal depth $7-5-5-3-3$.
 \end{enumerate}
-
-Results of the evaluation of different kernel temporal depth on UCF-101 (split 1) are shown in figure \ref{fig:c3d_temporaldeptheval}:
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{img_deep/c3d_temporaldeptheval}
-    \caption{Clip accuracy for different temporal kernel depth over training epochs \cite{tran_learning_2015}}
+    \caption{Clip accuracy for different temporal kernel depths over training epochs on UCF101. Left shows homogeneous temporal depth, right shows varying temporal depth. \cite{tran_learning_2015}}
     \label{fig:c3d_temporaldeptheval}
 \end{figure}
 
-The results show, that temporal depth 3 performs best among the homogeneous and also among the varying networks.
-After also testing 5x5 spatial kernel size, which yielded the same result, the authors conclude that 3x3x3 kernels are the best choice in 3D convolutional networks.
+The results indicate, that a fixed temporal depth of 3 performs best among all tested settings.
+Testing a spatial kernel resolution of $5\times5$ with the same variations for $d$ yielded the same result.
+The authors therefore conclude that $3\times3\times3$ kernels are the best choice in 3D convolutional networks.
 
 Using this result, the authors design the architecture for extracting C3D features with 3x3x3 convolutional kernels as follows: 8 convolutional layers, 5 pooling layers, two fully connected layers and a softmax output layer as can be seen in figure \ref{fig:c3d_architecture}.
 
@@ -1440,7 +1438,7 @@ The three representations are concatenated an fed into a classifier for predicti
 The network is trained on about $900$k sequences extracted from the training set of UCF-101 (split 1).
 The resulting video representations can be reused for supervised action recognition training, by initializing the first layer of a new CNN up to $fc7$ with the weights of the unsupervised model, adding an additional layer $fc8$ for the new task and fine-tune the complete network using labeled training data.
 
-To compare the advantage of their unsupervised pre-training method against no pre-training, the authors report results for the UCF-101 and HMDB-51 dataset (table \ref{tab:sufflelearn_results})
+To compare the advantage of their unsupervised pre-training method against no pre-training, the authors report results for the UCF-101 and HMDB-51 dataset (table \ref{tab:shufflelearn_results})
 
 \begin{table}[H]
     \centering
