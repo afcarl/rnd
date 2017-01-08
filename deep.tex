@@ -310,9 +310,9 @@ This is illustrated in following figure \ref{fig:c3d_2dconv3dconv}.
     \label{fig:c3d_2dconv3dconv}
 \end{figure}
 
+All networks take inputs of dimension $128\times171\times16$ (\textit{frame width} $\times$ \textit{frame height} $\times$ \textit{number of frames}, in three color channels each).
 To find the best performing architecture, the authors first perform experiments on the medium-scale dataset UCF-101\cite{soomro_ucf101:_2012}, because using a large-scale dataset would be too time-consuming.
-For these experiments, all trained networks take inputs of dimension $128\times171\times16$ (\textit{frame width} $\times$ \textit{frame height} $\times$ \textit{number of frames}, in three color channels each).
-More specifically, the network architecture is designed as follows:
+More specifically, the network architecture for performing these experiments is designed as follows:
 \begin{itemize}
     \item 5 convolutional layers with 64, 128, 256, 256 and 256 filters respectively.
     \item Each convolutional layer is followed by a max-pooling layer with filter size $2\times2\times2$ (except for the first layer, which has a filter size of $1\times2\times2$ for not collapsing the temporal information too early).
@@ -338,8 +338,9 @@ The results indicate, that a fixed temporal depth of 3 performs best among all t
 Testing a spatial kernel resolution of $5\times5$ with the same variations for $d$ yielded the same result.
 The authors therefore conclude that $3\times3\times3$ kernels are the best choice in 3D convolutional networks.
 
-Using this result, the authors design the architecture for extracting C3D features with 3x3x3 convolutional kernels as follows: 8 convolutional layers, 5 pooling layers, two fully connected layers and a softmax output layer as can be seen in figure \ref{fig:c3d_architecture}.
-
+The final architecture for extracting C3D features with $3\times3\times3$ convolutional kernels is constructed as follows:
+8 convolutional layers, 5 pooling layers, two fully connected layers and a softmax output layer.
+With 8 convolutional layers and 15 layers in total (without counting the softmax output-layer, as illustrated in figure \ref{fig:c3d_architecture}), it is the deepest architecture reviewed for the action recognition task in this work.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{img_deep/c3d_architecture}
@@ -347,199 +348,166 @@ Using this result, the authors design the architecture for extracting C3D featur
     \label{fig:c3d_architecture}
 \end{figure}
 
-\textbf{Training} \\
-The network is trained on the large-scale dataset Sports-1M to learn spatio-temporal features.
-
-Five two second long clips are extracted from every training video and resized to the input dimensions of 128x171 pixel.
-
-The training inputs are randomly extracted video volumes from these clips of size 112x112x16 (using temporal and spatial jittering).
-
+\textbf{Training} The network is trained on the Sports-1M \cite{karpathy_large-scale_2014} dataset to learn spatio-temporal features.
+Five two second long clips are extracted randomly from every training video and resized to a resolution of $128\times171$ pixel.
+From these five clips, training inputs for the network of size $112\times112\times16$ are randomly extracted.
 Training is conducted with stochastic gradient descent with batch size of 30.
 
-\textbf{Testing} \\
-A single center crop of a testing-video is passed through the network to obtain a clip-preditction.
+\textbf{Testing} For testing, i.e.\ classification of unseen videos from the test set, video clips are extracted from a test video as during training.
+A single crop of the center of a video-clip is passed through the network to obtain a clip-classification.
+For obtaining video-classifications, the classifications of 10 clips are being averaged.
 
-For obtaining video-predictions, the predictions for 10 clips which were extracted randomly from the test-video are being averaged.
+The \textit{C3D} approach yields video hit@5 accuracy on the Sports-1M dataset of $84.4\%$ and video hit@1 accuracy of $60.0\%$.
+The authors also try to boost the performance by pre-training the model on an internal dataset (called I380K) and fine-tuning on Sports-1M, which results in a hit@5 accuracy of $85.5\%$.
 
-The network trained from scratch yields top-5 accuracy at action recognition on the Sports-1M dataset of $84.4\%$. The authors also try to boost the performance by pre-training the model on an internal dataset (called I380K), which results in a top-5 accuracy of $85.5\%$.
+Additionally, the performance of \textit{C3D} features was evaluated on UCF-101, which results in an accuracy of 82.3\% when applying a single \textit{C3D} network.
+Combining the extracted features of three networks before classifying them increases the accuracy to 85.2\%.
 
-The authors propose a standardized method to extract C3D features using their model and evaluate them on several video analysis tasks:
+Note, that these results were obtained by using a simple linear SVM classifier on top of the \textit{C3D} features.
+Results can be improved by applying more sophisticated aggregation schemes \cite{tran_learning_2015}.
+
+To promote the usage of \textit{C3D} features, the authors forked from the Caffe framework \cite{jia_caffe:_2014}, extended it for handling three dimensional convolutional networks and threin provide a pretrained \textit{C3D} network model for public use.
+The usage of \textit{C3D} features is therfore simple and effective, since a trained model is publicly available and the forward pass in neural networks is computationally fast.
+
+
+\subsubsection{Long-term Temporal Convolutions for Action Recognition (2016)}
+\textcite{varol_long-term_2016} address, similar to \textcite{baccouche_sequential_2011}, the common deficit in recent CNN extensions to action recognition of class labels being learned from very short video subsequences only.
+Most often a temporal extend of only 1-16 input frames can be processed by the architectures at a time. \cite{ji_3d_2013}\cite{karpathy_large-scale_2014}\cite{tran_learning_2015}
+
+Instead of using a recurrent neural network for classifying convolutionally extracted spatio-temporal features, as done by \textcite{baccouche_sequential_2011}, \textcite{varol_long-term_2016} study the effects of increasing the number of input frames to a 3D convolutional architecture in the context of action recognition from video.
+The authors name their approach long-term temporal convolutions and their contribution is two-fold:
 \begin{enumerate}
-    \item Action recognition on UCF-101 dataset: \\
-    A single C3D net obtains an accuracy of 82.3\%.
-    Three networks combined obtain 85.2\%.
-    In order to outperform the results of \textcite{simonyan_two-stream_2014} or \textcite{ng_beyond_2015}, C3D has to be combined with the improved dense trajecotries approach \cite{wang_action_2013}, which results in an accuracy of 90.4\%.
-
-    \item Action Similarity Labeling (ASLAN \cite{kliper-gross_action_2012}): \\
-    C3D features classified with a linear SVM outperforms the state-of-the-art method \cite{peng_large_2014} by 9.6\%.
-
-    \item Scene Recognition on YUPENN and Maryland benchmark: \\
-    Using C3D features outperforms the state-of-the-art method on both benchmarks \cite{feichtenhofer_bags_2014}.
-
-    \item Object Recognition on the Egocentric datset \cite{ren_egocentric_2009}: \\
-    C3D features outperfrom the method of \cite{ren_egocentric_2009} but perform worse than an ImageNet baseline.
-\end{enumerate}
-
-Additionally to good results on various video analysis datasets, the authors note several advantages of using their features:
-\begin{enumerate}
-    \item They are simple to compute by making the pre-trained 3D CNN model available
-    \item The features are compact and discriminative, which makes them scalable to large-scale analysis tasks.
-    \item They are efficient to compute, because of the fast forward processing in neural networks.
-\end{enumerate}
-
-
-\subsubsection{Long-term Temporal Convolutions for Action Recognition -- Varol et al. (2016)}
-%Extensions of CNNs to action recognition in video have been proposed in several
-%recent works [6, 12, 13]. Such methods, however, currently show only moderate
-%improvements over earlier methods using hand-crafted video features [5].
-
-\textcite{varol_long-term_2016} address, similar to \textcite{baccouche_sequential_2011}, the common drawback of recent CNN extensions in action recognition, that class labels are learned from very short video subsequences only, i.e.\ a temporal extend of only 1-16 input frames can be processed by the architectures at a time.\cite{ji_3d_2013}\cite{karpathy_large-scale_2014}\cite{tran_learning_2015}
-
-Instead of using a recurrent neural network for classifying convolutionally extracted spatio-temporal features, which takes the temporal evolution of features into account (as done by \textcite{baccouche_sequential_2011}), in this publication the authors study the effects of increasing the number of input frames of a 3D convolutional architecture on the performance in action recognition.
-
-The authors call their approach long-term temporal convolutions. Their contribution in this work is two-fold:
-\begin{enumerate}
-    \item Systematical evaluation of the influence of the temporal extend, i.e.\ the number of input frames $T = \{20, 40, 60, 80, 100\}$, on the performance of a 3D CNN architectures for video action recognition.  
-    \item Confirming the importance of high-quality optical flow inputs, in order to learn accurate video features with a 3D CNN architecture for human action recognition.
+    \item A systematical evaluation of the influence of the number of input frames $T = \{20, 40, 60, 80, 100\}$ on the performance of a 3D CNN architectures.  
+    \item A demonstratioin of the importance of high-quality optical flow inputs, in order to learn accurate video features with a 3D CNN architecture.
 \end{enumerate}
 
 Processing an increased temporal extend has to be compensated with a decreased spatial resolution, in order to not exceed computational limitations.
-The studied architectures therefore process spatial resolutions of 58x58 or 71x71 pixels.
-
-The authors' 3D CNN architecture is shown in figure \ref{fig:longterm_architecture}.
+The studied architectures therefore process spatial resolutions of $58\times58$ or $71\times71$ pixel only.
+The used 3D CNN architecture is shown in figure \ref{fig:longterm_architecture}.
+$T$ therein denotes the temporal extent, i.e.\ the number of input frames to the ConvNet, and architectural details are given below.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{img_deep/longterm_architecture}
-    \caption{3D CNN architecture for evaluating the influence of temporal extend on action recognition performance. \cite{varol_long-term_2016}}
+    \caption{3D CNN architecture for evaluating the influence of the number of input frames on action recognition accuracy. \cite{varol_long-term_2016}}
     \label{fig:longterm_architecture}
 \end{figure}
 
-Architectural details:
-
 \begin{itemize}
-    \item 5 space-time convolutional layers with 64, 128, 256, 256 and 256 feature maps (also called 3D convolutions).
-    \item 3x3x3 space-time convolutional kernels in every convolutional layer.
-    \item After each convolutional layer: One layer of rectified linear units (ReLU) and one layer of max-pooling with filter size 2x2x2 except in the first layer where it is 2x2x1.
-    \item 3 fully connected layers as classifier with sizes 2048, 2048 and number of classes.
-        The fully connected layers also use rectified linear units as activation functions and a softmax layer at the end of the network.
+    \item 5 convolutional layers \textit{conv1}, \ldots, \textit{conv5}, that apply 3D convolutions to their previous layers and contain 64, 128, 256, 256 and 256 feature maps respectively.
+    \item Kernel size of $3\times3\times3$ in each convolutional layer.
+    \item After each convolutional layer: One layer of rectified linear units (ReLUs) and one layer of max-pooling with filter size $2\times2\times2$ except in the first layer where it is $2\times2\times1$ (not shown in the figure).
+    \item Three fully connected layers as classifier with sizes 2048, 2048 and number of classes.
+    The fully connected layers also use rectified linear units as activation function and an additional softmax layer at the end of the network.
 \end{itemize}
 
-As a baseline approach the authors first implement their architecture with inputs of size 112x112x16, beacause it can be directly compared to the work of \textcite{tran_learning_2015}.
-The authors initially study the performance between the 16 frame baseline and a 60 frame network, which takes inputs of size 58x58x60 (spatial size has to be decreased to remain computationally tractable).
+As a baseline approach the authors first evaluate their architecture with inputs of size $112\times112\times16$, that is a spatial resolution of $112\times112$ and $T=16$ input frames, because it can be directly compared to the work of \textcite{tran_learning_2015}.
+Additionally, the baseline is implemented with $T=60$ frames inputs, specifically using an input dimension of $58\times58\times60$, to provide an initial comparison between 16 and 60 frames (spatial resolution is decreased to remain computationally tractable).
 
-In order to then systematically investigate the influence of temporal extend on the action recognition performance, the authors implement their architecture with different numbers of input frames $T = \{20, 40, 60, 80, 100\}$ and different spatial resolutions ${58 \times 58, 71 \times 71}$.
+The two baseline models are used to study the influence of different input modalities, network settings and data augmentation techniques such as: optical flow inputs, \textit{dropout}\cite{srivastava_dropout:_2014}, \textit{random clipping} and \textit{multiscale cropping} (explained below).
 
-Additionally the influence of using optical flow inputs on the performance, specifically the influence of different sources of optical flow, is evaluated. These namely are:
+At first the influence of using optical flow as input is evaluated, specifically stacked optical flow images from the following sources:
 \begin{enumerate}
-    \item MPEG flow, which directly can be obtained from the video encoding. It is a fast alternative to regular optical flow estimators, but has low spatial resolution and is not available for all video frames.
-    \item Farneback optical flow estimator cite ??, which is fast, but calculates noisy flow fields.
-    \item Brox optical flow estimator cite ??, which generates highest quality optical fields but is slower than the other two methods.
+    \item MPEG flow \cite{kantorov_efficient_2014}, which directly can be obtained from the video encoding. It is a fast method compared to regular optical flow estimators, but has low spatial resolution and is not available for every video frame.
+    \item Farneback optical flow estimator \cite{farneback_two-frame_2003}, which is fast, but calculates noisy flow fields.
+    \item Brox optical flow estimator \cite{brox_high_2004}, which generates high quality optical flow fields but is slower than the other two methods.
 \end{enumerate}
 
-Example flow estimations for all three methods are shown in figure \ref{fig:longterm_optflow}.
+Example flow estimation of a given RGB video frame for all three methods is illustrated in figure \ref{fig:longterm_optflow} (left).
+The table on the right of figure \ref{fig:longterm_optflow} shows the action recognition accuracy of the 60 frame baseline network, when using optical flow or pure RGB frames as input.
+Results are obtained on UCF-101 (split 1).
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{img_deep/longterm_optflow}
-    \caption{Add caption here}
+    \caption{Optical flow estimation of different algorithms and corresponding results when used as input for the 60 frame baseline network. Color encodes the direction of the optical flow field. \cite{varol_long-term_2016}}
     \label{fig:longterm_optflow}
 \end{figure}
 
-The networks are trained on the UCF-101 and HMDB-51 dataset using stochastic gradient descent with negative log-likelihood criterion.
+The results show, that high quality optical flow can boost the action recognition performance by nearly 20\% against using raw RGB video frames.
+Even using low quality MPEG flow outperforms regular RGB inputs.
+The authors therefore conclude, that using high quality optical flow as input is critical for learning competitive human action features from video.
 
-The authors generate training inputs by randomly sampling video subsequences with the desired spatial and temporal dimensions from the input videos, which in general have a higher resolution and are temporally longer than needed. The authors call this form of pre-processing \textit{random clipping}.
+Training inputs can generated by sampling video subsequences with the desired spatial and temporal dimensions from input videos at random spatio-temporal locations.
+The authors call this form of pre-processing \textit{random clipping}.
 
-An alternative method for creating suitable network inputs during training is called \textit{multiscale cropping}.
-Smaller input volumes than needed are cropped from the training videos and then rescaled to fit to the input dimensions of the network.
-The size of the crop is determined by rendomly selected factors for frame width and height from $\{1.0, 0.875, 0.75, 0.66\}$.
-Finally the input is flipped with a probability of 50\%.
+The baseline approach is using a sliding-window approach with $75\%$ overlapse to generate fixed length video-clips.
 
-Dropout is used during training independent of the selected cropping method.
+An additional method for pre-processing suitable network inputs during training is called \textit{multiscale cropping}.
+Input volumes, which are smaller than needed, are cropped from the training videos and then rescaled to fit to the input dimensions of the network.
+The size of the crop is determined by random factors for frame width and height, sampled from $\{1.0, 0.875, 0.75, 0.66\}$.
+Additionally, the scaled input is flipped with a probability of 50\%.
 
-Details of the testing-procedure are:
-\begin{enumerate}
-    \item The video under test is divided into sequences of length $T$ with temporal stride 4, each called a clip.
-    \item For each video clip, 10 crops are being classified: The 4 corners, the center and their horizontal flips.
-    \item The overall video classification is obtained by averaging over crop scores and clip scores.  
-\end{enumerate}
+\textit{Dropout} \cite{srivastava_dropout:_2014} can be used during training independently of the selected cropping method.
 
-Two evaluation metrics are used to compare the networks: 
-\begin{enumerate}
-    \item Clip-accuracy: Each clip is assigned the class according to the highest softmax-score and the number of correctly classified clips is measured.
-    \item Video-accuracy (i.e. the standard evaluation protocol): The per-clip softmax scores are averaged and the maximum value defines the class label for the video. The authors report their final resutlts by taking the mean over the results on the three test splits of the datasets.
-\end{enumerate}
-
-\textbf{Optical flow results:} \\
-The influence of optical flow quality on the action recognition performance is depicted in the table on the right of figure \ref{fig:longterm_optflow}.
-
-For this evaluation a network with 60 input-frames was trained on UCF-101 split 1 from scratch.
-
-The authors find, that high quality optical flow, i.e.\ Brox flow, can boost the action recognition performance by nearly 20\%.
-
-Even using low-quality MPEG-flow outperforms regular RGB inputs.
-
-The authors therefore conclude, that using high-quality optical flow inputs is critical for learning competitive human action features from video.
-
-\textbf{Data-augmentation and dropout results:} \\
-Results for the used data augmentation methods \textit{Random Clipping}, \textit{Multiscale Cropping} and \textit{Dropout} are shown below in table \ref{tab:longterm_preprocessing}.
-Best performance is obtained when combining all three methods.
-
+Accuracy results for using the pre-processing methods \textit{random clipping}, \textit{multiscale cropping} and \textit{dropout} are shown in table \ref{tab:longterm_preprocessing} below.
+Best performance is obtained when combining the two methods with a high dropout rate.
 \begin{table}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{img_deep/longterm_preprocessing}
-    \caption{Evaluation of data-augmentation methods and dropout on a 60 input-frame network, trained on UCF-101 (split 1) from scratch using Brox flow as input modality \cite{varol_long-term_2016}}
+    \caption{Evaluation of pre-processing methods and dropout on a 60 frame input network, trained on UCF-101 (split1) from scratch using Brox optical flow as input \cite{varol_long-term_2016}}
     \label{tab:longterm_preprocessing}
 \end{table}
 
-\textbf{Comparison 16 frame against 60 frame input:}\\
-The 16 frame network is equivalent to the C3D architecture in \cite{tran_learning_2015} and therefore enables direct comparison to the long-term temporal convolution approach of this work (the 60 frame network).
-
-The evaluation results on the UCF-101 dataset (split 1) for RGB and optical flow inputs as well as different data augmentations and dropout are shown in table \ref{tab:longterm_16vs60} below.
+The two baseline architectures, which differ in the number of input frames, are evaluated on the UCF-101 dataset.
+In all experiments \textit{random clipping} is used.
+Results are reported in table \ref{tab:longterm_16vs60} for RGB and optical flow inputs as well as optional \textit{multiscale cropping} and different dropout ratios.
+The results show that long-term temporal convolutions, as present in the 60 frame network, persistently outperform the 16 frame counterpart with a smaller temporal extent.
 
 \begin{table}[H]
     \centering
     \includegraphics[width=\textwidth]{img_deep/longterm_16vs60}
-    \caption{Performance for 16 frame against 60 frame inputs, evaluated on UCF-101 (split 1) \cite{varol_long-term_2016}}
+    \caption{Action recognition accuracy of the two baseline architectures, evaluated on UCF-101 (split1). \textbf{16f} corresponds to the architecture with 16 frame inputs, \textbf{60f} corresponds to 60 frame inputs. \cite{varol_long-term_2016}}
     \label{tab:longterm_16vs60}
 \end{table}
 
-The results show that long-term temporal convolutions in the 60 frame network persistently outperform the 16 frame counterpart.
+The authors note, that the complexity of both networks, i.e.\ the number of trainable parameters, is similar since the 60 frame network processes frames at reduced resolution.
 
-The authors note, that the complexity of the networks, i.e.\ the number of trainable parameters, is similar.
-
-Results for the clip accuracy are more prominent, because video evaluation already averages and aggregates the available information over the whole video.
-
-The authors repeat the comparison on the HMDB-51 (split 1) dataset and additionally evaluate the effects of pre-training the networks on the UCF-101 dataset, because HMDB-51 is significantly smaller than UCF-101.
-
+The networks are also evaluated on the HMDB-51 dataset.
+Both networks are either trained from scratch, i.e.\ with randomly initialized inputs, or have been pre-trained on UCF-101, which is much bigger than HMDB-51 (see section \ref{chap:datasets}).
 Results are shown in table \ref{tab:longterm_pretraining} below.
 
 \begin{table}[H]
     \centering
     \includegraphics[width=\textwidth]{img_deep/longterm_pretraining}
-    \caption{Performance for 16 frame against 60 frame inputs, evaluated on HMDB-51 (split 1). Flow input, random clipping, multiscale cropping and 0.9 dropout are used. \cite{varol_long-term_2016}}
+    \caption{Action recognition accuracy of the two baseline architectures, evaluated on HMDB-51 (split1) with optional pre-training on UCF-101. \textbf{16f} corresponds to the architecture with 16 frame inputs, \textbf{60f} corresponds to 60 frame inputs. \cite{varol_long-term_2016}}
     \label{tab:longterm_pretraining}
 \end{table}
 
-The results again indicate, that using long-term temporal convolutions leads to significant increase in action recognition accuracy.
+The results again indicate, that using long-term temporal convolutions leads to significant increase in action recognition accuracy and that pre-training the networks on a larger dataset yields significant improvement over training it from scratch. 
 
-Pre-training the networks yields significant improvement over training it from scratch. 
+In order to systematically investigate the influence of temporal extent on action recognition performance, the authors implement their architecture with different numbers of input frames $T = \{20, 40, 60, 80, 100\}$ and different spatial resolutions $\{58 \times 58, 71 \times 71\}$.
+Results are shown in the following figure \ref{fig:longterm_systematical}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{img_deep/longterm_systematical}
-    \caption{<+caption text+>}
-    \label{fig:<+label+>}
+    \caption{Action recognition performance of long-term convolutional networks for varying number of input frames, evaluated on UCF-101 (split1). \textit{H} denotes high resolution ($71 \times 71$ pixel), \textit{L} denotes low resolution ($58 \times 58$ pixel). \cite{varol_long-term_2016}}
+    \label{fig:longterm_systematical}
 \end{figure}
 
-\subsubsection{Summary and Comparison}
-Most of the current CNN methods use architectures with 2D convolutions, enabling shift-invariant representations in the image plane. Meanwhile, the invariance to translations in time is also important for action recognition since the beginning and the end of actions is unknown in general. Laptev 2016
-Note: No need for action detection???
+To conclude, \textcite{varol_long-term_2016} show, that longer temporal extent increases the action recognition accuracy of 3D convolutional neural network for action recognition from video.
+
+%The networks are trained on the UCF-101 and HMDB-51 dataset using stochastic gradient descent with negative log-likelihood criterion.
+%
+%Details of the testing-procedure are:
+%\begin{enumerate}
+%    \item The video under test is divided into sequences of length $T$ with temporal stride 4, each called a clip.
+%    \item For each video clip, 10 crops are being classified: The 4 corners, the center and their horizontal flips.
+%    \item The overall video classification is obtained by averaging over crop scores and clip scores.  
+%\end{enumerate}
+%
+%Two evaluation metrics are used to compare the networks: 
+%\begin{enumerate}
+%    \item Clip-accuracy: Each clip is assigned the class according to the highest softmax-score and the number of correctly classified clips is measured.
+%    \item Video-accuracy (i.e. the standard evaluation protocol): The per-clip softmax scores are averaged and the maximum value defines the class label for the video. The authors report their final resutlts by taking the mean over the results on the three test splits of the datasets.
+%\end{enumerate}
 
 %---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \newpage
 \subsection{Multiple Stream Networks}
-The most successfull architecture at action recognition. They are equally powerful as the improved dense trajectories approach. cite TDD ??
+
+The most successfull architecture in action recognition. They are equally powerful as the improved dense trajectories approach. cite TDD ??
 
 These approaches use the decomposability of videos into a spatial component (analysing different frames) and a temporal component (analysing the change between frames) for action recognition.
 
@@ -550,37 +518,34 @@ The first architecture of this kind was proposed in 2014 by Simonyan and Zisserm
 
 \subsubsection{Two-Stream Convolutional Networks for Action Recognition in Videos - Simonyan and Zisserman (2014)}
 
-The authors propose a novel architecture for action recognition with two separate recognition streams (spatial- and temporal-stream) which are combined by late fusion.
+\textcite{simonyan_two-stream_2014} propose a novel architecture for action recognition with separate spatial and temporal recognition streams, which are fused late (see figure \ref{fig:twostream_archeval}.
+This approach is motivated by the two-streams hypothesis \cite{goodale_separate_1992}, according to which the human visual cortex contains two paths: the ventral stream for object recognition and the dorsal stream for recognising motion.
 
-The authors evaluate two different fusion methods: building the average of both network's outputs and training a linear multi-class SVM on stacked $L_2$-normalised softmax scores.
-
-This approach is motivated by the two-streams hypothesis cite (??), according to which the human visual cortex contains two paths: the ventral stream for object recognition and the dorsal stream for recognising motion.
-
-Both streams are implemented as deep CNNs, with the rectification activation function for all hidden units.
+The authors evaluate two different fusion methods: building the average of both network's outputs and training a linear multi-class SVM on them.
+Both streams are implemented as deep CNNs, with rectification activation function for all hidden units.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{img_deep/twostream_architecture}
-    \caption{Two-stream architecture for video classification, depicting the spatial- and temporal-stream with implementation details as deep Convolutional Neural Network \cite{simonyan_two-stream_2014}}
+    \caption{Two-stream architecture for video classification \cite{simonyan_two-stream_2014}}
     \label{fig:twostream_architecture}
 \end{figure}
 
-Spatial stream: Takes single video frames as input. Performs action recognition from still images and is fairly competitive on its own. Basically an image recognition architecture. Advantage: Can be pre-trained using large amount of image data, here from the ImageNet challenge dataset cite (??).
+The spatial stream takes single video frames as input and is fairly competitive on its own.
+Since it is basically an image recognition architecture, it performs action recognition from still video frames.
+%This is advantageous, because it can be pre-trained on large image datasets, such as ImageNet \cite{deng_imagenet:_2009}.
+The spatial part of a video, i.e. the individual static frames, conveys information about the objects and persons in the scene.
 
-Spatial part of a video, i.e. the individual static frames, convey information about the objects and persons in the scene.
-
-Temporal stream: is trained to recognize actions from motions given in the form of dense optical flow.
-
-The temporal part of a video, i.e. the change between frames, conveys information about the movement of the observer (camera) and the movement of objects in the scene.
-
-The second normalisation layer was removed from the the temporal stream network in order to reduce memory usage.
-
+The temporal stream is trained to recognize actions from motion given in the form of optical flow.
+The temporal part of a video, i.e. the difference between adjacent static frames, conveys information about the movement of the observer (camera) and the movement of objects in the scene.
 The authors propose two methods for constructing the input to the temporal network by stacking optical flow displacement fields along several consecutive frames of the input video.
+%The second normalisation layer was removed from the the temporal stream network in order to reduce memory usage.
 
 \textbf{Optical Flow Stacking:} \\
-A dense optical flow field $\mathbf{d}_t(u,v)$ of two consecutive frames at times $t$ and $t+1$ can be thought of as a two dimensional vector-field, which maps the displacement of each pixel along the transition from frame $t$ to $t+1$. In this case $u,v \in \mathbb{N}$, $1 \leq u \leq w$ and $1 \leq v \leq h$ where $w$ and $h$ are the width and height of the video frames.
+A dense optical flow field $\mathbf{d}_t(u,v)$ of two consecutive frames at times $t$ and $t+1$ can be thought of as a two dimensional vector-field, which maps the displacement of each pixel along the transition from frame $t$ to $t+1$.
+In this case $u,v \in \mathbb{N}$ correspond to a position in the frame, $1 \leq u \leq w$ and $1 \leq v \leq h$, where $w$ and $h$ are the width and height of the video frames.
 
-The horizontal and vertical components $d_t^x(u,v)$, $d_t^y(u,v)$ can be interpreted as image channels.
+The horizontal and vertical components $d_t^x(u,v)$ and $d_t^y(u,v)$ can be interpreted as image channels.
 
 This method constructs the input volume $I_\tau \in \mathbb{R}^{w \times h \times 2L}$ of the temporal stream network by stacking the horizontal and vertical components of the dense optical flow field along $L$ consecutive frames, beginning at time $\tau$. Formally, with $1 \leq k \leq L$:
 \begin{align*}
@@ -588,15 +553,24 @@ This method constructs the input volume $I_\tau \in \mathbb{R}^{w \times h \time
     I_\tau(u,v,2k) = d_{\tau + k - 1}^{y}(u,v)
 \end{align*}
 
-\textbf{Trajectory Stacking:} \\
-Instead of sampling at fixed locations in each frame, this methods samples the dense optical flow field along the motion trajectories of the initial points in frame $\tau$.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img_deep/twostream_flow}
+    \caption{Optical flow between two frames (a) and (b). (c) shows the dense optical flow field, i.e.\ displacement vectors, of the turquoise region. (d) and (e) illustrate the $x$ and $y$ components of the flow field as images. \cite{simonyan_two-stream_2014}}
+    \label{fig:twostream_flow}
+\end{figure}
 
-Let $\mathbf{p}_k$ denote the motion trajectory of initial point $(u,v)$. With $1 < k \leq L$ and \mbox{$\mathbf{p}_1 = (u,v)$} the trajectory is recursively defined by:
+\textbf{Trajectory Stacking:} \\
+Instead of sampling at fixed locations in each frame, trajectory stacking samples the dense optical flow field along motion trajectories of the initial points in frame $\tau$.
+Let $\mathbf{p}_k$ denote the motion trajectory of initial point $(u,v)$.
+With $1 < k \leq L$ and \mbox{$\mathbf{p}_1 = (u,v)$} the trajectory is recursively defined by:
+
 \begin{align*}
     \mathbf{p}_k = \mathbf{p}_{k-1} + \mathbf{d}_{\tau + k - 2}(\mathbf{p}_{k-1})
 \end{align*}
 
-The input volume can then be constructed by sampling the horizontal and vertical optical flow components along these trajectories.
+The optical flow input volume $I_\tau$ can then be constructed by sampling the horizontal and vertical optical flow components along these trajectories.
+Specifically:
 
 \begin{align*}
     I_\tau(u,v,2k-1) = d_{\tau + k - 1}^x(\mathbf{p}_{k}) \\
@@ -606,62 +580,56 @@ The input volume can then be constructed by sampling the horizontal and vertical
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{img_deep/trajectory_stacking}
-    \caption{Construction of input volumes from multi-frame optical flow. Left: Optical Flow Stacking. Right: Trajectory Stacking \cite{simonyan_two-stream_2014}}
+    \caption{Construction of input volumes from multi-frame optical flow. Left: Optical Flow Stacking. Right: Trajectory Stacking. \cite{simonyan_two-stream_2014}}
     \label{fig:trajectory_stacking}
 \end{figure}
 
-Since the Convolutional Networks require fixed sized inputs, the authors sample a $224 \times 224 \times 2L$ subvolume from $I_\tau \in \mathbb{R}^{w \times h \times 2L}$ and use it as the temporal networks input.
-
-By using optical flow, the authors explicitly incorporate a representation of motion in their action recognition architecture.
-
 The authors further describe two optional techniques that are evaluated for constructing the inputs with either one of optical flow stacking methods.
 \begin{enumerate}
-    \item \textbf{Bi-directional Optical Flow}: The input volume $I_{\tau}$ is created by using regular forward optical flow from frame $\tau$ to $\tau + L/2$ and additionally calculated optical flow from frame $\tau$ to $\tau - L/2$ in the backwards direction. Stacking the horizontal and vertical components of these optical flow fields results in an input volume of length $L/2$ around frame $\tau$ in both directions. 
+    \item \textbf{Bi-directional Optical Flow}: The input volume $I_{\tau}$ is created by using regular forward optical flow from frame $\tau$ to $\tau + L/2$ and additionally calculated optical flow from frame $\tau$ to $\tau - L/2$ in the backwards direction. Stacking the horizontal and vertical components of these optical flow fields results in an input volume of length $L$ around frame $\tau$. 
     \item \textbf{Mean flow subtraction}: The displacement vectors between two frames can dominantly be caused by global movement of the camera. Compared to regular camera-motion compensation, the authors use a simpler approach and just subtract the mean vector from each displacement field $\mathbf{d}_t$.
 \end{enumerate}
 
-An advantage of separating the spatial and the temporal stream is the possibility of pre-training the spatial net with large pre-existing image datasets (here ImageNet ILSVRC-2012 ??).
+Since convolutional networks require fixed sized inputs, a $224 \times 224 \times 2L$ subvolume is randomly sampled from $I_\tau \in \mathbb{R}^{w \times h \times 2L}$ and use it as the temporal networks input.
+By using optical flow, a representation of motion is explicitly incorporated in the action recognition architecture.
 
-For training the temporal stream network with video-data, the authors address the general problem of video action recognition, that the existing datasets are too small in comparison to their image-dataset counterparts.
+An advantage of separating the spatial and the temporal stream is the possibility of pre-training the spatial stream network with large pre-existing image datasets.
+The authors use the dataset of the ImageNet Large Scale Visual Recognition Competition ILSVRC 2012 \cite{russakovsky_imagenet_2015} for pre-training.
 
-The authors use, according to the multi-task learning paradigm \cite{collobert_unified_2008}, the UCF-101 and the HMDB-51 dataset simultaneously for training the temporal stream network (see chapter ??). 
+The temporal stream network is trained, according to the multi-task learning paradigm \cite{collobert_unified_2008}, on the UCF-101 and the HMDB-51 dataset simultaneously. 
+By training a network on several tasks, the network learns more general video representations, since the second task acts as regulariser and more data can be utilized.
+This is implemented by using two softmax classification layers, one for each dataset.
+Each softmax layer has its own loss function and the sum of the individual losses is taken as the overall training loss for computing the weight updates by backpropagation.
 
-By training a network on several tasks (here UCF-101 classification and HMDB-51 classification), the network learns more general video representations, since the second task acts as regulariser and more data can be utilized.
+Training for both networks is conducted with mini-batch gradient descent with 256 randomly selected videos at each iteration.
+From each of those videos, a single frame is randomly chosen, a $224 \times 224$ sub-image is randomly cropped, randomly horizontal flipped, RGB jittered and then used as training input for the spatial stream network.
+An optical flow volume is constructed for this selected frame as described above and used as input for the temporal stream network.
 
-The authors implement this by using two softmax classification layers, one for each dataset. Each softmax layer has its own loss function and the sum of the individual losses is taken as the overall training loss for computing the weight updates by backpropagation.
+%For optical flow computation the authors use a fast implementation (0.06s per pair of frames) from the OpenCV toolbox.
+%Despite it's speed, on-the-fly computation of optical-flow would be a bottleneck and is therefore pre-computed and stored for the complete datasets.
 
-Training for both networks is conducted with mini-batch gradient descent with 256 randomly selected videos at each iteration. From each of those videos, a single frame is randomly chosen, a $224 \times 224$ sub-image is randomly cropped, randomly horizontal flipped, RGB jittered and then used as training input for the spatial stream network.
+%The creators of UCF-101 and HMDB-51 provide three splits of their datasets into training- and testing-data.
+%The standard evaluation procedure is to report the average accuracy over those three splits, which the authors follow in this work as well.
 
-An optical flow volume is constructed for this selected frame as described above. For optical flow computation the authors use a fast implementation (0.06s per pair of frames) from the OpenCV toolbox. Despite it's speed, on-the-fly computation of optical-flow would be a bottleneck and is therefore pre-computed and stored for the complete datasets.
-
-The creators of UCF-101 and HMDB-51 provide three splits of their datasets into training- and testing-data. The standard evaluation procedure is to report the average accuracy over those three splits, which the authors follow in this work as well.
-
-The authors build their final design of the two-stream architecture by evaluating different setups for the spatial and temporal stream network on their own using UCF-101 (split 1).
-
-Besides using two different dropout rate (0.5 and 0.9), the performance of the spatial-stream network is evaluated for:
+Different setups of the spatial and temporal stream network are evaluated individually on the UCF-101 dataset for creating the final design of the two-stream architecture.
+Besides using two different dropout rates ($0.5$ and $0.9$), the performance of the \textbf{spatial}-stream network is evaluated for:
 \begin{enumerate}
     \item Training the complete network from scratch on UCF-101.
     \item Pre-training the network on ILSVRC-2012 and fine-tuning it on UCF-101.
     \item Pre-training the network on ILSVRC-2012 and fine-tuning of only the last (classification) layer.
 \end{enumerate}
 
-For evaluating the temporal-stream network a fixed dropout rate of 0.9 is chosen, because the network needs to be trained from scratch. The performance is then measured for:
+For evaluating the \textbf{temporal}-stream network, a fixed dropout rate of $0.9$ is chosen.
+The performance is then measured for:
 \begin{enumerate}
-    \item Using one or several (stacked) optical flow displacement fields $L \in {1,5,10}$.
-    \item Regular optical flow stacking
-    \item Trajectory stacking
-    \item Using bi-directional optical flow
-    \item Using mean subtraction
+    \item Using one or several (stacked) optical flow displacement fields; $L \in {1,5,10}$.
+    \item Regular optical flow stacking.
+    \item Trajectory stacking.
+    \item Using bi-directional optical flow.
+    \item Using mean subtraction.
 \end{enumerate}
 
 The findings are presented in table \ref{tab:twostream_archeval}.
-
-Spatial-stream network: The authors decided on pre-trained the network on ILSVRC and fine-tuning only the last layer.
-
-Temporal-stream network: Mean subtraction and stacking multiple optical flows is beneficial, so $L=10$ is used as the default setting. Regular optical flow stacking performs better than trajectory stacking and bi-directional optical flow only yields slight improvement against forward optical flow. Therefore regular forwars optical flow stacking is chosen for the temporal-stream network.
-
-The authors highlight that the temporal-stream network significantly outperforms the spatial-stream network, which confirms the importance of motion information for action recognition from video.
-
 \begin{table}[H]
     \centering
     \includegraphics[width=\textwidth]{img_deep/twostream_archeval}
@@ -669,17 +637,25 @@ The authors highlight that the temporal-stream network significantly outperforms
     \label{tab:twostream_archeval}
 \end{table}
 
-After having found the optimal configurations for the individual temporal-stream and spatial-stream networks, the authors evaluate different fusion methods (averaging and SVM) and find that fusion by SVM performs best. The fused network's performance significantly improves over the individual network's performance, which implies, that the spatial and temporal recognition stream are complementary.
+Regarding these results, the authors decide on pre-trainining the spatial-stream network on ILSVRC and fine-tuning only the last layer for the design of the final two-stream architecture.
+In the temporal-stream network mean subtraction and stacking multiple optical flow images is beneficial, so $L=10$ is used as the default setting.
+Regular optical flow stacking performs better than trajectory stacking and bi-directional optical flow only yields slight improvement against forward optical flow.
+Therefore regular forward optical flow stacking is chosen for the temporal-stream network.
+
+The authors highlight that the temporal-stream network significantly outperforms the spatial-stream network, which confirms the importance of motion information for action recognition from video.
+
+After having found the optimal configurations for the individual temporal-stream and spatial-stream networks, different fusion methods (averaging and SVM) are being evaluated.
+Fusion by SVM performs best, as can be seen in table \ref{tab:twostream_results}.
+The fused network's performance significantly improves over the individual network's performance, which implies, that the spatial and temporal recognition stream are complementary.
 
 \begin{table}[H]
     \centering
     \includegraphics[width=\textwidth]{img_deep/twostream_results}
-    \caption{Mean accuracy over three splits on UCF-101 and HMDB-51 \cite{simonyan_two-stream_2014}}
+    \caption{Mean accuracy over the three provided splits of UCF-101 and HMDB-51 \cite{simonyan_two-stream_2014}}
     \label{tab:twostream_results}
 \end{table}
 
-The results in table \ref{tab:twostream_results} show, that fusion by SVM works best.
-
+?? Conclusion duuuuuuude!
 
 \subsubsection{Beyond Short Snippets: Deep Networks for Video Classification -- Ng et al. (2015)}
 

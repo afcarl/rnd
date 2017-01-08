@@ -12,8 +12,21 @@ table deep:
 3d convolutions \cite{ji_3d_2013}  $KTH:90.2\%$ conv-layers: 3, total number of layers: , year 2010, max input length:
 3d convolutions + LSTM \cite{baccouche_sequential_2011} $KTH:92.17\%$ conv-layers: 3, total number of layers: 7+1 (CNN + RNN) , year 2011, max input length:
 Slow Fusion \cite{karpathy_large-scale_2014} Sports-1M:$60.9\%$ conv-layers: 5, total number of layers: 10 , year 2014, max input length: 
+C3D conv-layers: 8, total number of layers: 15, year: 2015, max input length: 16, UCF101: 85.2\%, Sports-1M: 60\%
+LongTermConvolutions on optical flow inputs UCF-101: 82.2, HMDB-51: 59.0
 
 
-future directions: transfer learning.
+future directions: transfer learning, as done by karpathy, large scale
+pre-training, as done by varol et. al 2016
+multi task learning as done by two stream approach simonyan and zisserman
 
 datasets too small. Citation: karpathy, large-scale classification: ``From a practical standpoint, there are currently no video classification benchmarks that match the scale and variety of existing image datasets because videos are significantly more difficult to collect, annotate and store.''
+
+datasets too small. citation: simonyan zisserman ``Unlike the spatial stream ConvNet, which can be pre-trained on a large still image classification dataset (such as ImageNet), the temporal ConvNet needs to be trained on video data – and the available datasets for video action classification are still rather small''.
+
+
+``Extensions of CNNs to action recognition in video have been proposed in several recent works [6, 12, 13]. Such methods, however, currently show only moderate improvements over earlier methods using hand-crafted video features [5].''
+Varol Long term temporal convolutions.
+
+Most of the current CNN methods use architectures with 2D convolutions, enabling shift-invariant representations in the image plane. Meanwhile, the invariance to translations in time is also important for action recognition since the beginning and the end of actions is unknown in general. Laptev 2016
+
