@@ -1,13 +1,16 @@
 \section{Deep Learning Methods in Action Recognition}
+TODO ?? description
 META: Review of approaches that use Deep Learning methods.
 
 Taxonomy of approaches.
 
 
 \subsection{3D-Convolutional Networks}
+
 I.e. convolutional methods.
 
-The naive approach: using framewise information, classifying it with a CNN and average the results. Elaborate further\ldots ??
+The naive approach: using framewise information, classifying it with a CNN and average the results. Elaborate further\ldots ?? described in ``beyond short snippets''
+
 
 ``Video analysis provides more information to the recognition task by adding a temporal component through which motion and other information can be additionally used. At
 the same time, the task is much more computationally de-
@@ -311,7 +314,7 @@ This is illustrated in following figure \ref{fig:c3d_2dconv3dconv}.
 \end{figure}
 
 All networks take inputs of dimension $128\times171\times16$ (\textit{frame width} $\times$ \textit{frame height} $\times$ \textit{number of frames}, in three color channels each).
-To find the best performing architecture, the authors first perform experiments on the medium-scale dataset UCF-101\cite{soomro_ucf101:_2012}, because using a large-scale dataset would be too time-consuming.
+To find the best performing architecture, the authors first perform experiments on the medium-scale dataset UCF-101 \cite{soomro_ucf101:_2012}, because using a large-scale dataset would be too time-consuming.
 More specifically, the network architecture for performing these experiments is designed as follows:
 \begin{itemize}
     \item 5 convolutional layers with 64, 128, 256, 256 and 256 filters respectively.
@@ -507,6 +510,8 @@ To conclude, \textcite{varol_long-term_2016} show, that longer temporal extent i
 \newpage
 \subsection{Multiple Stream Networks}
 
+TODO ?? Description
+
 The most successfull architecture in action recognition. They are equally powerful as the improved dense trajectories approach. cite TDD ??
 
 These approaches use the decomposability of videos into a spatial component (analysing different frames) and a temporal component (analysing the change between frames) for action recognition.
@@ -516,9 +521,9 @@ Underlying principle: Temporal dimension has different characteristics than the 
 The first architecture of this kind was proposed in 2014 by Simonyan and Zisserman.
 
 
-\subsubsection{Two-Stream Convolutional Networks for Action Recognition in Videos - Simonyan and Zisserman (2014)}
+\subsubsection{Two-Stream Convolutional Networks for Action Recognition in Videos (2014)}
 
-\textcite{simonyan_two-stream_2014} propose a novel architecture for action recognition with separate spatial and temporal recognition streams, which are fused late (see figure \ref{fig:twostream_archeval}.
+\textcite{simonyan_two-stream_2014} propose a novel architecture for action recognition with separate spatial and temporal recognition streams, which are fused late (see figure \ref{fig:twostream_architecture}.
 This approach is motivated by the two-streams hypothesis \cite{goodale_separate_1992}, according to which the human visual cortex contains two paths: the ventral stream for object recognition and the dorsal stream for recognising motion.
 
 The authors evaluate two different fusion methods: building the average of both network's outputs and training a linear multi-class SVM on them.
@@ -644,7 +649,7 @@ Therefore regular forward optical flow stacking is chosen for the temporal-strea
 
 The authors highlight that the temporal-stream network significantly outperforms the spatial-stream network, which confirms the importance of motion information for action recognition from video.
 
-After having found the optimal configurations for the individual temporal-stream and spatial-stream networks, different fusion methods (averaging and SVM) are being evaluated.
+After finding the optimal configurations for the individual temporal-stream and spatial-stream networks, different fusion methods (averaging and SVM) are being evaluated.
 Fusion by SVM performs best, as can be seen in table \ref{tab:twostream_results}.
 The fused network's performance significantly improves over the individual network's performance, which implies, that the spatial and temporal recognition stream are complementary.
 
@@ -655,319 +660,301 @@ The fused network's performance significantly improves over the individual netwo
     \label{tab:twostream_results}
 \end{table}
 
-?? Conclusion duuuuuuude!
+The results of \textcite{simonyan_two-stream_2014} show, that their two-stream architecture is a competitive approach in human action recognition from video.
 
-\subsubsection{Beyond Short Snippets: Deep Networks for Video Classification -- Ng et al. (2015)}
 
-\textcite{ng_beyond_2015} hypothesize that a global video description, i.e.\ a representation learned from the complete temporal evolution of a video, is important for accurate action recognition.
+\subsubsection{Beyond Short Snippets: Deep Networks for Video Classification (2015)}
 
-Similar to the approaches made in \cite{baccouche_sequential_2011} and \cite{varol_long-term_2016}, the goal of this work is to design and evaluate video processing architectures, that are able to incorporate video information over long time periods (tens of seconds), preferably over the complete video.
+\textcite{ng_beyond_2015} hypothesize that a global video description, that is a representation learned from the full temporal evolution of an input video, is essential for accurate action recognition.
+Similar to the approaches of \textcite{baccouche_sequential_2011} and \textcite{varol_long-term_2016}, the goal is to design and evaluate video processing architectures, that are able to incorporate temporal information over long periods in the order tens of seconds, but preferably over the complete video.
+In doing so, it is challenging to construct video representations with fixed number of parameters from videos with variable length.
 
 The authors discuss the results of \textcite{karpathy_large-scale_2014}, who discovered that spatio-temporal 3D convolutions applied on frame stacks of short video-subclips only yield marginally better performance than a single-frame baseline.
+The following approach therefore does not require 3D convolutions and is illustrated in figure \ref{fig:beyondshort_overview}):
 
-The following approach is therefore evaluated in this work (see also figure \ref{fig:beyondshort_overview}):
 \begin{enumerate}
-    \item 2D image features are obtained from still input frames by feeding them into a convolutional neural network (which incorporates 2D convolutions for processing still images).
-    \item The resulting feature vectors for each frame, i.e.\ the activations of the last convolutional layers, are aggregated into a global video representation by using one of the following methods:
+    \item CNN image features are obtained from the individual frames of an input video with a 2D ConvNet.
+    \item The resulting feature vectors, i.e.\ the activations of the ConvNet's last convolutional layer for each frame, are aggregated into a global video representation by one of the following methods:
     \begin{itemize}
-        \item A feature pooling architecture aggregates the CNN activations through several pooling layers, which are added after the last convolutional layer.
-        \item A recurrent neural network uses layers of LSTM cells after the last convoultional layer to integrate frame information over time.
+        \item The ConvNet is applied to a set of input frames in parallel. Feature pooling layers, which are added after the ConvNets, aggregate their activations into a final video representation.
+        \item The ConvNet is applied to a single input frame per time-step. A recurrent neural network (RNN) with layers of LSTM cells \cite{hochreiter_long_1997} is added after the ConvNet to integrate frame information over time.
     \end{itemize}
 \end{enumerate}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{img_deep/beyondshort_overview}
+    \includegraphics[width=0.8\textwidth]{img_deep/beyondshort_overview}
     \caption{Overview of the appraoch taken by \textcite{ng_beyond_2015}}
     \label{fig:beyondshort_overview}
 \end{figure}
 
-An advantage of this approach is that it can build on the achievements of CNN-based image processing architectures by directly embedding them as feature extractors for each frame.
-Specifically two architectures are being evaluated for that:
+An advantage of this approach is that it can build on the independent achievements of CNN-based image processing architectures by directly embedding them as feature extractors for each frame.
+Hence two CNN architectures are being separately evaluated for this task:
+
 \begin{enumerate}
     \item AlexNet \cite{krizhevsky_imagenet_2012}
     \item GoogLeNet \cite{szegedy_going_2015}
 \end{enumerate}
 
-Both networks take 220x220 pixel sized input images/frames.
+Both networks take $220\times220$ pixel sized inputs.
+When evaluating the two different architectures without pre-training on frames of the Sports-1M dataset, GoogLeNet consistently outperforms AlexNet.
+Nonetheless both architectures are used for the following evaluation.
 
-The temporal extend of this approach can be easily adjusted by changing the number of CNNs that process an input frame each.
-
-The CNNs for processing single frames all share paramters, which results in a constant number of trainable parameters over the number of input frames.
+The temporal extent of this approach can be easily adjusted by changing the number of CNNs that are applied to input frames in parallel before being pooled.
+The LSTM models are not limited to a fixed input size and could in general process a complete video in a single pass.
+The CNNs, when applied parallely, all share weights, which results in a constant number of trainable parameters over the number of input frames.
 
 The authors propose to process input videos at only one frame per second, for being able to cover a long temporal extend while remaining computationally feasible.
-
-Implicit motion information from processing adjacent frames is lost at this frame-rate.
-This is compensated by using explicit motion information, i.e.\ optical flow inputs.
-
-The Sports-1M and UCF-101 dataset are used as benchmarks in this work.
+Therefore implicit motion information from adjacent frames is lost at this framerate.
+This is compensated by also using explicit motion information, through optical flow inputs.
 
 \textbf{Feature Pooling}\\
-Pooling layers are used to combine feature vector representations of the input frames.
-
-The authors consider, max-pooling, average pooling and a fully connected layer as pooling layers. Max-pooling results in faster learning architecture and was therefore chosen as the default pooling method in this approach. 
-
-Several pooling architectures are evaluated (see figure \ref{beyondshort_poolingarchitectures}).
+Different configurations of pooling layers are evaluated for combining feature vector representations of individual input frames, as illustrated in figure \ref{fig:beyondshort_poolingarchitectures}.
+The authors consider, max-pooling, average pooling as basic pooling operations.
+Max-pooling results in faster learning and was therefore chosen as the default pooling method in this approach. 
+The pooling architectures additionally include, fully connected layers, time-domain convolution layers and soft-max layers, as described below.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{img_deep/beyondshort_poolingarchitectures}
-    \caption{Feature pooling architectures with: Max-pooling layers (blue), time-domain-convolution layer (green), fully-connected layers (yellow), softmax layers (orange). \cite{ng_beyond_2015}}
+    \includegraphics[width=0.6\textwidth]{img_deep/beyondshort_poolingarchitectures}
+    \caption{Evaluation of feature pooling architectures with: (Blue) max-pooling layers. (Green) time-domain convolution layers. (Yellow) fully-connected layers. (Orange) soft-max layers. \cite{ng_beyond_2015}}
     \label{fig:beyondshort_poolingarchitectures}
 \end{figure}
 
 \begin{enumerate}[label=\alph*)]
-    \item \textbf{Conv Pooling:} Max-pooling is performed over the activations of the final convolutional layers across all input frames.
-    \item \textbf{Late Pooling:} Convolutional activations are first passed through two fully connected layers individually, before max-pooling is applied over the resulting high-level representations. Weights are shared between all convolutional and fully-connected layers.
-    \item \textbf{Slow Pooling:} Two stages of pooling are applied: The first stage combines local temporal patches by max-pooling and feeds the activations into fully connected layers with shared weights. A single max-pooling layer then combines the resulting activations of all fully connected layers in the second stage.
-    \item \textbf{Local Pooling:} Similar to slow pooling frame information is combined locally but only one stage of max-pooling is implemented. This prevents a potential loss of temporal information.
-    \item \textbf{Time-Domain Convolution:} An additional time-domain convolutional layer is implemented before pooling features across frames.
+\item \textbf{Conv Pooling:} Max-pooling is performed directly over the activations of the final convolutional layers across all input frames, followed by two fully-connected and a soft-max layer.k
+\item \textbf{Late Pooling:} Convolutional activations are first passed through two fully connected layers individually, before max-pooling is applied over the resulting high-level representations. Weights are shared between all fully-connected layers.
+\item \textbf{Slow Pooling:} Two stages of pooling are applied: The first stage combines local temporal patches by max-pooling and feeds the activations into fully connected layers with shared weights. A single max-pooling layer then combines the resulting activations of all fully connected layers in the second stage.
+\item \textbf{Local Pooling:} Similar to slow pooling frame information is combined in local temporal patches but only one stage of max-pooling is implemented. This prevents a potential loss of temporal information.
+\item \textbf{Time-Domain Convolution:} An additional convolutional layer is implemented before pooling features across frames. It is called \textit{time-domain convolution} since the convolutional layer is applied on features that originate from several frames.
 \end{enumerate}
 
 \textbf{LSTM architecture}\\
-To capture the dynamic content, i.e.\ the information that is encoded in the differences between frames, a deep LSTM \cite{hochreiter_long_1997} architecture with 5 layers containing 512 memory cells each is used to aggregate sequences of frame-level CNN activations.
+As an alternative for for capturing dynamic content, i.e.\ the information that is encoded in the differences between frames, a LSTM architecture \cite{hochreiter_long_1997} with 5 layers containing 512 memory cells each is used to aggregate sequences of frame-level CNN activations.
+The following figure \ref{fig:beyondshort_lstmarchitecture} shows the approach unfolded in time for 8 timesteps.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\textwidth]{img_deep/beyondshort_lstmarchitecture}
-    \caption{LSTM Architecture. Five layers of LSTM cells take the final CNN activations as inputs. The video class is predicted at every timestep by a softmax output layer. \cite{ng_beyond_2015}}
+    \caption{LSTM Architecture. Five layers of LSTM cells process the final CNN activations. The video class is predicted at every timestep by a softmax output layer after the LSTM layers. \cite{ng_beyond_2015}}
     \label{fig:beyondshort_lstmarchitecture}
 \end{figure}
 
-The max-pooling architectures were trained on a computing cluster using a distributed version of Gradiend Descent Training called Downpour Stochastic Gradient Descent.
+In the final architecture, analogously to the two-stream approach of \textcite{simonyan_two-stream_2014}, each of the above described methods is evaluated in a two-stream setup.
+The authors train two instances of a model, one on raw video frames, the other on optical flow and perform late fusion over the two resulting streams.
+The used optical flow inputs are sampled at 15\textit{fps} by using the method proposed in \cite{zach_duality_2007a}.
+Evaluation is performed on the Sports-1M and UCF-101 dataset.
 
-The AlexNet and GoogLeNet networks were initialized on pre-trained ImageNet models and then fine-tuned on the Sports-1M dataset in order to safe training time.
+%\textbf{Evaluation}
+%The max-pooling architectures were trained on a computing cluster using a distributed version of gradiend descent training called \textit{Downpour Stochastic Gradient Descent} \cite{dean_large_2012}.
 
-Since the CNN models share weights across input frames, the authors note that training time can also be saved by expanding a trained single-frame model to 30-frames and then expanding the 30-frames model to 120-frames.
+For training and testing on Sports-1M, the first 5 minutes of each input-video are sampled at 1\textit{fps}, which results in 300 potential input frames per video.
+The frames are first resized to $256\times256$ pixel, then a $220\times220$ pixel region of a randomly selected starting frame is selected and the desired number of following frames is cropped accordingly to create an input.
+Additionally input frames are flipped horizontally with a probability of 50\%.
 
-Analogically to the two-stream approach of \cite{simonyan_two-stream_2014} the authors additionally train both their models on optical flow and perform late fusion over the two resulting streams.
-The used optical flow is sampled at 15fps by using the method proposed in \cite{zach_duality_2007a}.
+Models capable of processing up to 120 frames in a single example are trained, which corresponds to a temporal extent of 2 minutes of video.
+To obtain a video-level classification, 240 random input examples are generated from a video for testing as described above and the predictions are averaged.
 
-\textbf{Evaluation on Sports-1M dataset:}\\
-For training and testing on Sports-1M, the first 5 minutes of each input-video are sampled at 1fps as input frames.
-
-The frames are first resized to 256x256 pixels, a 220x220 pixel region of a randomly selected starting frame is selected and the following frames are cropped accordingly to create a network input of the desired temporal length.
-Input frames are flipped horizontally with a probability of 50\%.
-
-Models capable of processing 120 frames in a single example (which corresponds to 2 minutes of video) are trained.
-
-240 random input examples are generated from a video for testing as described above and the predictions are averaged.
-
-The LSTM models are not limited to a fixed input size and could generally process a complete video in a single pass.
-The authors report a 3-5\% increase in Hit@1 accuracy when using the above mentioned data augmentation methods however.
-
-As first result (see table \ref{tab:beyondshort_poolingevaluation}, the authors report the conv-pooling architecture to yield the best accuracy when evaluating different pooling methods.
+At first pooling methods are being evaluated with AlexNet CNN and 120 frames as input.
+Results show, as given in table \ref{tab:beyondshort_poolingevaluation}, that the conv-pooling architecture yields the best accuracy on Sports-1M dataset.
 
 \begin{table}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{img_deep/beyondshort_poolingevaluation}
-    \caption{Evaluation of different pooling methods on Sports-1M dataset with a 120-frame AlexNet model. \cite{ng_beyond_2015}}
+    \caption{Evaluation of different feature pooling methods on Sports-1M dataset with a 120-frame AlexNet model. \cite{ng_beyond_2015}}
     \label{tab:beyondshort_poolingevaluation}
 \end{table}
 
-When evaluating the two different CNN architectures, GoogLeNet consistently outperforms AlexNet.
-Fine tuning the models is noted to be crucial for high performance.
+Fine tuning the models is found to be crucial for high performance.
+The CNN networks were initialized using pre-trained ImageNet models and then fine-tuned on the Sports-1M dataset in order to decrease training time.
+Since the CNN models share weights across input frames, the authors note that training time can also be saved by expanding a individually trained single-frame model to 30-frames and then expanding this 30 frame model to 120 frames, by re-training the pooling layers at each step.
 
-Evaluating the influence of the number of input frames confirmed the authors initial hypothesis, that longer sequences of an input video need to be considered for accurate action recognition.
-The conv-pooling architecture with 120 input-frames yields a clip-hit of 70.8\%, which is an improvement of 70\% against the best clip-hit accuracy of \textcite{karpathy_large-scale_2014}. 
-Results are shown in table \ref{beyondshort_framelengtheval}.
+
+Evaluating the influence of the number of input frames confirmed the authors initial hypothesis, that longer sequences of an input video need to be considered for high accuracy in action recognition.
+The LSTM method using 30 frame inputs only performs marginally worse than convolutinal pooling with 120 frame inputs.
+Results are shown in table \ref{tab:beyondshort_framelengtheval}.
 
 \begin{table}[H]
     \centering
     \includegraphics[width=0.6\textwidth]{img_deep/beyondshort_framelengtheval}
-    \caption{Evaluation of the effect of the number of input frames using GoogLeNet CNN models. \textcite{karpathy_large-scale_2014}}
+    \caption{Comparison of convolutional pooling against LSTM-based RNNs for differernt numbers of input frames using GoogLeNet CNN models on Sports-1M. \cite{ng_beyond_2015}}
     \label{tab:beyondshort_framelengtheval}
 \end{table}
 
-When fusing 30-frame models with their optical flow counterparts, no significant increase in performance could be observed.
-Also, the models trained on optical flow alone yield a much lower performance compared to training on still image frames.
-The authors constitute this result to the noisyness of optical flow in the Sports-1M dataset (real-world videos with lower quality and rough cuts).
+When fusing models with their optical flow counterparts, no significant increase in performance could be observed on the Sports-1M dataset.
+Also, the models trained on optical flow evaluated individually yield a much lower performance compared to training on still image frames.
+The authors accredit this result to the noisyness of optical flow in the Sports-1M dataset, since it contains real-world videos with low quality and rough cuts.
+Overall, the best conv-pooling and lstm models perform significantly better than the state-of-the-art as reported by \textcite{karpathy_large-scale_2014}.
 
-Yet overall, the best conv-pooling and lstm models perform significantly better than the state-of-the-art as reported by \textcite{karpathy_large-scale_2014}.
-
-\textbf{Evaluation on UCF-101:}\\
-The UCF-101 dataset contains short videos, lasting 10-15 seconds on average. It is therefore possible to extract frames at higher rates such as 6fps and still capture the complete input-video.
-
-The authors compare frame sampling at different frame rates (30 fps and 6fps) for 30-frame models. They find, that decreasing the sampling rate from 30fps to 6fps slightly increases the classification accuracy, since the model captures more context from the input video (1 second of video against 5 seconds).
-
+The UCF-101 dataset contains short videos, lasting 10-15 seconds on average.
 In comparison to the Sports-1M dataset, optical flow of UCF-101 provides an increase in performance.
-
-The authors best models, which combine image frames and optical-flow, perform better by a small margin than the state of the art on UCF-101 reported by \textcite{simonyan_two-stream_2014}.
-
-?? read conclusion!!
+The authors best models on UCF-101, which combine image frames and optical-flow, outperform the state of the art reported by \textcite{simonyan_two-stream_2014} by a small margin.
 
 
-\subsubsection{Towards Good Practices for Very Deep Two-Stream ConvNets -- Wang et al. (2015)}
-\cite{wang_towards_2015}
+\subsubsection{Towards Good Practices for Very Deep Two-Stream ConvNets (2015)}
+\textcite{wang_towards_2015} aim at improving the two-stream ConvNet approach, as introduced by \textcite{simonyan_two-stream_2014}, by leveraging the advances of very deep ConvNet architectures in image classification.
+The trends in network design that lead to the success of convolutional architectures in image classification are: smaller convolutional kernels, smaller kernel strides and deeper network architectures.\cite{wang_towards_2015}
 
-\textcite{wang_towards_2015} aim at improving the Two-Stream ConvNet approach for action recognition\cite{simonyan_two-stream_2014} by leveraging the advances of very deep ConvNet architectures in image classification.
+Examples of such very deep architectures are GoogLeNet \cite{szegedy_going_2015} and VGGNet \cite{simonyan_very_2014}.
+The authors use these two models to create and evaluate enhanced two-stream ConvNet models for video action recognition.
 
-The trends in network design that lead to the success of convolutional architectures in image classification are: smaller convolutional kernels, smaller kernel strides and deeper network architectures.
-
-Examples of such very deep architectures are GoogLeNet\cite{szegedy_going_2015} and VGGNet\cite{simonyan_very_2014}.
-The authors use these two models to train an enhanced Two-Stream ConvNet model for video action recognition.
-
-The authors identify two main draw-backs of recent ConvNet approaches in video action recognition:
+Two main draw-backs of recent ConvNet approaches in video action recognition are identified:
 \begin{enumerate}
-    \item The used models are shallow compared to their image counterparts. \\
-        The deepest variant VGG-19 contains 16 convolutional layers, while the networks of the original Two-Stream ConvNet approach contain 5 convolutional layers.
+    \item The applied models are shallow compared to their image counterparts. The deepest variant VGG-19\cite{simonyan_very_2014} contains 16 convolutional layers, while the networks in the original two-stream ConvNet approach contain 5 convolutional layers.
     \item The available dataset are too small, which results in over-fitting.
 \end{enumerate}
 
-This work therefore proposes and evaluates a series of good practices to enable very deep ConvNet architectures for accurate action recognition, specifically in the two-stream ConvNet architecture.
-These good practises namely are:
+Considering these deficits, \textcite{wang_towards_2015} therefore propose a set of good practices to enable very deep ConvNet architectures for accurate action recognition, specifically in the two-stream ConvNet architecture.
+These namely are:
+
 \begin{enumerate}
     \item Pre-training for the spatial- as well as the temporal-stream network.
-    \item Smaller learning rates
-    \item Different and more data augmentation techniques
-    \item Higher drop-out ratios
+    \item Smaller learning rates.
+    \item Different and more data augmentation techniques.
+    \item Higher drop-out ratios.
 \end{enumerate}
 
-The two-stream ConvNet approach of \textcite{simonyan_two-stream_2014} uses pre-training on the ImageNet dataset for the spatial-stream network only and uses two convolutional networks with five convolutional layers each.
+The authors apply these good practices to a two-stream approach, which they call \textit{Very Deep Two-Stream ConvNets}.
+The spatial net therein processes a single video frame of input size ($224 \times 224 \times 3$) at a time.
+It is therefore an image classification architecture and either GoogLeNet or VGGNet is used.
 
-The authors name their approach Very Deep Two-Stream ConvNets.
+The temporal net processes 10 stacked optical flow inputs, each splitted into images of the $x$- and $y$- coordinate.
+Its input therefore has a size of $224 \times 224 \times 20$.
+The convolutional kernels in the first layer need to be different than in the spatial stream to process these higher-dimensional inputs.
 
-The spatial net processes a single video frame of input size ($224 \times 224 \times 3$) and its architecture therefore is the same as in image classification, i.e.\ either GoogLeNet or VGGNet.
+Evaluation is done using the UCF-101 dataset, specifically on the three splits into training- and test-set, that are provided with it.
+For each split, the training set consists of around $10.000$ videos while the test-set consists of $3.000$ videos (furhter described in section \ref{chap:datasets}).
+UCF101 contains 13.320 videos in total and is considered extremely small for training very deep architectures \cite{wang_towards_2015}.
 
-The temporal net processes 10 stacked optical flow fields splitted into images of the $x$- and $y$- coordinates.
-Its input therefore has the size $224 \times 224 \times 20$ and the convolutional kernels in the first layer need to be different than in the spatial stream to process the higher-dimensional input.
-
-Evaluations are done using the UCF101 dataset, specifically the three splits into training- and test-sets that are provided with it.
-For each split, the training set consists of around 10.000 videos while the testing set consists of 3.000 videos.
-UCF101 contains 13.320 videos in total and is considered extremely small for training very deep architectures.
-
-\textbf{Pre-training}.
+\textbf{Pre-training}\\
 The spatial net is pre-trained using an ImageNet model as in \cite{simonyan_two-stream_2014}.
-Specifically the network's weights are initialized with the values of a trained ImageNet model.
-
+This specifically means, that the network's weights are initialized with the values of a trained ImageNet model.
 Interestingly, the authors find that pre-training is also beneficial for the temporal-stream network.
 The authors average the ImageNet model's filters across channels and duplicate them 20 times as filters for the temporal net's first layer.
 
-\textbf{Smaller dropout ratios}.
-Since the networks in both streams have been pre-trained, the authors use smaller dropout ratios as in \cite{simonyan_two-stream_2014}.
-
+\textbf{Smaller Learning Rates}\\
+Since the networks in both streams have been pre-trained, the authors use smaller learning rates as in the original two-stream approach \cite{simonyan_two-stream_2014}.
 The authors note a faster conversion of the training and credit this to the pre-training.
 
-\textbf{Data Augmentation Techniques}.
-Data augmentation techniques such as random cropping and horizontal flipping have been widely used to reduce over-fitting.
-
-Since random cropping favors cropping regions in the center of an image/frame, the authors design a corner cropping strategy.
-Specifically, they crop the four corners and the center of the input images.
+\textbf{Data Augmentation Techniques}\\
+Data augmentation techniques such as random cropping of inputs and horizontal flipping have been widely used to reduce over-fitting.
+Since random cropping favors cropping regions in the center of an image/frame, a corner cropping strategy is proposed.
+Specifically this means cropping the four corners and the center of the input images as inputs.
 This increases the variation of inputs and reduces over-fitting.
 
 Additionally, network inputs are cropped from video frames on multiple scales.
 The input video is first scaled to $256 \times 340$ pixels and the cropping width and height is randomly chosen from $\{256, 224, 192, 168\}$.
 The cropped region is then scaled to $224 \times 224$ to form the network input.
 
-\textbf{High Dropout Ratio}.
-The authors use dropout ratios of 0.8 and 0.9 for the fully connected layers.
+\textbf{High Dropout Ratio}\\
+The authors use dropout ratios of 0.8 and 0.9 for the fully connected layers at the end of the networks.
 
-For testing 25 frames or optical flow fields are sampled from a test-video.
-For each of these input instances 10 inputs to the very deep ConvNet are created by the above mentioned cropping method (four corners, the center and their horizontal flip).
-
+The proposed good practices are validates, by training very deep two-stram ConvNet models on the UCF-101 dataset.
+For testing, 25 frames or optical flow inputs are sampled from a test video.
+For each of these input samples 10 inputs for the very deep ConvNet are created by applying the above mentioned cropping method (four corners, the center and their horizontal flip).
 The final prediction is obtained by averaging over all inputs.
 
-Temporal and spatial net are fused using a weighted linear combination of both outputs.
+The temporal and spatial net are fused, using a weighted linear combination of both outputs.
 The weight for the temporal net is set to $2$ and the weight for the spatial net is set to $1$.
+Optical flow fields are extracted using the OpenCV implementation of TVL1 optical flow algorithm \cite{zach_duality_2007}.
 
-Optical flow fields are extracted using the OpenCV implementation of TVL1 optical flow algorithm.
-
-Table \ref{tab:towardsgood_results} shows the accuracy for the two evaluated very deep Two-Stream ConvNets.
+Table \ref{tab:towardsgood_results} shows the accuracy of the very deep Two-Stream ConvNets.
 
 \begin{table}[H]
     \centering
     \includegraphics[width=\textwidth]{img_deep/towardsgood_results}
-    \caption{Accuracy of the Two-Stream ConvNet architecture when building on different ConvNet models. Results for ClarifaiNet are taken from \cite{simonyan_two-stream_2014}, which isthe original two-stream approach. \cite{wang_towards_2015}}
+    \caption{Accuracy of the very deep two-stream ConvNet architecture on UCF-101 dataset for different ConvNet models. ClarifaiNet denotes the original two-stream approach and its results are taken from \cite{simonyan_two-stream_2014}. \cite{wang_towards_2015}}
     \label{tab:towardsgood_results}
 \end{table}
 
-The results show, that the proposed good practices and the employment of a very deep convolutional network lead to a significant improvement in performance over the original two-stream appraoch.
+These results show, that the proposed good practices and using very deep convolutional network models lead to a significant improvement in performance over the original two-stream appraoch.
 
 
-\subsubsection{Convolutional Two-Stream Network Fusion for Video Action Recognition -- Feichtenhofer et al. (2016)}
-\cite{feichtenhofer_convolutional_2016}
-
-\textcite{feichtenhofer_convolutional_2016} aim at improving the two-stream architecture for action recognition by addressing two main disadvantages of the approach:
+\subsubsection{Convolutional Two-Stream Network Fusion for Video Action Recognition (2016)}
+\textcite{feichtenhofer_convolutional_2016}, similar two \textcite{wang_towards_2015}, identify two deficits of the two-stream architecture \textcite{simonyan_two-stream_2014} regarding the fusion of both streams and the processed temporal extent of the temporal stream:
 \begin{enumerate}
-    \item The architecture is not able to learn pixel-wise relations between the spatial stream and the temporal stream, i.e.\ it cannot relate extracted object-features to motion features, since the two separate streams are fused at the final softmax-layer. 
-    \item A temporal extent of only $L = 10$ frames is processed by the temporal stream network in a single pass. Originally this was addressed by averaging network outputs over equally spaced temporal locations in the input video. However this averaging does not consider the temporal evolution of actions.
+    \item The architecture is not able to learn pixel-wise relations between the spatial and the temporal stream, i.e.\ it cannot relate extracted object-features to corresponding motion features, since the two separate streams are fused late (at the final softmax-layer).
+    \item A temporal extent of only $L = 10$ frames is processed by the temporal stream network in a single pass. In the original approach, this was addressed by averaging network outputs over equally spaced temporal locations in the input video. However this averaging does not consider the temporal evolution of actions.
 \end{enumerate}
 
-The authors conduct a systematical evaluation of fusion methods to find a better way of combining the appearance information extracted by the spatial stream network with the motion information extracted by the temporal stream network.
-More specifically, fusion techniques combine two feature maps of different ConvNets into a single feature map.
-When combining all feature maps from a given convolutional layer with all the feature maps in the convolutional layer of another network, two network streams can be combined into one.
+The authors address these deficits by evaluating fusion methods for better combining the appearance information in the spatial stream network with the motion information in the temporal stream network.
+
+Fusion methods are operations, that combine two feature maps from different ConvNets into a single feature map.
+When combining all feature maps in a specifig layer of a first network with all the feature maps in a specific layer of another network, the two network streams are fused into one.
 
 Fusion can be conducted either spatially or temporally.
-Spatial fusion combines feature maps between the streams of the two-stream architecture. Temporal fusion combines feature maps resulting from applying the two-stream architecture on frames at different points of time in the input video.
+Spatial fusion combines feature maps between the streams of the two-stream architecture, which process information from the same point in time.
+Temporal fusion combines feature maps resulting from applying the two-stream architecture to different points in time.
 
-In the original two-stream approach \cite{simonyan_two-stream_2014} fusion of the two streams is done by \textit{late fusion}, i.e.\ the two streams are combined by averaging the predictions of the softmax-output layer.
-
-The authors evaluate temporal and spatial fusion methods and design an enhanced version of the two-stream architecture by implementing the best suited methods.
-
-The objective of spatial fusion is to merge two networks after a given convolutional layer by combining the feature maps of the layers.
+In the original two-stream approach \cite{simonyan_two-stream_2014} both streams are fused spatially by averaging softmax scores of both streams, which is called \textit{late fusion}.
+The two-stream network is applied to several randomly sampled temporal locations of an input video and the output scores are temporally fused by averaging.
 
 A fusion function $f: x^a, x^b \rightarrow y$ combines two feature maps $x^a, x^b \in \mathbb{R}^{W \times H \times D}$ into a fused feature map $y \in \mathbb{R}^{W \times H \times D'}$.
-A feature map of a convolutional layer is given by the outputs of the neurons in the convolutional layer.
-$W$ and $H$ corresponds to the spatial dimensions of the input frames, which get successively reduced by propagation through the layers.
+$W$ and $H$ correspond to the spatial dimensions of the input frames, which get successively reduced by propagation through the layers.
 $D$ and $D'$ correspond to the number of channels, i.e.\ the number of filters in the convolutional layer. 
 
+The following \textbf{spatial fusion} methods are evaluated:
+
 \textbf{Sum Fusion}:\\
-The sum of the activations in the two feature maps is computed at each location and used as the new feature map.
-The output feature map has the same dimensions as the input feature maps.
-Since the ordering of the channels is arbitrary in each network stream, this fusion technique does not implement a semantic relation between the feature maps.
+Both feature maps are summed element-wise.
+The output feature map has the same dimensions as the input feature map.
+Since the ordering of the channels is arbitrary in each network stream, this fusion technique does not implement a semantic relation between feature maps.
 
 \textbf{Max Fusion}:\\
 This method is similar to Sum Fusion, but the maximum value at each location of the two feature maps is used as the new feature map.
 The output feature map has again the same dimensions as the input feature maps and does not represesent a semantic relation between the feature maps.
 
 \textbf{Concatenation Fusion}:\\
-The two feature maps are stacked into each other along the dimesion of channels.
+The two feature maps are stacked into each other along the dimension of channels.
 The resulting feature map has dimension $W \times H \times 2D$.
 Since the activations are not combined by a mathematical operation, a relation between the feature maps is not implemented but it can be learned by the following layers.
 
 \textbf{Conv Fusion}:\\
-The feature maps are first concatenated as described above. A set of $D$ trainable filters with dimensions $1 \times 1 \times 2D$ is then convolved with the stacked feature maps and a bias is added to produce a resulting feature map of dimension $H \times W \times D$.
+The feature maps are first concatenated as described above.
+A set of $D$ trainable filters with dimensions $1 \times 1 \times 2D$ is then convolved with the stacked feature maps and a bias is added to produce a resulting feature map of dimension $H \times W \times D$.
 The convolution can be seen as a trainable weighted combination of the feature maps across the channels, which is able to learn semantic relations between two feature maps.
 
 \textbf{Bilinear Fusion}:\\
-The channel vectors of the feature maps at each pixel locations are combined by computing the matrix outer product of them. This results in $H \cdot W$ matrices for each pixel location which are then added to form the new feature map of dimension $D \times D$.
-This fusion method is adapted from the Bilinear CNN approach in image classification \cite{lin_bilinear_2015a}.
+The channel vectors of the feature maps at each pixel locations are combined by computing their matrix outer product.
+This results in $H \cdot W$ matrices for each pixel location which are then added to form the new feature map of dimension $D \times D$.
+This fusion method is adapted from the Bilinear CNN approach in image classification \cite{lin_bilinear_2015}.
 Usually the fully connected layers are replaced by a linear SVM to make this fusion method usable in practice, i.e.\ the compensate the high number of parameters.
 
-Implementing a layer that performs spatial fusion between two network streams has significant influence on the number of trainble parameters in the network, especially if the networks are fused before the fully connected layers and if only the merged stream is kept. Most of the parameters are located in the fully connected layers.
+Implementing a spatial fusion layer between two network streams has significant influence on the number of trainble parameters in the network, especially if the networks are fused before the fully connected layers and if only the merged stream is kept, since most parameters are located in the fully connected layers.
 
-In figure \ref{fig:streamfusion_layerplacement} two examples of placing fusion layers into the two-stream architecture are shown.
+In figure \ref{fig:streamfusion_layerplacement} two examples of placing fusion layers into the two-stream architecture are illustrated.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{img_deep/streamfusion_layerplacement}
-    \caption{Placement examples of fusion layers for early combination of the spatial and temporal stream in two-stream architectures. (\textit{left}) Only the merged stream is kept. (\textit{right}) The spatial stream is kept after the first fusion layer and fused into it before the final layer \cite{feichtenhofer_convolutional_2016}}
+    \caption{Placement of fusion layers between the spatial and temporal stream in a two-stream architecture. (\textit{left}) Only the merged stream is kept. (\textit{right}) The spatial stream is maintained after first fusion operation and merged before the final layer. \cite{feichtenhofer_convolutional_2016}}
     \label{fig:streamfusion_layerplacement}
 \end{figure}
 
-The authors evaluate the spatial fusion methods in a two-stream architecture as implemented in the original approach \cite{simonyan_two-stream_2014}.
+The authors evaluate spatial fusion methods in a two-stream architecture as implemented in the original approach \cite{simonyan_two-stream_2014}.
 Each stream consists of 5 convolutional layers, and three fully connected layers.
-The accuracy on UCF101 (Split1), the number of paramters and overall number of layers in the architecture is given in table \ref{tab:parameternumber}.
-The streams are fused after the rectification of the fifth convolutional layer and only the fused stream is kept.
+The accuracy on UCF101 (Split1), the number of paramters and overall number of layers in the architecture is given in table \ref{tab:streamfusion_parameternumber}.
+The streams are fused after fifth convolutional layer and only the fused stream is kept.
 
-\begin{table}
+\begin{table}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{img_deep/streamfusion_parameternumber}
+    \includegraphics[width=0.7\textwidth]{img_deep/streamfusion_parameternumber}
     \caption{Performance and number of parameters for different spatial fusion methods in a two-stream setup, evaluated on UCF101 (split 1) \cite{feichtenhofer_convolutional_2016}}
     \label{tab:streamfusion_parameternumber}
 \end{table}
 
-Results of the origignal approach are reported in the first row.
-As can be seen the authors' approach yields comparable results, when implementing the same fusion method.
+Results of the original approach are reported in the first row of table \ref{tab:streamfusion_parameternumber}.
+The authors' approach yields comparable results, when implementing the same fusion method.
 Conv Fusion performs best and reduces the number of parameters significantly to roughly half of the parameters in the original approach.
 
-Implementing the fusion layer after an earlier convolutional layer decreses the performance significantly.
+Implementing the fusion layer after an earlier convolutional layer was found to decreses the performance significantly.
 Best results are obtained by fusion after the rectification layer of convolutional layer 5, keeping both streams and fusing again at the final layer (as shown in figure \ref{fig:streamfusion_layerplacement} (right)).
 
-After evaluating spatial fusion methods, the authors evaluate temporal fusion methods.
-In order to fuse feature maps temporally, they are considered to be extended over time by applying the two-stream architecture at several temporal points across the video and stacking the resulting feature maps.
+When several inputs from different temporal points in the video are processed in succession, feature maps can be interpreted as being extended over time by stacking them for each input.
+In order to fuse information over several inputs, temporal pooling layers can be implemented.
+The input to a temporal pooling layer is a feature map $x \in \mathbb{R}^{H \times W \times T \times D}$ where $H$ and $W$ correspond to the spatial dimension, $T$ corresponds to the temporal dimension and $D$ corresponds to the number of channels in the feature map.
 
-The input to a temporal pooling layer is a feature map $x \in \mathbb{R}^{H \times W \times T \times D}$ where $H$ and $W$ again correspond to the spatial location, $T$ corresponds to the temporal dimension, i.e.\ the number of feature maps that get stacked and $D$ again corresponds to the number of channels in the feature map, i.e.\ the number of filters in the convolutional layer.
+The temporal pooling methods shown in figure \ref{fig:streamfusion_temppooling} are evaluated.
 
 \begin{figure}[H]
     \centering
@@ -976,55 +963,63 @@ The input to a temporal pooling layer is a feature map $x \in \mathbb{R}^{H \tim
     \label{fig:streamfusion_temppooling}
 \end{figure}
 
-\textbf{(a) 2D pooling.}
+\textbf{a) 2D pooling.}
 The feature maps in each channel are only pooled spatially.
-The network predictions are averaged over all the outputs for different points in time, where the network has been applied.
+The network predictions are averaged over all outputs for different points in time, where the network has been applied.
 The pooling operation ignores the temporal dimension.
 
-\textbf{(b) 3D pooling.}
+\textbf{b) 3D pooling.}
 Max-pooling with a 3D pooling filter of dimensions $W' \times H' \times T'$ is applied to the stacked feature maps.
 The max-pooling operation executed for each of the channels $D$ individually.
 Pooling across different channels is not conducted.
 
-\textbf{(c)3D Conv + 3D Pooling.}
+\textbf{c) 3D Conv + 3D Pooling.}
 A set of $D'$ filters $f \in \mathbb{R}^{W'' \times H'' \times T'' \times D \times D'}$ is convolved with the stacked feature maps and biases are added.
 The resulting feature map is then pooled with a 3D pooling filter as described above.
 Since the convolutional filter is trainable, it is able to learn weighted combinations of features in a local spatio-temporal region.
 
-The authors evaluate the pooling methods and find that 3D Conv + 3D Pooling performs best.
+Implementing these temporal pooling methods shows, that 3D Conv + 3D Pooling performs best.
 
-The final approach for applying the two-stream ConvNet model to action recognition is implemented by the authors as follows:
+Using these previous results, a two-stream convolutional neural network model for action recognition is proposed by the authors as follows:
+\begin{itemize}
+    \item Two VGG-16 models \cite{simonyan_very_2014} are used as spatial and temporal stream network (13 convolutional and 3 fully conncted layers each).
+    \item The temporal stream operates on 10 stacked frames of optical flow and is fused at the last convolutional layer and after the fully connected layers (as illustrated in figure \ref{fig:streamfusion_layerplacement} \textit{right}).
+    \item The two-stream model is applied at 5 temporal points in the video with fixed temporal distance.
+\end{itemize}
 
+The approach achieves $92.5\%$ accuracy on UCF-101 and $65.4\%$ accuracy on HMDB-51.
 
-Take away message in abstract.
 
 \subsection{Trajectory Pooling of Deeply Learned Features}
+TODO ?? Description
 
-\subsubsection{Action recognition with trajectory-pooled deep-convolutional descriptors -- Wang et al. (2015)}
-\textcite{wang_action_2015} propose a novel method of building video representations by combining the advantageous porperties of hand-crafted features as in \textit{Dense Trajectories} \cite{wang_action_2013} with deeply learned features as in \textit{Two-Stream Convolutional Networks} \cite{simonyan_two-stream_2014}.
+\subsubsection{Action recognition with trajectory-pooled deep-convolutional descriptors (2015)}
+\textcite{wang_action_2015} propose a novel method for building video representations by combining the advantageous porperties of hand-crafted features as in \textit{Dense Trajectories} \cite{wang_action_2013} with deeply learned features as in \textit{Two-Stream Convolutional Networks} \cite{simonyan_two-stream_2014}.
 
-In the \textit{Improved Dense Trajectories} approach, local features are extracted along trajectories, which are mostly located near prominent motion in a video.
-The authors claim however, that hand-crafted features are not discriminative enough for accurate action recognition.
+In the \textit{Improved Dense Trajectories} approach \cite{wang_action_2013}, local features are extracted along trajectories, which are mostly located near regions of prominent motion in a video.
+\textcite{wang_action_2015} claim however, that hand-crafted features are not discriminative enough for accurate action recognition.
 
 Deep architectures have proven to learn discriminative features effectively with \textit{Two-Stream Networks} being a successful approach that finally performed comparably to \textit{Improved Dense Trajectories}.
 
-The main outline of the approach for action recognition is as follows:
+The main outline of an approach for combining these two approaches in action recognition is given by the authors as follows:
 \begin{enumerate}
     \item A two-stream convolutional network architecture is trained on multiple scales of a large dataset.
-    \item \textit{Dense Trajectories} are begin extracted from the input video according to the approach in \cite{wang_action_2013}.  
-    \item The deeply learned feature maps of the two-stream architecture are used to extract local descriptors, by pooling the convolutional responses over areas around the trajectories. The resulting descriptor is called Trajectory-pooled deep-convolutional descriptor (TDD). ??
-    \item The local TDDs are aggregated over the complete video using the Fisher Vector representation. cite ??
-    \item A linear SVM is trained to assign the action label to the FV representations, i.e.\ to perform action recognition.
+    \item \textit{Dense Trajectories} are being extracted from input videos according to the approach in \cite{wang_action_2013}.  
+    \item The learned feature maps of the two-stream architecture are used as local feature extractors by pooling the convolutional activations over areas around the trajectories. The resulting descriptor is called trajectory-pooled deep-convolutional descriptor (TDD).
+    \item The local TDDs are aggregated over the complete video using the Fisher Vector representation. \cite{sanchez_image_2013}
+    \item A linear SVM is trained to assign action labels to the FV representations, i.e.\ to perform action recognition.
 \end{enumerate}
 
-The authors evaluate their approach on the HMDB51 and UCF-101 dataset. Results show, that TDD is complementary to HOG, HOF and MBH and therefore fusion of these descriptors can further boos performance.
+%Results show, that TDD is complementary to HOG, HOF and MBH and therefore fusion of these descriptors can further boost performance.
 
-In contrast to \cite{wang_action_2013}, trajectories are only extracted on the original spatial scale, because it is computationally more effective.
-To compensate, multi-scale TDDs are extracted around the trajectories.
+%The authors evaluate their approach on the HMDB51 and UCF-101 dataset.
 
+%In contrast to \cite{wang_action_2013}, trajectories are only extracted on the original spatial scale, because it is computationally more effective.
+%To compensate, multi-scale TDDs are extracted around the trajectories.
 Any convolutional architecture can be embedded in a two-stream setup for TDD extraction.
 The authors choose the Clarifai network \cite{zeiler_visualizing_2014-1} with less filters in the \textit{conv4} layer (512 instead of 1024) and a lower dimensional \textit{full7} layer (2048 instead of 4096).
-Architectural details are depicted in table \ref{tab:tdd_layers}) below.
+This architecture is used for implementing the spatial stream network as well as the temporal stream network.
+Details are illustrated in table \ref{tab:tdd_layers}) below.
 
 \begin{table}[H]
     \centering
@@ -1033,17 +1028,15 @@ Architectural details are depicted in table \ref{tab:tdd_layers}) below.
     \label{tab:tdd_layers}
 \end{table}
 
-This architecture is chosen for implementing the spatial stream network as well as the temporal stream network.
+%After training the two-stream architecture, the activations of convolutional layers in each stream, i.e.\ the feature maps, are used for extracting the TDD descriptors of an input video.
 
-After training of the two-stream architecture, the activations of the convolutional layers in each stream (feature maps) are used for extracting the TDD descriptors of an input video.
-
-Before each convolutional or pooling layer with kernel size $k$, zero padding of the layer's input is applied with size $\lfloor k/2 \rfloor$.
+For each convolutional or pooling layer with kernel size $k$, zero padding of the layer's input is applied with size $\lfloor k/2 \rfloor$.
 This padding prevents an additional reduction in dimensionality between the layer's input and output besides the reduction that stems from applying the kernel with a certain stride.
-Therefore the position of a trajectory point in the input can be easily related to coordinates in the convolutional feature map at question by incorporating the map size ratio $r$ of the layer (see table \ref{tab:tdd_layers}).
-Specifically, the $p$-th point in a video trajectory $(x_p, y_p, z_p)$ is represented by point $(\overline{r \times x_p}, \overline{r \times y_p}, z_p)$.
-Where $\overline{(.)}$ denotes the mean-value.
+Therefore the position of a trajectory point in the input can be easily related to coordinates in the convolutional feature map at question by incorporating the map size ratio $r$ of the layer, as given in table \ref{tab:tdd_layers}.
+Specifically, the $p$-th point in a video trajectory $(x_p, y_p, z_p)$ is represented by point $(\overline{r \cdot x_p}, \overline{r \cdot y_p}, z_p)$.
+Where $\overline{(\cdot)}$ denotes the rounding operation.
 
-Given a video $V$, training of the two-stream architecture results in a set of feature maps $\mathbb{C}(V)$ from the spatial stream $s$ and temporal stream $t$.
+Given a video $V$, training the two-stream architecture results in a set of feature maps $\mathbb{C}(V)$ from the spatial stream $s$ and temporal stream $t$.
 \begin{equation*}
     \mathbb{C}(V) = \{C_1^s, C_2^s, \cdots, C_M^s, C_1^t, C_2^t, \cdots, C_M^t\}
 \end{equation*}
@@ -1057,33 +1050,33 @@ where:
     \item $M$ is the number of feature maps in each stream.
 \end{itemize}
 
-There are two steps involved in extracting the local trajectory-aligned descriptor called TDD from a 3D volume around a trajectory:
+There are two steps involved in extracting the local trajectory-aligned descriptors (TDD) from a 3D volume around a trajectory:
 \begin{enumerate}
     \item Feature Map Normalization (two different methods)
         \begin{itemize}
             \item Spatiotemporal Normalization
             \item Channel Normalization
         \end{itemize}
-    \item Trajectory pooling
+    \item Trajectory Pooling
 \end{enumerate}
 
-\textbf{Normalization}
+\textbf{Feature Map Normalization}\\
 Normalization has been widely applied to hand-crafted features beacause it reduces the influence of illumination.
 The authors use this technique on convolutional feature maps to suppress the activation burstiness of some neurons.
 
-In Spatiotemporal Normalization, each feature map is normalized independently across each channel according to it's maximal value.
+In \textit{Spatiotemporal Normalization}, each feature map is normalized independently across each channel according to it's maximal value.
 Specifically, for any channel $n$ and a feature map $C \in \mathbb{C}(V)$:
 \begin{equation*}
     \tilde{C}_{st}(x,y,z,n) = C(x,y,z,n) / \max_{x,y,z} C(x,y,z,n)
 \end{equation*}
-This normalization method ensures, that the feature maps across all channels range in the interval $(0,1)$.
+Spatiotemporal Normalization ensures, that the feature maps across all channels range in the interval $(0,1)$.
 
-In Channel normalization the values of each feature map are normalized according to the values at the same spatial positions but in another channel.
+In \textit{Channel Normalization} the values of each feature map are normalized according to the values at the same spatial positions but in another channel.
 Specifically, for an spatial position $(x,y,z)$ in the feature map at question:
 \begin{equation*}
     \tilde{C}_{ch}(x,y,z,n) = C(x,y,z,n) / \max_{n} C(x,y,z,n)
 \end{equation*}
-This normalization method ensures, that the feature map values of each pixel range in the interval $(0,1)$ and therefore contribute equally to the final representation.
+Channel Normalization ensures, that the feature map values of each pixel range in the interval $(0,1)$ and therefore contribute equally to the final representation.
 
 Both normalization methods were evaluated experimentally and the authors found, that combining the resulting video representations from both normalization methods by late fusion yields the best results.
 
@@ -1091,37 +1084,37 @@ Both normalization methods were evaluated experimentally and the authors found, 
 Given the $k$-th trajectory out of all trajectories $\mathbb{T}(V)$ over a video $V$, a trajectory-pooled deep convolutional descriptor in respect to a normalized feature map $\tilde{C}_m$ is constructed by sum-pooling the feature map values along the trajectory-points in the feature map.
 
 \begin{equation*}
-    D(T_k, \tilde{C}_m) = \sum_{p=1}^P \tilde{C}(\overline{(r_m \times x_p^k)}, \overline{(r_m \times y_p^k)}, z_p^k)
+    D(T_k, \tilde{C}_m) = \sum_{p=1}^P \tilde{C}(\overline{(r_m \cdot x_p^k)}, \overline{(r_m \cdot y_p^k)}, z_p^k)
 \end{equation*}
 Where $r_m$ is the map size ratio belonging to feature map $\tilde{C}_m$.
 
-The extracted TDDs over a complete video are then aggregated using the Fisher Vector representation cite ?? to form a global video representation.
+The extracted TDDs over a complete video are then aggregated using the Fisher Vector representation \cite{sanchez_image_2013} to form a global video representation.
 A linear SVM is then trained to learn the action classes to these representations.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{img_deep/tdd_featuremaps}
-    \caption{Snapshots of input videos (a), their corresponding optical flow fields in $x$- and $y$-dimension (b - c), the corresponding activations of the feature maps used for TDD extraction (d - g) \cite{wang_action_2015}}
+    \caption{\textit{a}) Snapshots of input videos. \textit{b-c}) Their corresponding optical flow fields in $x$ and $y$ dimension. \textit{d-g}) The corresponding activations of the feature maps used for TDD extraction \cite{wang_action_2015}}
     \label{fig:tdd_featuremaps}
 \end{figure}
 
-Using TDDs for action recognition is evaluated on the UCF-101 and HMDB-51 datasets. Since UCF-101 is bigger than HMDB-51, the authors initially train the two-stream model on the bigger UCF-101 dataset and transfer it for TDD extraction on HMDB-51.
+Using TDDs for action recognition is evaluated on the UCF-101 and HMDB-51 dataset.
+Since UCF-101 is bigger than HMDB-51, the authors initially train the two-stream model on the bigger UCF-101 dataset and transfer it for TDD extraction on HMDB-51.
 
-The weights of the \textbf{Spatial Net} are initialized using the publicly available model of \cite{chatfield_return_2014} and then fine-tuned on the frames of UCF-101 videos.
+The weights of the \textbf{spatial net} are initialized using the publicly available model of \cite{chatfield_return_2014} and then fine-tuned on the frames of UCF-101 videos.
 During fine-tuning, the frames of UCF-101 are first resized to have 256 pixels on their smallest side.
 A randomly cropped region of $224 \times 224$ pixels then builds the network training input after random horizontal flipping.
 
-The \textbf{Temporal Net} is trained from scratch on stacked optical flow image volumes.
-The optical flow between two adjacent frames of a training-video is calculated using the TVL1 algorithm \cite{zach_duality_2007} (implemented in OpenCV) and split into images of it's $x$- and $y$- component.
+The \textbf{temporal net} is trained from scratch on stacked optical flow image volumes.
+The optical flow between two adjacent frames of a training-video is calculated using the TVL1 algorithm \cite{zach_duality_2007} (implemented in OpenCV) and split into images of it's $x$ and $y$ component.
 This forms the optical flow volume for the complete video.
 A $224 \times 224 \times 20$ pixel sized sub-volume is randomly cropped from it and randomly flipped to form a training-input for the temporal stream network.
 
 The authors evaluate the two-stream architecture without extracting TDDs and obtain similar results as \textcite{simonyan_two-stream_2014}.
+Further experimental evaluation shows, that using the descriptors from \textit{conv4} and \textit{conv5} in the spatial net as well as from \textit{conv3} and \textit{conv4} in the temporal net yields best performance.
 
-Experimental evaluation shows, that using the descriptors from \textit{conv4} and \textit{conv5} in the spatial net as well as from \textit{conv3} and \textit{conv4} in the temporal net yields best performance in action recognition.
-
-Combining the descriptors of the spatial and temporal net in the TDD approach significantly outperforms the previous state of the art (two-stream convolutional network \cite{simonyan_two-stream_2014}).
-Quantitative results are shown in table \ref{tab:tdd_results}.
+Combining the descriptors of the spatial and temporal net in the TDD approach significantly outperforms the previous state of the art, such as two-stream convolutional network \cite{simonyan_two-stream_2014}.
+Detailed results are shown in table \ref{tab:tdd_results}.
 
 \begin{table}[H]
     \centering
@@ -1129,10 +1122,6 @@ Quantitative results are shown in table \ref{tab:tdd_results}.
     \caption{Action recognition performance of TDDs on HMDB51 and UCF101 compared to improved dense trajectories (iDT) \cite{wang_action_2013} and two-stream ConvNets \cite{simonyan_two-stream_2014}. \cite{wang_action_2015}}
     \label{tab:tdd_results}
 \end{table}
-
-
-\subsubsection{?Pooling the Convolutional Layers in Deep ConvNets for Action Recognition -- Zhao et al. (2015)}
-\cite{zhao_pooling_2015}
 
 
 \subsection{Generative Models}
@@ -1175,67 +1164,65 @@ The RBM can be extended to process real-valued inputs.
 Deep Belief Networks are stacked Restricted Boltzmann Machines.
 In general the learning capacity of a single RBM is limited, but it can be increased by stacking multiple RBMs to form so called Deep Belief Network. (Lee)
 
-\subsubsection{Unsupervised Learning of Video Representations using LSTMs -- Srivastava et al. (2015)}
-\cite{srivastava_unsupervised_2015}
+\subsubsection{Unsupervised Learning of Video Representations using LSTMs (2015)}
+\textcite{srivastava_unsupervised_2015} design recurrent neural network models based on Long-Short-Term-Memory cells (LSTMs) \cite{hochreiter_long_1997} for unsupervised learning of video representations from unlabeled video data.
+They implement two LSTM networks in an auto-encoder setup: An encoder LSTM network maps input sequences of video frames to a fixed-length representation of hidden states, which is then decoded by another LSTM network to obtain a desired target sequence.
 
-\textcite{srivastava_unsupervised_2015} design models based on Long-Short-Term-Memory (LSTM) recurrent neural networks and evaluate their ability to learn representations of input videos in an unsupervised way from unlabeled video data.
-Similar to the approach taken in auto-encoders, an encoder LSTM network maps input sequences of vectors into a fixed-length representation, which is then decoded by another LSTM network into a target sequence.
-The authors consider different choices for the target sequence: the reversed input sequence, a sequence of future frames after the input ended or a hybrid approach where two LSTM networks decode the representation into both these choices simultaneously.
-Inputs to the LSTM encoder-network can be any kind of video representation, the authors evaluate raw image patches and high level "percepts" that are extracted by a CNN.
-
-The results of the unsupervised setting are evaluated qualitatively by printing the decoded sequences. For a quantitative evaluation, the unsupervisedly pre-trained models are fine-tuned for an supervised action recognition task on the UCF-101 and HMDB-51 dataset.
-
-Three different types of models are being evaluated, which are described below.
+The authors consider three choices for the target sequence:
 \begin{enumerate}
-    \item LSTM Auto-encoder model.
-    \item LSTM Future Predictor model.
-    \item A Composite (hybrid) model.
+    \item The initial input sequence in reversed order (LSTM Auto-encoder model).
+    \item A sequence of future inputs from the video, which were not presented to the encoder network before (LSTM Future Predictor model).
+    \item A hybrid approach with two LSTM networks decoding the representation into both of these choices simultaneously (Composite model).
 \end{enumerate}
 
-The \textbf{LSTM Auto-encoder model} consists of an encoder and a decoder LSTM network.
-The encoder network is presented with one vector of the input sequence per timestep.
-After the final input has been processed, the encoder network's state is used as the representation of the input.
-The decoder network is then trained to translate the representation back into the initial input sequence, but in reverse order.
-If the decoder is able to reconstruct the input sequence accurately from the representation, all needed information about the input sequence must be encoded in the representation (which therefore is a good representation).
+Inputs to the LSTM encoder-network can be any kind of video representation, the authors evaluate raw image patches as well as high-level percepts, that are extracted by a convolutional neural network from the input. 
 
-The model is depicted in figure \ref{fig:unsupervisedlstms_autoencoder}.
+For a quantitative evaluation in a supervised setting, the models are first pre-trained in an unsupervised way and then fine-tuned for an action recognition task on the UCF-101 and HMDB-51 datasets.
+Results of the purely unsupervised setting are evaluated qualitatively by printing and analysing decoded sequences.
+
+The \textbf{LSTM Auto-encoder model}, as shown in figure \ref{fig:unsupervisedlstms_autoencoder}, consists of an encoder and a decoder LSTM network with parameters $W_1$ and $W_2$ respectively.
+The encoder network is presented with one vector of the input sequence per timestep.
+After the final input has been processed, the encoder's hidden state is used as a representation of the input.
+The decoder network is then trained to translate the representation back into the initial input sequence, but in reversed order.
+If the decoder is able to reconstruct the input sequence accurately from the representation, the essential information about the input must be encoded in the representation, which therefore is a good representation.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\textwidth]{img_deep/unsupervisedlstms_autoencoder}
+    \includegraphics[width=0.7\textwidth]{img_deep/unsupervisedlstms_autoencoder}
     \caption{Auto-encoder model \cite{srivastava_unsupervised_2015}}
     \label{fig:unsupervisedlstms_autoencoder}
 \end{figure}
 
-$W_i (i \in \mathbb{N})$ denotes the parameters of the respective LSTM network that are, according to its recurrent nature, applied to its own hidden state given an input $v_i$ of the input sequence $\{v_1, \cdots, v_T\}$ of length $T$.
-$\hat{v}_i (i \in \mathbb{N})$ denotes the outputs of the decoder network.
-The decoder network can be conditional, i.e.\ it receives its last generated output as input.
+The parameters of the LSTM networks $W_1$ and $W_2$ are, according to the network's recurrent nature, applied to its hidden state at timestep $i$, given an input $v_i$ of the input sequence $\{v_1, \cdots, v_T\}$ of length $T$.
+The outputs of the decoder network $\hat{v}_i,\ i \in \{1,\cdots,T\}$ correspond to the decoded input sequence in reversed order.
+The decoder network can be \textit{conditional}, i.e.\ it receives its last generated output as input (dotted boxed in figure \ref{fig:unsupervisedlstms_autoencoder}).
 
-The \textbf{LSTM Future Predictor model} also consists of two LSTM networks but predicts frames that continue after the input sequence.
-The architecture is the same as in the Auto-encoder model, as shown in figure \ref{fig:unsupervisedlstms_futurepredictor}.
-This decoder LSTM network can again be unconditioned or conditional.
+The \textbf{LSTM Future Predictor model} also consists of two recurrent LSTM networks but predicts frames that continue the previously presented input sequence.
+The architecture, as shown in figure \ref{fig:unsupervisedlstms_futurepredictor}, is the same as for the Auto-encoder model.
+This decoder LSTM network can also be \textit{conditional} or \textit{unconditioned}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\textwidth]{img_deep/unsupervisedlstms_futurepredictor}
+    \includegraphics[width=0.7\textwidth]{img_deep/unsupervisedlstms_futurepredictor}
     \caption{Future-predictor model \cite{srivastava_unsupervised_2015}}
     \label{fig:unsupervisedlstms_futurepredictor}
 \end{figure}
 
 The \textbf{Composite model} consists of an encoder LSTM network and two decoder LSTM networks, which reconstruct the original input sequence and predict future frames simultaneously.
 This model tries to overcome the disadvantages that each of the single models have: A high-capacity auto-encoder tends to simply memorize the inputs, while a future predictor tends to store information about just the last few frames of the input, because those are needed most for future prediction.
-The composite model, as shown in figure \ref{fig:unsupervisedlstms_composite}, therefore puts the additional constraint on the encoder networ, that its representation must allow both tasks.
+The composite model, as shown in figure \ref{fig:unsupervisedlstms_composite}, therefore puts additional constraints on the encoder networks, i.e.\ the learned representation must be suitable for both tasks.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\textwidth]{img_deep/unsupervisedlstms_composite}
+    \includegraphics[width=0.7\textwidth]{img_deep/unsupervisedlstms_composite}
     \caption{Composite model \cite{srivastava_unsupervised_2015}}
     \label{fig:unsupervisedlstms_composite}
 \end{figure}
 
-The authors provide a qualitative analysis of the properties of their proposed models through visualization.
-First composite models, with one and two layers consisting of $2048$ LSTM units, are trained on a syntethic dataset of two moving MNIST digits in a $64 \times 64$ pixel area.
-The results for image reconstruction and future prediction shown in figure \ref{fig:unsupervisedlstms_movingmnist}.
+\textcite{srivastava_unsupervised_2015} provide a qualitative analysis of the composite model by visualising its outputs.
+The model, separately evaluated for one and two layers of $2048$ LSTM units each, is trained on 10 frames of synthetically composed video-data consisting of two moving MNIST digits in a $64 \times 64$ pixel area.
+The digits can be superimposed and bounce off the walls.
+The results for image reconstruction and future prediction are shown in figure \ref{fig:unsupervisedlstms_movingmnist}.
 
 \begin{figure}[H]
     \centering
@@ -1244,10 +1231,10 @@ The results for image reconstruction and future prediction shown in figure \ref{
     \label{fig:unsupervisedlstms_movingmnist}
 \end{figure}
 
-These results show, that the model is able to make fairly good predictions on this dataset.
-Adding a second layer and making the future predictor conditional further improves the predictions.
-
-When applying the model on $32 \times 32$ image patches of real-life videos from the UCF-101 dataset, results show, that the future prediction quickly blurs out.
+The first row of figure \ref{fig:unsupervisedlstms_movingmnist} shows the 10 frame input sequence and the following 10 future frames.
+The model is able to make fairly good predictions on this dataset.
+Adding a second layer of LSTM units and making the future predictor conditional further improves the predictions.
+When applying the model on $32 \times 32$ natural image patches of real-life videos from the UCF-101 dataset, results show however, that the future prediction quickly blurrs out as illustrated in figure \ref{fig:unsupervisedlstms_ucfpatches}.
 
 \begin{figure}[H]
     \centering
@@ -1256,49 +1243,54 @@ When applying the model on $32 \times 32$ image patches of real-life videos from
     \label{fig:unsupervisedlstms_ucfpatches}
 \end{figure}
 
-The authors evaluate if features obtained from unsupervised learning can increase the accuracy in supervised action recognition:
-A two layer composite model is trained in an unsupervised way on 300 hours of video, composed of 10 seconds clips randomly sampled from the Sports-1M dataset.
-Once trained, a LSTM classifier is initialized with the weights of the encoder network (figure \ref{fig:unsupervisedlstms_classifier}).
-Depending on the used benchmark, this classifier is then fine-tuned using backpropagation on either UCF-101 or HMDB-51.
+The authors evaluate the effectiveness of features obtained from unsupervised learning for supervised action recognition:
+
+\begin{enumerate}
+    \item A two layer model with $2048$ LSTM cells in each layer is trained in an unsupervised way on 300 hours of video, randomly sampled from the Sports-1M dataset.
+        The model is trained to autoencode 16 frames and predict 13 frames.
+    \item Once training is finished, a LSTM network as shown in figure \ref{fig:unsupervisedlstms_classifier} is initialized with the weights learned by the composite model.
+    \item Depending on the used benchmark, this LSTM network is then fine-tuned on either UCF-101 or HMDB-51 to function as a supervised classifier.
+\end{enumerate}
+
 The model is designed to use center crops of size $224 \times 224$ from the datasets or high-level optical-flow percepts, i.e.\ activations of a temporal stream CNN as in \cite{simonyan_two-stream_2014}, as inputs.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{img_deep/unsupervisedlstms_classifier}
-    \caption{LSTM classifier applied on an input sequence $\{v_1, \cdots, v_T\}$ \cite{srivastava_unsupervised_2015}}
+    \caption{Recurrent LSTM classifier unfolded in time with input sequence $\{v_1, \cdots, v_T\}$ \cite{srivastava_unsupervised_2015}}
     \label{fig:unsupervisedlstms_classifier}
 \end{figure}
 
-Baseline method is initializing the model with random weights.
-The results show, that initializing the model with features obtained from unsupervised learning increases the performance significantly, when only very few training examples per class are available (improvement of about $5\%$).
+Baseline method involves initializing the model with random weights.
+The results as given in table \ref{tab:unsupervisedlstms_results} show, that initializing the model with features obtained from unsupervised learning increases the performance significantly, when only very few training examples per class are available (improvement of about $5\%$).
 With more available labeled data, the improvement becomes smaller (about 1\%).
 
-The authors conclude: Even models pretrained on unrelated datasets (300 hours of YouTube videos) can help action recognition performance.
-Unsupervised learning gives a significant improvement if only few training examples are available.
+\begin{table}
+    \centering
+    \includegraphics[width=\textwidth]{img_deep/unsupervisedlstms_results}
+    \caption{Comparison of unsupervised pre-training methods for an two-layer LSTM classifier. The small versions of benchmarking datasets are subsets containing only 10 (UCF-101) and 4 (HMDB-51) action videos per class. \cite{srivastava_unsupervised_2015}}
+    \label{tab:unsupervisedlstms_results}
+\end{table}
+
+The authors conclude: Pretraining models on just unrelated datasets (here 300 hours of YouTube videos) can increase action recognition performance.
+Unsupervised learning gives a significant improvement if only few labeled training examples are available.
 
 
-\subsubsection{Action Recognition Using Convolutional Restricted Boltzmann Machines -- Palasek and Patras (2016)}
-\cite{palasek_action_2016}
-
-\textcite{palasek_action_2016} apply Convolutional Deep Belief Networks (ConvDBNs), which are generated by stacking Convolutional Restricted Boltzmann Machines (ConvRBMs), to static video frames to learn video representations for human action recognition in an unsupervised fashion.
-
+\subsubsection{Action Recognition Using Convolutional Restricted Boltzmann Machines (2016)}
+%\cite{palasek_action_2016}
+\textcite{palasek_action_2016} apply Convolutional Deep Belief Networks (ConvDBNs) for learning video representations in an unsupervised fashion in order to perform human action recognition.
+ConvDBNs are generated by stacking layers of Convolutional Restricted Boltzmann Machines (ConvRBMs) \cite{lee_convolutional_2009-1}.
 The ConvRBM was initially proposed by \textcite{lee_convolutional_2009-1} to address several problems that occur when applying RBMs and DBNs to images:
+
 \begin{enumerate}
     \item Realistic images are high-dimensional and DBNs do not scale well with the input size. \cite{lee_convolutional_2009-1} 
-    \item DBNs do not take the special structure of images into account, specifically that objects can occur in any area of the image. Features therefore have to be learned for each location in the image separately. \cite{lee_convolutional_2009-1} 
+    \item DBNs do not take the special structure of images into account, specifically that objects can occur in any area of an image. Feature extractors therefore have to be learned for each location in the image separately. \cite{lee_convolutional_2009-1} 
 \end{enumerate}
 
 Equivalently to Convolutional Neural Networks, the Convolutional Restricted Boltzmann Machine uses weight-sharing and pooling to make the detection of a specific feature in an input image translationally invariant.
 
-The basic ConvRBM architecture is shown in figure \ref{fig:convrbm_architecture}.
-The visible layer $V$ is constituted of binary input units, but can be easily modified to handle real-valued inputs.
-The hidden layer consists of $K$ groups, with a filter $W^k$ belonging to each group ($k \in \{1,\cdots, K\}$).
-To illustrate the equivalency to other translational invariant architecture such as CNNs, which consists of detection and pooling layers, the hidden layer is denoted as detection layer in Figure \ref{fig:convrbm_architecture}.
-A group corresponds to a feature map in CNNs, i.e. the activations produced by a convolutional filter.
-The filter weights define the connections between a local patch in the visible layer and a hidden unit in the detection layer of the filter's group.
-All hidden units in the detection layer of a group are connected to their local patches by the same filter weights.
-The hidden units share a bias $b_k$ per group and all visible units have a single bias $c$.
-\cite{lee_convolutional_2009-1}
+The basic \textbf{ConvRBM} architecture is shown in figure \ref{fig:convrbm_architecture}.
+It has the following properties:\cite{lee_convolutional_2009-1}
 
 \begin{figure}[H]
     \centering
@@ -1307,92 +1299,107 @@ The hidden units share a bias $b_k$ per group and all visible units have a singl
     \label{fig:convrbm_architecture}
 \end{figure}
 
-ConvRBMs are stacked above each other to form a more expressive deep architecture, called Convolutional Deep Belief Networks (ConvDBNs).
-Equivalently to Convolutional Neural Networks, probabilistic max-pooling is used to reduce the dimensionality of each hidden (detection) layer.
-Since regular max-pooling was designed for deterministic models, \textcite{lee_convolutional_2009-1} derive a probabilistic max-pooling method, in order to enable full probabilistic inference in their model.
+\begin{itemize}
+    \item The visible layer $V$ consists of binary input units, but can be easily modified to handle real-valued inputs.
+    \item The hidden layer $H$ consists of $K$ groups, with a filter $W^k$ belonging to each group ($k \in \{1,\cdots, K\}$).
+        To illustrate the equivalency to CNNs, which consists of detection and pooling layers, the hidden layer is denoted as \textit{detection layer} in figure \ref{fig:convrbm_architecture}.
+    \item A group corresponds to a feature map in CNNs, i.e. the activations produced by a convolutional filter.
+    \item The filter weights define the connections between a local patch in the visible layer and a hidden unit in the detection layer of the filter's group.
+    \item All hidden units in the detection layer of a group are connected to their local patches by the same filter weights, i.e\ the filters in a group share weights.
+    \item The hidden units share a bias $b_k$ per group and all visible units have a single bias $c$.
+\end{itemize}
+
+To form a more expressive deep architecture, called Convolutional Deep Belief Networks (ConvDBNs), layers of ConvRBMs are stacked.
+Probabilistic max-pooling is used to reduce the dimensionality of each hidden (detection) layer.
+Since regular max-pooling was designed for deterministic models such as CNNs, a probabilistic max-pooling method is derived, in order to enable full probabilistic inference in the model.
 In probabilistic max-pooling, only one unit in the input patch of the pooling operation is allowed to be active.
 The output unit is active, if and only if one unit in the input patch is active.
 Pooling operations are needed, to feed progressively more information to higher-level feature detectors and to make high-level representations invariant to translations of features in the lower layers. \cite{lee_convolutional_2009-1}
 
 The energy function of the ConvDBN is defined by summing the energy functions of the individual ConvRBMs.
-ConvDBNs are trained in a greedy, layer-wise way: After a layer is trained individually, its weights are frozen and its activations in the hidden/detection layer are taken as inputs for the following layer.
+ConvDBNs can be trained in a greedy, layer-wise way: After a ConvRBM layer is trained individually, its weights are frozen and its activations in the hidden/detection layer are taken as inputs for the following layer.
 \cite{lee_convolutional_2009-1}
 
-\textcite{palasek_action_2016} devise and evaluate an approach for using the activations of three stacked ConvRBMs (a ConvDBN) for action recognition.
-They use the Gaussian-Bernoulli version of ConvRBMs, which is the real-valued extension of regular binary ConvRBMs, to extract features from still video patches and aggregate them into a video representation that can be classified using a SVM.
+\textcite{palasek_action_2016} apply three stacked ConvRBMs (a ConvDBN) to action recognition.
+They use the Gaussian-Bernoulli version of ConvRBMs, which is the real-valued extension of regular binary ConvRBMs, to extract features from still video frames and aggregate them into a video representation that can be classified using a SVM.
 
-Different configurations for the ConvDBN are being evaluated as feature extractors:
+Different configurations for the layers in the ConvDBN are being evaluated:
 \begin{description}
-    \item[1.\ layer ConvRBM] \hfill \\
+    \item[First layer ConvRBM] \hfill \\
         Either $32$ or $64$ filters sized $5 \times 5$ or $3 \times 3$ pixels.\\
         Optional probabilistic max-pooling layer with patch size of $2 \times 2$ units.
-    \item[2.\ layer ConvRBM] \hfill \\
+    \item[Second layer ConvRBM] \hfill \\
         Contains $64$ filters of size $3 \times 3$
         Optional probabilistic max-pooling layer with patch size of $2 \times 2$ units.
-    \item[3.\ layer ConvRBM] \hfill \\
+    \item[Third layer ConvRBM] \hfill \\
         Contains $128$ filters of size $3 \times 3$ pixels.
         Optional probabilistic max-pooling layer with patch size of $2 \times 2$ units.
 \end{description}
 
-The approach for generating fixed length video representations for variable sized input videos is shown in \ref{fig:palasekpatras_approachschematik}.
+The approach for generating fixed length video representations for variable sized input videos is shown in figure \ref{fig:palasekpatras_approachschematik}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{img_deep/palasekpatras_approachschematik}
+    \includegraphics[width=\textwidth]{img_deep/palasekpatras_approachschematik}
     \caption{Approach for generating fixed sized video-representations using ConvDBN activations. An input video is handled as video-volume of stacked frames. \cite{lee_convolutional_2009-1}}
     \label{fig:palasekpatras_approachschematik}
 \end{figure}
 
-Given an input video, video subvolumes of size $32 \times 32$ pixels and of length $15$ subframes are extracted at random positions in the video-volume.
+Given an input video, interpreted as a volume of stacked video frames, subvolumes of size $32 \times 32$ pixels and with a length of $15$ frames are extracted at random positions.
 Each subframe is fed individually into the ConvDBN and the resulting activations of one of its layers are extracted.
 The activations of all subframes are stacked to form a feature representation of the subvolume.
-This feature representation is then divided into $2 \times 2 \times 3$ parts, mean-pooled anlong the temporal dimension, spatially pooled and concatenated to form the final representation of the given subvolume (see figure \ref{fig:palasekpatras_approachschematik}). \cite{lee_convolutional_2009-1}
+This feature representation is then divided into $2 \times 2 \times 3$ parts, mean-pooled along the temporal dimension, spatially pooled and concatenated to form the final representation of the given subvolume (see figure \ref{fig:palasekpatras_approachschematik}). \cite{lee_convolutional_2009-1}
 
-A Gaussian Mixture Model is trained on all the extracted feature representations to extract the final Fisher Vector representation of the video.
-These Fisher Vector can then be classified using a SVM.
+A Gaussian Mixture Model is trained on all the extracted feature representations to encode them into a Fisher Vector representation of the video.
+These Fisher Vectors can then be classified using a SVM, as in approaches that use hand-crafted local features (see section \ref{chap:conventional}).
  
-Their model is unsupervisedly trained on greyscaled, static video-frames of the UCF-101 dataset, which contains a total of $1700000$ frames.
-For each of the 9537 videos in split 1 of the UCF-101 dataset, $1000$ subvolumes are extracted to train the ConvDBN in an unsupervised way.
+\textcite{palasek_action_2016} evaluated their approach using the activations of different ConvDBN layers as features.
+The ConvDBN is trained in an unsupervised way on greyscaled, static video-frames of the UCF-101 dataset, which contains a total of $1,700,000$ frames.
+For each of the 9537 training videos UCF-101 dataset, $1000$ subvolumes are extracted as training inputs for the ConvDBN.
 
-\textcite{palasek_action_2016} evaluated their approach using activations from different ConvDBN layers.
 Activations from the first pooling layer worked best and yield an accuracy of $55.06\%$ in the overall approach.
 Although, the results are not competitive to other state-of-the-art approaches reported previously in this work, the experiments were conducted to compare the performance of features learned in an unsupervised manner to hand-crafted features.
+
 The authors also evaluated incorporating HOG features in their experimental setup and achieved significantly worse results: $50.75\%$.
 They therefore argue, that features learned in an unsupervised way are more descriptive than hand-crafted features for human action recognition from video.
-\cite{lee_convolutional_2009-1}
+
+The authors showed, that features learned from video data in an unsupervised way is able to outperform hand-crafted features.
+The overall performance, that is action recognition accuracy of $55.06\%$ on UCF-101, is rather weak compared to other approaches.
+This probably stems from the fact, that features were learned from static frames only, instead of incorporating motion information.
 
 \subsection{Temporal Coherency Networks}
+TODO ?? Description
+
 ``Temporal Coherency is a form of weak supervision and states that consecutive frames are correlated both semantically and dynamically.'' going deeper into action recognition.
 
-Previous unsupervised approaches only yielded moderate increase in accuracy against initializing the weights randomly.
+Previous unsupervised approaches only yield moderate increase in accuracy against initializing the weights randomly.
 
 Misra:
 Example tasks: Ordering of frames, determining the relative temporal proximity of frames.
 
 %\subsubsection{Unsupervised learning of spatiotemporally coherent metrics -- Goroshin et al. (2015)}
 %cite{goroshin_unsupervised_2015}
-
-
 %subsubsection{Unsupervised learning of visual representations using videos -- Wang and Gupta (2015)}
 %cite{wang_unsupervised_2015}
 
-
-\subsubsection{Shuffle and Learn: Unsupervised Learning using Temporal Order Verification -- Misra et al. (2016)}
-\cite{misra_shuffle_2016}
-
-\textcite{misra_shuffle_2016} propose an efficient unsupervised representation learning method based on temporal order verification.
-
-Temporal order verification is a binary classification task. Given a sequence of video frames, a classifier has to determine whether the sequence is in correct temporal order.
-Datasets to train and test such a classifier can be easily generated by drawing short sequences of frames from a video and switching frames in a subset of all sampled sequences.
+\subsubsection[Shuffle and Learn: Unsupervised Learning using Temporal Order Verification (2016)]{Shuffle and Learn: Unsupervised Learning using Temporal Order Verification -- Misra et al. (2016)}
+%\cite{misra_shuffle_2016}
+\textcite{misra_shuffle_2016} propose an efficient method for learning video representations based on temporal order verification.
+Temporal order verification is a binary classification task.
+Given a sequence of video frames, a classifier has to determine whether the sequence is in correct temporal order.
+Datasets to train and test such a classifier can be easily generated by sampling short sequences of frames from a video and exchanging frames in some of them.
 
 In the strictest sense, using temporal order verification for representation learning is not an unsupervised method, since the labels \textit{correct temporal order} and \textit{incorrect temporal order} are learned for input sequences.
 The authors argument however, that obtaining the label is free and the method can therefore be attributed as unsupervised.
 
-Learning the validity of a sequence of frames yields a representation that captures the motion of persons and objects in the scene. It therefore embeds information that is important for accurate action recognition.
+Forcing an algorithm to reasoning about the temporal order of frames, produces a representation that captures the motion of persons and objects in the scene, since they define the temporal order.
+A resulting video representation therefore embeds information that is most vital for accurate action recognition.
 
-The authors evaluate their method using a Convolutional Neural Network architecture, that is applied to each frame of the sequence in parallel.
-They propose using input sequences of three frames, since four or five frames did not yield a significant improvement in performance.
-Results are obtained using the UCF-101 and HMDB-51 benchmark datasets.
+The authors evaluate this approach using a Convolutional Neural Network, that is applied to a sequence of three frames in parallel.
+Input sequences of three frames are used, since four or five frames did not yield a significant improvement in performance.
+Results are obtained on the UCF-101 and HMDB-51 benchmark dataset.
+
+Figure \ref{fig:shufflelearn_approach} shows the approach for sampling input sequences from an unlabeled video and the triplet CNN architecture for classifying these sequences.
 
 \begin{figure}[H]
     \centering
@@ -1401,18 +1408,16 @@ Results are obtained using the UCF-101 and HMDB-51 benchmark datasets.
     \label{fig:shufflelearn_approach}
 \end{figure}
 
-Figure \ref{fig:shufflelearn_approach} shows the approach for sampling input sequences from an unlabeled video and the triplet CNN architecture for classifying these sequences.
-
-The three frames, that are used to construct positive and negative input sequences are sampled from regions in the video, that were previously identified to contain a certain magnitude of motion by using optical flow.
+The three frames, that are used to construct positive and negative input sequences are sampled from regions in the video, which were previously identified to contain a certain magnitude of motion by using optical flow.
 This ensures, that the sampled frames differ enough to make positive and negative sequences clearly distinguishable.
 
-The authors use the standard CaffeNet implementation available in Caffe??, which is a slight modification of AlexNet ??.
+The authors use a CNN model called CaffeNet, which is a slightly modified version of AlexNet \cite{krizhevsky_imagenet_2012-1} and is publicly available in Caffe \cite{jia_caffe:_2014}. 
 The CNNs form a siamese triplet, i.e.\ they all share the same parameters, and each one takes one of the frames of the sequence as input.
 Each network maps its input frame to a high-level representation of activations in the layer $fc7$.
-The three representations are concatenated an fed into a classifier for predicting, whether the sequence is in correct or incorrect order.
+The three representations are concatenated an fed into a classifier for predicting, whether the sequence is in correct or not.
 
 The network is trained on about $900$k sequences extracted from the training set of UCF-101 (split 1).
-The resulting video representations can be reused for supervised action recognition training, by initializing the first layer of a new CNN up to $fc7$ with the weights of the unsupervised model, adding an additional layer $fc8$ for the new task and fine-tune the complete network using labeled training data.
+The resulting video representations can be reused for supervised action recognition training, by initializing the layers of a new CNN up to $fc7$ with the weights of the unsupervised model, adding an additional layer $fc8$ for the new task and fine-tuning the complete network using labeled training data.
 
 To compare the advantage of their unsupervised pre-training method against no pre-training, the authors report results for the UCF-101 and HMDB-51 dataset (table \ref{tab:shufflelearn_results})
 
@@ -1423,23 +1428,6 @@ To compare the advantage of their unsupervised pre-training method against no pr
     \label{tab:shufflelearn_results}
 \end{table}
 
-On UCF-101 pre-training using temporal order verification yields a significant improvement of $+12.4\%$ against training the network from scratch.
-On HMDB-51, the authors evaluate no pre-training, pre-training on UCF-101 and pre-training using temporal oder verification. The improvement of the latter is smaller compared to the reulsts of UCF-101 but still significant (increase in mean accuracy of $+4.7\%$).
-
-According to the authors, this results show the informativeness of video representations learned by temporl order verification.
-
-qualitative analysis
-
-\subsubsection{Misc}
-Modeling Video Evolution For Action Recognition? -- Fernando
-
-Actions~Transformations.
-
-\subsection{Comparison}
-Nice comparison in related work section of ``Beyond Temporal Pooling:  Recurrence and Temporal Convolutions for Gesture Recognition in Video''
-Convolutions for Gesture Recognition in Video
-
-One problem of deep learning methods is that they require a large number of labeled videos for training, while most available datasets are relatively small.
-Meanwhile, most of current deep learning based action recognition methods largely ignore the intrinsic difference between temporal domain and spatial domain, and just treat temporal dimension as feature channels when adapting the architectures of ConvNets to model videos.
-
-Introduction of Feichtenhofer: Current state of the art - Tran and TDD.
+On UCF-101 pre-training with temporal order verification yields a significant improvement of $+12.4\%$ against training the network from scratch.
+On HMDB-51, the authors evaluate no pre-training, supervised pre-training on UCF-101 and pre-training using temporal oder verification.
+The improvement of the latter is smaller compared to the reulsts of UCF-101 but still significant (increase in mean accuracy of $+4.7\%$).

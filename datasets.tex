@@ -1,67 +1,29 @@
 \section{Datasets and Benchmarks in Action Recognition}
 \label{chap:datasets}
 
-The creators of UCF-101 and HMDB-51 provide three splits of their datasets into training- and testing-data.
-The standard evaluation procedure is to report the average accuracy over those three splits, which the authors follow in this work as well.
-simonyan zisserman two-stream approach
+Using publicly available dataset for evaluating action recognition algorithms has two main benefits:
+\begin{enumerate}
+    \item Collecting, annotating and storing video datasets is a tedious task, since videos have a higher dimensionality than images and especially deep learning algorithms require large amounts of training data. Additionally, the beginning and end of a performed action has to be included in the action label, possibly along with the spatial position of the action in the scene. Therefore using already existing datasets saves time in the development of action recognition algorithms.
+    \item More importantly: Using the same datasets in different approaches, along with standardized evaluation schemes, enables the comparison between them. This is the basis of evaluating the quality of action recognition approaches. 
+\end{enumerate}
 
-``From a practical standpoint, there are currently no video classification benchmarks that match the scale and variety of existing image datasets because videos are significantly more difficult to collect, annotate and store.'' cite large-scale image classification
+Given the importance of datasets in the computer vision community, a couple of reviews have been published \cite{ahad_action_2011}\cite{liu_benchmarking_2011}\cite{hassner_critical_2013}\cite{chaquet_survey_2013}.
+The review of \textcite{ahad_action_2011} and \textcite{liu_benchmarking_2011} were published back in 2011 and provide only a brief overview of benchmarking datasets.
+\textcite{hassner_critical_2013} also review available datasets briefly and promote a completely different approach to benchmarking action recognition approaches, namely \textit{Action Similarity Labelling}, which is further describes in this below in this section.
+\textcite{chaquet_survey_2013} provide a very comprehensive and detailed review of human action video datasets, which was published in 2013.
 
-``In particular, commonly used datasets (KTH, Weizmann, UCF Sports, IXMAS, Hollywood 2, UCF-50) only contain up to few thousand clips and up to few dozen classes.
-Even the largest available datasets such as CCV (9,317 videos and 20 classes) and the recently introduced UCF-101[22] (13,320 videos and 101 classes) are still dwarfed by available image datasets in the number of instances and their variety [7].'' cite large-scale image classification
+Building on \cite{chaquet_survey_2013}, this section gives a brief review of the most commonly used datasets and focusses on the newest ones.
+All datasets in this section are publicly available.
+Additionally, a review of datasets containing Activites of Daily Living (ADL) is given.
+These datasets could be used to design and train a real-world action recognition system, to be used in assisted living environments.
 
-``In [4], Gao et al. presented a comprehensive study on the influence of the evaluation protocol on the final results. It was shown that the use of different experimental configurations can lead to performance differences up to 9\%.''
-``Action recognition methods are usually directly compared although they use different testing protocols or/and datasets (KTH1 or KTH2), which distorts the conclusions.''
-cite sequential deep learning for human action recognition.
-
-``Unfortunately,
-since the creation of the dataset, about 7\% of the videos have been removed by users. We use the remaining 1.1 million videos for the experiments below.
-Although Sports-1M is the largest publicly available video dataset, the annotations that it provides are at video level.
-No information is given about the location of the class of interest.
-Moreover, the videos in this dataset are unconstrained.
-This means that the camera movements are not guaranteed to be well-behaved, which means that unlike UCF-101, where camera motion is constrained, the optical flow quality varies wildly between videos.''
-
-Recent research focuses on realistic datasets collected from movies [20, 22], web videos [21,31], TV shows [28], etc. These datasets impose significant challenges on action recognition, e.g., background clutter, fast irregular motion, occlusion, viewpoint changes. [improved dense trajectories 2013]
-
-``Another large scale dataset is the THUMOS dataset [8] that has over 45M frames. Though, only a small fraction of these actually contain the labelled action and thus are useful for supervised feature learning.'' Feichtenhofer 2016
-
-Due to the label noise, learning spatiotemporal ConvNets still largely relies on smaller, but temporally consistent datasets such as UCF101 [24] or HMDB51 [13] which contain short videos of actions.
-This facilitates learning, but comes with the risk of severe overfitting to the training data. Feichtenhofer 2016
-
-UCF101 is considered extremely small. cite Towards good practices for very deep two-stream ConvNets -- wang 2015.
-
-
-The use of
-publicly available datasets has two main advantages. On the one
-hand, they save time and resources, that is, there is no need to
-record new video-sequences or pay for them, so researchers can fo-
-cus on their particular algorithms and implementations. On the
-other hand, and this is even more important, the use of the same
-datasets facilitates the comparison of different approaches and
-gives insight into the abilities of the different methods. This survey
-is mainly focused on the video datasets that are composed by het-
-erogeneous action sets, i.e., typical actions that can appear in a
-variety of situations or scenarios and are recorded by visible spec-
-trum cameras.
-Chaquet A survey of video datasets for human action and activity recognition.
-
-\subsection{Review of Benchmarking Datasets for Action Recognition Algorithms}
-Review of the datasets for human action recognition, that contain a single person performing an action.
-
-All datasets are publicly available and the download links can be found in the referenced publications.
-
-We will give a general overview of the most common datasets but focus on newest ones (since 2013). 
-
-Detailed and comprehensive review of action recognition dataset ranging from 2001 to 2012 was released in 2013 by \textcite{chaquet_survey_2013}.
-They provide a fine-grained classification by the type of actions present in the videos, i.e.\ heterogeneos actions, specific actions and others (see figure~\ref{fig:datasetssurvey_taxonomy}).
-
+\textcite{chaquet_survey_2013} provide a fine-grained classification according to the type of actions present in the datasets, as illustrated in figure~\ref{fig:datasetssurvey_taxonomy}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{img_datasets/datasetssurvey_taxonomy}
     \caption{Taxonomy of publicly available datasets provided by \cite{chaquet_survey_2013}}
     \label{fig:datasetssurvey_taxonomy}
 \end{figure}
-
 \begin{description}
     \item[Heterogeneous Actions] describes the class of common actions that can appear in a wide variety of scenes and situations.
         Because of their generality, most benchmarking datasets, as well as the survey of \textcite{chaquet_survey_2013} focus on this kind of actions.
@@ -69,15 +31,20 @@ They provide a fine-grained classification by the type of actions present in the
     \item[Others] denotes the category, that is specified by the technique used to capture the action datasets. Examples are Motion Capture, i.e.\ capturing human motion aided by special instruments such as joint markers and thermal or infrared imaging.
 \end{description}
 
-In the following: Classification by age, increasing by complexity, the oldest datasets being the least complex ones, as done in \cite{hassner_critical_2013}
+Since the actions of interest in this work are heterogeneous and can appear in any kind of context, we use a different classification scheme.
+As proposed in \cite{hassner_critical_2013} action recognition datasets can be roughly categorized into three epochs, which differ in age, source of the videos and complexity.
+\begin{enumerate}
+    \item \textbf{Early Benchmarking Datasets} provide low resolution videos of a few basic action classes. These datasets are usually recorded under controlled conditions with static cameras, uncluttered backgrounds and actions are performed by actors.
+    \item \textbf{Intermediate Benchmarking Datasets} are larger and more challenging for action recognition algorithms compared to early datasets. Actions in this class are usually sampled from television broadcasts or movies and provide uncontrolled conditions, moving cameras, cluttered backgrounds and occlusion. Given their source, videos in these datasets can be considered high-quality.
+    \item \textbf{Modern Datasets} aim at providing a large number of action classes and examples. Videos in modern datasets are most often sampled from YouTube to provide real-world footage with varying resolutions, different lighting conditions, cuts, cluttered backgrounds and moving cameras. These are the most challennging datasets to date.
+\end{enumerate}
 
 
 \subsection{Early Benchmarking Datasets -- Controlled Conditions}
 
-
 \subsubsection{KTH -- 2004}
-\cite{schuldt_recognizing_2004}\\
-KTH is an early and widely used benchmarking dataset containing grayscale video-clips of atomic actions performed by $25$ different actors in controlled environments.
+%\cite{schuldt_recognizing_2004}\\
+The KTH dataset \cite{schuldt_recognizing_2004} is an early and widely used benchmarking dataset containing grayscale video-clips of atomic actions performed by $25$ different actors in controlled environments.
 The dataset was created and released by the swedish KTH Royal Institute of Technology in 2004.
 It's considered a milestone in computer vision \cite{chaquet_survey_2013} and is the most commonly used publicly available dataset of human actions \cite{baccouche_sequential_2011}.
 It was the largest video dataset of human actions at that time and enabled a systematic and comparable evaluation of action recognition algorithms by using the same input data.
@@ -93,7 +60,7 @@ Dataset details: \cite{schuldt_recognizing_2004}
     \item $4s$ average sequence length
 \end{itemize}
 
-Example frames of the KTH dataset, ordered by action class and recording scenarios, are depicted in the following figure ~\ref{fig:kth_example}.
+Figure ~\ref{fig:kth_example} shows example frames of the KTH dataset, ordered by action class and recording scenarios.
 
 \begin{figure}[H]
     \centering
@@ -104,13 +71,13 @@ Example frames of the KTH dataset, ordered by action class and recording scenari
 
 
 \subsubsection{Weizmann -- 2005}
-\cite{blank_actions_2005}\\
-One year after KTH, the Weizmann dataset (also known as Weizmann actions as space-time shapes dataset) was released in 2005 by the Weizmann Institute of Science in Israel.
-The dataset contains more action classes than KTH but features less performers per action class.
-The actions are recorded in controlled conditions.
-Additionally to the action labels, the silhouettes of the actors as well as the background sequences for background subtraction are provided with the dataset.
+%\cite{blank_actions_2005}\\
+One year after KTH, the Weizmann dataset \cite{blank_actions_2005} (also known as Weizmann actions as space-time shapes dataset) was released in 2005 by the Weizmann Institute of Science in Israel.
+The dataset provides more action classes than KTH but features less performers per action class.
+The actions are also recorded in controlled conditions.
+Additional to the action labels, the silhouettes of the actors as well as the background sequences for background subtraction are provided with the dataset.
 The actors move horizontally in the scene, so no change of their size due to changing distances to the camera is present.
-Some actions are repeated in different directions to account for the asymmetrical nature of the action. \cite{kang_review_2016}
+Some actions are repeated in different directions to account for their asymmetrical nature.
 
 Dataset details: \cite{kang_review_2016}
 \begin{itemize}
@@ -123,21 +90,21 @@ Dataset details: \cite{kang_review_2016}
     \item $3.66s$ average clip length.
 \end{itemize}
 
-Example frames for some action classes are shown in the following figure \ref{fig:weizmann_example}.
+Figure \ref{fig:weizmann_example} shows example frames for some of the action classes of Weizmann dataset.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{img_datasets/weizmann_example}
+    \includegraphics[width=0.7\textwidth]{img_datasets/weizmann_example}
     \caption{Example frames for the action classes \textit{jumping jacks}, \textit{run}, \textit{walk} and \textit{gallop sideways} along with provided foreground silhouette-masks \cite{blank_actions_2005}}
     \label{fig:weizmann_example}
 \end{figure}
 
 
 \subsubsection{IXMAS -- 2006}
-\cite{weinland_free_2006}\\
-The INRIA Xmas Motion Acquisition Sequences dataset (IXMAS) was initially released in 2006 by the French National Institute for Computer Sciences (INRIA) \cite{weinland_free_2006}.
+%\cite{weinland_free_2006}\\
+The INRIA Xmas Motion Acquisition Sequences dataset (IXMAS) \cite{weinland_free_2006} was initially released in 2006 by the French National Institute for Computer Sciences (INRIA) \cite{weinland_free_2006}.
 It was designed to study robustness of action recognition algorithms against viewpoint changes, actor gender and body size.
-The dataset therefore contains multi-view shots (5 synchronized cameras) of male and female actors performing atomic motions of the daily-living.
+The dataset therefore contains multi-view shots (5 synchronized cameras) of male and female actors performing atomic actions of the daily-living.
 The initial release, as described in \cite{weinland_free_2006}, contained $11$ action classes, performed by $10$ actors and was later extended.
 
 Dataset details (extended release): \cite{_inria_????}
@@ -149,15 +116,15 @@ Dataset details (extended release): \cite{_inria_????}
     \item Static camera, $5$ different perspectives of each performance.
 \end{itemize}
 
-Example frames of the $11$ actions in the initial release are shown in figure \ref{fig:ixmas_example} below.
+%Example frames of the $11$ actions in the initial release are shown in figure \ref{fig:ixmas_example} below.
 Figure \ref{fig:ixmas_fiveviews} shows the five different camera perspectives of the action \textit{checking watch}.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{img_datasets/ixmas_example}
-    \caption{Example frames for the action classes in the initial IXMAS release \cite{weinland_free_2006}}
-    \label{fig:ixmas_example}
-\end{figure}
+%
+%\begin{figure}[H]
+%    \centering
+%    \includegraphics[width=0.8\textwidth]{img_datasets/ixmas_example}
+%    \caption{Example frames for the action classes in the initial IXMAS release \cite{weinland_free_2006}}
+%    \label{fig:ixmas_example}
+%\end{figure}
 
 \begin{figure}[H]
     \centering
@@ -167,14 +134,14 @@ Figure \ref{fig:ixmas_fiveviews} shows the five different camera perspectives of
 \end{figure}
 
 
-\subsection{Interim Benchmarking Datasets -- Television and Movies}
+\subsection{Intermediate Benchmarking Datasets -- Television and Movies}
 
 
 \subsubsection{UCF Sports -- 2008}
-\cite{rodriguez_action_2008}\cite{soomro_action_2014}\\
-The UCF Sports Dataset was initially released in 2008 by the Department of Electrical Engineering and Computer Science at the University of Central Florida (UCF), where several human action datasets were released.
+%\cite{rodriguez_action_2008}\cite{soomro_action_2014}\\
+The UCF Sports Dataset was initially released in 2008 by the Department of Electrical Engineering and Computer Science at the University of Central Florida (UCF), where several human action datasets stem from as well.
 The dataset contains video clips of sport actions, recorded from broadcast television channels such as the BBC and ESPN.
-Because of its origin in television, the video data is of high quality and presents moving cameras and changing backgrounds.
+Because of its origin in television, the video data is of professional quality with moving cameras and changing backgrounds.
 
 The initial release of the dataset \cite{rodriguez_action_2008} contained nine action classes: diving, golf swining, kicking, lifting, horseback riding, running, skating, swinging a baseball bat and pole vaulting
 Example frames of the first release are shown in figure \ref{fig:ucfsports1_example}.
@@ -193,7 +160,7 @@ Dataset details (second, final release): \cite{_center_????}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{img_datasets/ucfsports1_example}
+    \includegraphics[width=0.9\textwidth]{img_datasets/ucfsports1_example}
     \caption{Example frames of UCF Sports Dataset (release 1) \cite{rodriguez_action_2008}}
     \label{fig:ucfsports1_example}
 \end{figure}
@@ -207,9 +174,9 @@ Dataset details (second, final release): \cite{_center_????}
 
 
 \subsubsection{Hollywood -- 2008}
-\cite{laptev_learning_2008} \\
-The Hollywood dataset was released in 2008 at the IRISA Institue in France and contains video samples of human actions drawn from $32$ movies, divided into $8$ different action classes.
-The dataset provides a predefined split into training and test set:
+%\cite{laptev_learning_2008} \\
+The Hollywood dataset \cite{laptev_learning_2008} was released in 2008 at the IRISA Institue in France and contains video samples of human actions from $32$ movies, divided into $8$ different action classes.
+The dataset provides a predefined split into training and test set.
 The test set contains $211$ video samples from $20$ movies.
 Two differently annotated training sets with action samples from the remaining $12$ movies are provided.
 The \textit{automatic training set} contains $233$ action samples, which are automatically annotated by extracting action labels from the movie scripts.
@@ -222,7 +189,7 @@ However, since all footage was filmed under controlled lighting conditions with 
 
 Dataset details: \cite{_ivan_????}
 \begin{itemize}
-    \item $233 + 219 + 211$ action clips (automatic + clean training set + test set)
+    \item $233 + 219 + 211$ action clips (automatic training set + clean training set + test set)
     \item $8$ action classes (AnswerPhone, GetOutCar, HandShake, HugPerson, Kiss, SitDown, SitUp and StandUp)
     \item $240$ pixels video-height with varying width @ $24$ \textit{fps} 
 \end{itemize}
@@ -238,11 +205,11 @@ Example frames for all classes of the Hollywood dataset are shown in figure \ref
 
 
 \subsubsection{Hollywood 2 -- 2009}
-\cite{marszalek_actions_2009}\\
-The Hollywood 2 dataset is an extension of the Hollywood dataset and was released a year later in 2009 at the IRISA Institute of France.
+%\cite{marszalek_actions_2009}\\
+The Hollywood 2 dataset \cite{marszalek_actions_2009} is an extension of the Hollywood dataset and was released in 2009 at the IRISA Institute of France.
 Besides adding $4$ action classes to the Hollywood dataset, Hollywood 2 contains $10$ classes of indoor and outdoor scenes to study if action recognition algorithms benefit from correlating scenes and actions.
-The dataset contains $12$ classes of human actions, $10$ classes of scenes and features approximately $20.1$ hours of video in total from a total of $69$ movies.
-Equivalently to the Hollywood dataset, automatically and manually verified labels are provided in two training sets.
+The dataset contains $12$ classes of human actions, $10$ classes of scenes and features approximately $20.1$ hours of video in total from $69$ movies.
+Equivalently to Hollywood 1, automatically and manually verified labels are provided in two training sets.
 
 Dataset details (action clips): \cite{_ivan_????-1}
 \begin{itemize}
@@ -250,7 +217,7 @@ Dataset details (action clips): \cite{_ivan_????-1}
     \item $12$ action classes (AnswerPhone, GetOutCar, HandShake, HugPerson, Kiss, SitDown, SitUp, StandUp, Eat, FightPerson, Run, DriveCar)
 \end{itemize}
 
-Additional classes of the Hollywood 2 datasets are shown in figure \ref{fig:hollywood2_example}.
+Figure \ref{fig:hollywood2_example} shows the additional classes in the Hollywood 2 datasets.
 
 \begin{figure}[H]
     \centering
@@ -262,13 +229,12 @@ Additional classes of the Hollywood 2 datasets are shown in figure \ref{fig:holl
 
 \subsection{Modern Benchmarking Datasets -- Videos in the Wild}
 
-
 \subsubsection{UCF11 Youtube Action -- 2009}
-\cite{liu_recognizing_2009}\\
-The UCF11 dataset, also known as UCF YouTube Action dataset, was released in 2009 by the University of Central Florida (UCF).
+%\cite{liu_recognizing_2009}\\
+The UCF11 dataset \cite{liu_recognizing_2009}, also known as UCF YouTube Action dataset, was released in 2009 by the University of Central Florida (UCF).
 It contains videos from YouTube in $11$ action classes.
 Since the authors were not involved in the video recognition process, the dataset features a variety of different conditions in the videos: a mix of shaky and steady cameras, different (cluttered) backgrounds, people shown in different scales, varying illumination and low resolution.
-There are several releases of the dataset, here proprties of the last release are reported.
+There are several releases of the dataset, here properties of the last release are reported.
 
 Dataset details: \cite{_center_????-1}
 \begin{itemize}
@@ -278,7 +244,7 @@ Dataset details: \cite{_center_????-1}
     \item Clip length between $22$ and $900$ frames.
 \end{itemize}
 
-Example frames of the dataset are shown in figure \ref{fig:ucfyoutube_example}.
+Figure \ref{fig:ucfyoutube_example} shows example frames of the dataset.
 
 \begin{figure}[H]
     \centering
@@ -289,8 +255,8 @@ Example frames of the dataset are shown in figure \ref{fig:ucfyoutube_example}.
 
 
 \subsubsection{UCF50 -- 2010}
-\cite{reddy_recognizing_2013}\\
-The UCF50 dataset is an extension of the UCF11 dataset and was released by the University of Central Florida (UCF) in 2010.
+%\cite{reddy_recognizing_2013}\\
+The UCF50 dataset \cite{reddy_recognizing_2013} is an extension of the UCF11 dataset and was released by the University of Central Florida (UCF) in 2010.
 It adds $39$ action classes to UCF11, which results in a total of $50$ action classes.
 
 Dataset details: \cite{kang_review_2016}
@@ -303,16 +269,15 @@ Dataset details: \cite{kang_review_2016}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.7\textwidth]{img_datasets/ucf50_example}
+    \includegraphics[width=\textwidth]{img_datasets/ucf50_example}
     \caption{Example frames of the 50 classes in UCF50 \cite{reddy_recognizing_2013}}
     \label{fig:ucf50_example}
 \end{figure}
 
 
 \subsubsection{HMDB51 -- 2011}
-\cite{kuehne_hmdb:_2011}
-The Human Motion Database (HMDB) was created by the Brown University in the USA and was released in 2011 \cite{kuehne_hmdb:_2011}.
-The authors discuss the big amount of videos uploaded to the internet each day and emphasize on the importance of algorithms to automatically organize and retrieve this data.
+%\cite{kuehne_hmdb:_2011}
+The Human Motion Database (HMDB51) \cite{kuehne_hmdb:_2011} was created by the Brown University in the USA and was released in 2011.
 The HMDB51 dataset consists of $6,849$ action clips in $51$ classes sampled mostly from movies, public video databases and YouTube.
 Each action class contains a minimum of $101$ action clips.
 The source videos presented different resolutions and frame rates.
@@ -341,7 +306,7 @@ The action classes in the datset can be grouped into the following five categori
     \item Body movements for human interaction (e.g.\ hug, fencing, kiss)
 \end{enumerate}
 
-Example frames for each of the action classes in HMDB51 are shown in figure \ref{fig:hmdb_example}.
+Figure \ref{fig:hmdb_example} shows example frames for each of the action classes in HMDB51.
 
 \begin{figure}[H]
     \centering
@@ -353,12 +318,12 @@ Example frames for each of the action classes in HMDB51 are shown in figure \ref
 
 
 \subsubsection{UCF101 -- 2012}
-The UCF101 dataset is an extension of the UCF50 dataset and was released by the University of Central Florida (UCF) in 2012.
+The UCF101 dataset \cite{soomro_ucf101:_2012} is an extension of the UCF50 dataset and was released by the University of Central Florida (UCF) in 2012.
 It introduces $51$ additional classes sampled from YouTube videos, which results in a total of $13,320$ action clips in $101$ action classes.
 The overall length of the dataset is about $27$ hours, with an average length of $7.21s$ per action clip.
-Video clips have a resolution of $320 \times 240$ pixels @ $25$ \textit{fps}. \cite{soomro_ucf101:_2012}
+Video clips have a resolution of $320 \times 240$ pixels @ $25$ \textit{fps}. 
 
-Example frames of the dataset are shown in the following figure \ref{fig:soomro_ucf101:_2012}.
+Figure \ref{fig:ucf101_example} shows example frames of UCF101.
 The action classes can be divided into five categories: \cite{soomro_ucf101:_2012}
 \begin{itemize}
     \item Blue: Human-object interaction
@@ -368,7 +333,7 @@ The action classes can be divided into five categories: \cite{soomro_ucf101:_201
     \item Green: Sports
 \end{itemize}
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=\textwidth]{img_datasets/ucf101_example}
     \caption{Example frames of the 101 classes in UCF101 \cite{soomro_ucf101:_2012}}
@@ -377,7 +342,7 @@ The action classes can be divided into five categories: \cite{soomro_ucf101:_201
 
 
 \subsubsection{ASLAN -- 2012}
-\cite{kliper-gross_action_2012} \\
+%\cite{kliper-gross_action_2012} \\
 In contrast to the previously presented benchmarking datasets, the \textit{Action Similarity Labeling} collection (ASLAN) \cite{kliper-gross_action_2012} emphasizes on a different evaluation protocoll for benchmarking action recognition performance.
 Generally multi-class mean recognition accuracy is used as a performance measure, ASLAN however was designed as binary \textit{same}/\textit{not same} classification benchmark.
 Specifically, an algorithm is trained on pairs of action video clips labeled \textit{same}/\textit{not same} and is then evaluated on determining the similarity of two unknown clips, i.e.\ determining if they belong to the same class or not.
@@ -402,8 +367,8 @@ Dataset details: \cite{kliper-gross_action_2012}
     \item Each clip contains one action, no detection needed.
 \end{itemize}
 
-Evaluation protocol:\\
 The authors provide two different divisions of their database, wich they call \textit{Views}.
+
 \begin{enumerate}
     \item \textit{View-1} is intended for algorithm development and consists of a training- and testing-set which are mutually exclusive, i.e.\ do not share action classes.
         The training-set consists of $1,200$ video pairs, $600$ of which labeled \textit{same} and $600$ labeled \textit{not same}.
@@ -432,8 +397,9 @@ The authors advise reporting the final performance of the algorithm by doing 10-
 \end{minipage}
 
 
-\subsubsection{Sports-1M -- 2014} \cite{karpathy_large-scale_2014}
-The Sports-1M dataset was released in 2014 by the Computer Science Department at Stanford University \cite{karpathy_large-scale_2014}.
+\subsubsection{Sports-1M -- 2014}
+%\cite{karpathy_large-scale_2014}
+The Sports-1M dataset \cite{karpathy_large-scale_2014} was released in 2014 by the Computer Science Department at Stanford University.
 The dataset contains links to $1,133,158$ sports videos from YouTube, which have been labeled automatically into $487$ different sports classes by analyzing the text meta-data provided with the videos.
 
 The $487$ action classes are arranged according to a manually created taxonomy with more general classes at the top and more specific classes towards the leaves.
@@ -445,13 +411,15 @@ Unfortunately around 7\% of the dataset is not available anymore, because the vi
 
 Because of the above stated properties of the Sports-1M it is said to be used with caution \cite{kang_review_2016}, although it is the biggest action recognition dataset available to date.
 
-
-\subsubsection{THUMOS}
-THUMOS is a large scale dataset (Feichtenhofer)
+%\subsubsection{THUMOS}
+%THUMOS is a large scale dataset (Feichtenhofer)
+%
+%``Another large scale dataset is the THUMOS dataset [8] that has over 45M frames. Though, only a small fraction of these actually contain the labelled action and thus are useful for supervised feature learning.'' Feichtenhofer 2016
 
 
 \subsection{Activities of Daily Living (ADL) Datasets}
 
+go on here ??
 
 \subsubsection{URADL -- 2009}
 The University of Rochester Activities of Daily Living Dataset (URADL) \cite{messing_activity_2009} was released in 2009.
@@ -550,40 +518,15 @@ Following figure \ref{fig:activitynet_taxonomy} shows the visualization of the a
 \end{figure}
 
 ActivityNet is the biggest manually annotated video-dataset available to date.
-It is applicable for detection as well as recognition algorithms.
-It was used in the ActivityNet Challenge along CVPR 2016 cite ??.
+It is applicable for detection as well as recognition algorithms and was used in the ActivityNet Challenge along CVPR 2016.
 Although not explicitly mentioned by the authors, it is unclear how many of the videos are currently still available on YouTube (see Sports-1M).
-
 
 \subsection{Algorithm Testing Protocol}
 
+The creators of UCF-101 and HMDB-51 provide three splits of their datasets into training- and testing-data.
+The standard evaluation procedure is to report the average accuracy over those three splits, which the authors follow in this work as well.
+simonyan zisserman two-stream approach
 
-\subsection{Data Augmentation Methods}
-
-refer to Imagenet classification with deep convolutional neural networks.
-
-RGB colour Jittering
-
-the improved data augmentation scheme (different aspect-ratio, fixed crops)
-from [61] for all our methods and baselines.
-61: Wang, L., Xiong, Y., Wang, Z., Qiao, Y.: Towards good practices for very
-deep two-stream convnets. arXiv preprint arXiv:1507.02159 (2015)
-
-\subsection{Inter-Dataset Approaches}
-META: A.k.a methods to relax the need for large dataset sizes
-
-\subsubsection{Unsupervised pre-training}
-
-\subsubsection{Multi-task learning}
-
-\subsubsection{Transfer learning}
-
-See Karparthy 'Large-scale video classification with convolutional neural networks' 2014
-
-A. S. Razavian, H. Azizpour, J. Sullivan, and S. Carls-
-son. CNN features off-the-shelf: an astounding baseline for
-recognition
-
-N. Zhang, M. Paluri, M. Ranzato, T. Darrell, and L. Bourdev. Panda: Pose aligned networks for deep attribute modeling. In CVPR, 2014.
-
-B. Zhou, A. Lapedriza, J. Xiao, A. Torralba, and A. Oliva. Learning deep features for scene recognition using places database. In NIPS, 2014.
+``In [4], Gao et al. presented a comprehensive study on the influence of the evaluation protocol on the final results. It was shown that the use of different experimental configurations can lead to performance differences up to 9\%.''
+``Action recognition methods are usually directly compared although they use different testing protocols or/and datasets (KTH1 or KTH2), which distorts the conclusions.''
+cite sequential deep learning for human action recognition.
