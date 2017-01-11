@@ -1,35 +1,48 @@
 \section{Deep Learning Methods in Action Recognition}
-TODO ?? description
-META: Review of approaches that use Deep Learning methods.
+This section provides a detailed review of recent action recognition approaches, that are based on deep learning.
+In comparison to using local spatio-temporal features, as described in section \ref{chap:conventional}, deep learning algorithms do not require hand-crafted feature engineering.
+Although local spatio-temporal feature approaches yield competitive performance, the findings of \textcite{wang_evaluation_2009} indicate, that there is no universally best hand-engineered set of features for all types of datasets.
+This suggests, that learning feature representation directly from the available data by using deep learning methods may be advantageous \cite{le_learning_2011}.
 
-Taxonomy of approaches.
+Similar to \cite{herath_going_2016} we categorize deep learning approaches according to the underlying method of learning feature representations from input videos.
+In the case of neural network approaches, this corresponds to their architectures.
+The taxonomy is shown in figure \ref{fig:deep_taxonomy}.
+Leafnodes correspond to specific approaches reviewed in this section.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img_deep/deep_taxonomy}
+    \caption{Taxonomy of Deep Learning approaches in Action Recognition.}
+    \label{fig:deep_taxonomy}
+\end{figure}
 
-\subsection{3D-Convolutional Networks}
+\textbf{Convolutional Networks}\\
+Using convolutional neural networks for action recognition is motivated by their good performance on image classification tasks.
+The naive approach for extending CNNs to the video domain involves applying a regular 2D CNN architecture to individual video frames and averaging the framewise class predictions over the video.
+This approach however ignores motion information and therefore wastes the potential of information encoded in the temporal evolution of a an action.
+3D convolutions, an extension of regular 2D convolutions, are proposed to incorporate this information from video volumes.
+A video volume is constructed by stacking video frames and thereby treating the temporal dimension as an additional spatial dimension.
 
-I.e. convolutional methods.
+\textbf{Multiple Stream Networks}\\
+These approaches use the decomposability of videos into a spatial component (analysing different frames) and a temporal component (analysing the change between frames) for action recognition.
+They represent one of the most successfull architectures in action recognition \cite{wang_action_2015}.
+The underlying principle considers, that the temporal dimension has different characteristics as the spatial dimension and should therefore be handled separately, not in a joint 3D space.
+A prototypical approach of multiple stream networks is represented by the two-stream architecture \cite{simonyan_two-stream_2014}.
 
-The naive approach: using framewise information, classifying it with a CNN and average the results. Elaborate further\ldots ?? described in ``beyond short snippets''
+\textbf{Temporal Coherency Networks}\\
+Temporal Coherency provides a form of weak supervision and states, that consecutive video frames are correlated semantically and dynamically \cite{herath_going_2016}.
+To redescribe: adjacent video frames belonging to the same action class is likely and sudden changes in motion are rather unlikely.
+By learning to classify sequences according to their temporal coherency, i.e.\ whether they are in correct or incorrect temporal order, results in learning feature representations, that encode motion information of persons and object in the sequence.
+These representations can be used to perform action recognition.
 
+\textbf{Pooling of Deeply Learned Features}\\
+The prototypical approach of this category constructs \textit{Trajectory-pooled Deep Convolutional Descriptors (TDD)} \cite{wang_action_2015} for action recogntion.
+TDDs are obtained by applying a generic deep feature extractor around densely sampled trajectories and pooling the resulting features for each trajectory.
+The approach aims at combining the advantages of hand-crafted feature methods (specifically the \textit{Improved Dense Trajectories} approach \cite{wang_action_2013}) with the expressiveness of deep architecture (specifically the \textit{Two-Stream ConvNet} approach \cite{simonyan_two-stream_2014}.
 
-``Video analysis provides more information to the recognition task by adding a temporal component through which motion and other information can be additionally used. At
-the same time, the task is much more computationally de-
-manding even for processing short video clips since each
-video might contain hundreds to thousands of frames, not
-all of which are useful. A naive approach would be to treat
-video frames as still images and apply CNNs to recognize
-each frame and average the predictions at the video level.
-However, since each individual video frame forms only a
-small part of the video’s story, such an approach would
-be using incomplete information and could therefore eas-
-ily confuse classes especially if there are fine-grained dis-
-tinctions or portions of the video irrelevant to the action of
-interest.'' Beyond Short Snippets: Deep Networks for Video Classification
+\textbf{Generative Models} are introduced in section \ref{sec:generative} below.
 
-explain: feature maps
-
-Treated as an additional spatial dimension.
-
+\subsection{Convolutional Networks}
 
 \subsubsection{3D Convolutional Neural Networks for Human Action Recognition (2010/2013)}
 
@@ -510,16 +523,6 @@ To conclude, \textcite{varol_long-term_2016} show, that longer temporal extent i
 \newpage
 \subsection{Multiple Stream Networks}
 
-TODO ?? Description
-
-The most successfull architecture in action recognition. They are equally powerful as the improved dense trajectories approach. cite TDD ??
-
-These approaches use the decomposability of videos into a spatial component (analysing different frames) and a temporal component (analysing the change between frames) for action recognition.
-
-Underlying principle: Temporal dimension has different characteristics than the spatial dimension and should therefore be handled separately, not in a joint 3D space.
-
-The first architecture of this kind was proposed in 2014 by Simonyan and Zisserman.
-
 
 \subsubsection{Two-Stream Convolutional Networks for Action Recognition in Videos (2014)}
 
@@ -990,8 +993,7 @@ Using these previous results, a two-stream convolutional neural network model fo
 The approach achieves $92.5\%$ accuracy on UCF-101 and $65.4\%$ accuracy on HMDB-51.
 
 
-\subsection{Trajectory Pooling of Deeply Learned Features}
-TODO ?? Description
+\subsection{Pooling of Deeply Learned Features}
 
 \subsubsection{Action recognition with trajectory-pooled deep-convolutional descriptors (2015)}
 \textcite{wang_action_2015} propose a novel method for building video representations by combining the advantageous porperties of hand-crafted features as in \textit{Dense Trajectories} \cite{wang_action_2013} with deeply learned features as in \textit{Two-Stream Convolutional Networks} \cite{simonyan_two-stream_2014}.
@@ -1125,6 +1127,7 @@ Detailed results are shown in table \ref{tab:tdd_results}.
 
 
 \subsection{Generative Models}
+\label{sec:generative}
 
 One of the most popular deep learning models that can be trained unsupervised is the restricted Boltzmann machine [5]. A nice property of RBMs is that they can be greedily trained and stacked on top of each other to form deep belief networks (DBNs) [6], allowing us to learn representations of gradually increasing complexity. Training of these models using maximum likelihood learning is intractable, but they can be trained using contrastive divergence [4]. (Palasek Patras)
 
@@ -1368,15 +1371,6 @@ The overall performance, that is action recognition accuracy of $55.06\%$ on UCF
 This probably stems from the fact, that features were learned from static frames only, instead of incorporating motion information.
 
 \subsection{Temporal Coherency Networks}
-TODO ?? Description
-
-``Temporal Coherency is a form of weak supervision and states that consecutive frames are correlated both semantically and dynamically.'' going deeper into action recognition.
-
-Previous unsupervised approaches only yield moderate increase in accuracy against initializing the weights randomly.
-
-Misra:
-Example tasks: Ordering of frames, determining the relative temporal proximity of frames.
-
 %\subsubsection{Unsupervised learning of spatiotemporally coherent metrics -- Goroshin et al. (2015)}
 %cite{goroshin_unsupervised_2015}
 %subsubsection{Unsupervised learning of visual representations using videos -- Wang and Gupta (2015)}
