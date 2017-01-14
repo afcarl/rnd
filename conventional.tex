@@ -43,7 +43,7 @@ A prototypical approach for action recognition with space-time volumes is descri
 Given a similarity measure for video volumes, the algorithm constructs or selects video volumes template from the training dataset for each action class that has to be recognized.
 The template video volumes then act as representations for the action classes.
 When presented with a test-video, the algorithm constructs the representation for the new video and compares it to the stored training templates by using the similarity measure.
-The action class, that corresponds to the most similiar training template is selected as output class for the test-video.
+The action class, that corresponds to the most similar training template is selected as output class for the test-video.
 
 Approaches in this category mainly differ by how a representation is built and how they are compared.
 \textcite{bobick_recognition_2001} create templates from the raw video volumes by stacking the silhouettes of persons that perform an action into 2D images.
@@ -99,7 +99,7 @@ Interest point detectors find and locate the locations of non-constant, informat
 Local descriptors transform the raw pixel values in neighbourhoods around previously detected interest points, to best capture the inherent motion information. 
 
 A comparative evaluation of different interest point detectors and local descriptors was published in 2009 by \textcite{wang_evaluation_2009}.
-They found, that instead of using computationally expensive feature detecors, dense sampling of interest points from the video is a performant alternative. 
+They found, that instead of using computationally expensive feature detectors, dense sampling of interest points from the video is a well performing alternative. 
 
 Prototypical approaches using local features were proposed by \textcite{laptev_space-time_2005} and \textcite{dollar_behavior_2005}.
 \textcite{laptev_space-time_2005} extended the Harris corner and edge detector \cite{harris_combined_1988} for extracting space-time interest points in videos.
@@ -118,7 +118,7 @@ They found, that motion information in the cuboids is best captured by transform
 Given a training dataset, these final local features in the form of several vectors for each video, are extracted and a codebook of feature vectors is formed by using k-means.
 Applying to the bag-of-words paradigm, a video is represented as a histogram of codeword frequencies given the codebook.
 Specifically, at first the feature vectors are extracted from a video, each vector is then assigned to its nearest codebook feature vector, which is called a visual word.
-By counting the number of visual word occurences, a histogram representation of the video is created.
+By counting the number of visual word occurrences, a histogram representation of the video is created.
 A classifier then learns the correlation between histogram representations and action labels.
 This approach ignores the spatio-temporal relations between detected interest points.
 
@@ -130,7 +130,9 @@ This approach ignores the spatio-temporal relations between detected interest po
 \end{figure}
 
 Further examples of feature detectors are given in \cite{poppe_survey_2010}.
+
 Beyond using the bag-of-words paradigm for encoding local features into a global video representation, other more advanced methods were proposed such as the Fisher Vector\cite{perronnin_fisher_2007} and the Vector of Locally Aggregated Descriptors (VLAD) \cite{jegou_aggregating_2010}.
+An empirical evaluation of different encoding methods is given in \cite{peng_bag_2014}.
 
 %Laptev and Lindeberg [26] proposed spatio-temporal interest points (STIPs)
 %by extending Harris corner detectors to 3D. SIFT and HOG
@@ -165,7 +167,7 @@ The action class with the highest likelihood is assigned to the input video.
 
 \subsubsection{Exemplar-based Approaches}
 Exemplar-based approaches store template sequences of feature vectors for each action class \cite{aggarwal_human_2011}:
-A presented unkown action in an input video is recognized, by comparing its sequence of feature vectors to the stored templates.
+A presented unknown action in an input video is recognized, by comparing its sequence of feature vectors to the stored templates.
 The action class, whose template is most similar to the feature sequence of the input video is assigned to the input.
 The approach has to take into account, that the feature sequences may vary because of different execution styles of action among different persons.
 
@@ -199,31 +201,40 @@ Most hierarchical approaches thereby employ non-hierarchical single-layered acti
 \subsubsection{Statistical Approaches} 
 Hierarchical statistical approaches use hierarchically stacked state-based models such as Hidden Markov Models (HMMs) \cite{oliver_layered_2002}\cite{zhang_modeling_2004} or Dynamic Bayesian Networks (DBNs) \cite{dai_group_2008}\cite{gong_recognition_2003} for action recognition.
 Typically two layers of such models are used, where the bottom layer recognizes simple actions from sequences of feature vectors and the top layer recognizes high-level actions from the resulting sequence of simple actions.
-The layered hidden markov model approach of \textcite{oliver_layered_2002} is said to be one of the most fundamental forms of hierarchical statistical approaches \cite{aggarwal_human_2011}.
+The layered Hidden Markov Model approach of \textcite{oliver_layered_2002} is said to be one of the most fundamental forms of hierarchical statistical approaches \cite{aggarwal_human_2011}.
 
 
 \subsubsection{Syntactic Approaches} 
 In hierarchical syntactic approaches, a high-level action is represented as a string of symbols \cite{cheng_advances_2015}.
 Each symbol therein corresponds to a simpler, possibly atomic, sub-action as described previously.
-Equivalently to hierarchical statistical approaches, syntactic approaches require the recongition of sub-actions by using any of the previously described methods in order to obtain the string of symbols.
+Equivalently to hierarchical statistical approaches, syntactic approaches require the recognition of sub-actions by using any of the previously described methods in order to obtain the string of symbols.
 An action class is represented as a set of production rules from context-free grammars or stochastic context-free grammars \cite{ivanov_recognition_2000}\cite{moore_recognizing_2002}\cite{minnen_expectation_2003}\cite{joo_attribute_2006}, that generate sequences of symbols corresponding to the action class.
 Syntactic approaches then use parsing techniques from the field of programming languages \cite{hopcroft_introduction_1979} to recognize high-level actions.
 
 
 \subsubsection{Description-based Approaches}
 The definition of description-based approaches by \textcite{aggarwal_human_2011} states: ``A description-based approach is a recognition approach, that explicitly maintains human activities' spatio-temporal structure.''
-High-level actions are represented by occurences of their underlying sub-actions, while temporal, spatial and logical relationships between the sub-actions are explicitly specified.
-The temporal relations between sub-actions are usually specified by associating a time interval with an occuring action.
+High-level actions are represented by occurrences of their underlying sub-actions, while temporal, spatial and logical relationships between the sub-actions are explicitly specified.
+The temporal relations between sub-actions are usually specified by associating a time interval with an occurring action.
 \textcite{allen_maintaining_1983}\cite{allen_actions_1994} introduced seven predicates to describe temporal relations between time intervals: \textit{before, meets, overlaps, during, starts, finishes} and \textit{equals}, which have been widely used for hierarchical description-based approaches \cite{pinhanez_human_1998}\cite{siskind_grounding_2001}\cite{nevatia_hierarchical_2003}\cite{ryoo_recognition_2006}.
 
 
 \subsection{State of the Art Approaches using Local Features}
 \label{subsec:conventionalsota}
 
-Methods which are considered state-of-the-art \cite{wang_towards_2015}
+\textcite{wang_action_2013} introduced the \textit{Improved Dense Trajectories} approach, which is often considered state of the art in action recognition using hand-crafted local features \cite{tran_learning_2015}\cite{wang_towards_2015}\cite{simonyan_two-stream_2014}.
+Using the categorization proposed by the taxonomy of \textcite{aggarwal_human_2011}, it can be seen as a hybrid approach of being trajectory-based and using hand-crafted local features.The principle idea behind \textit{Improved Dense Trajectories} is to densely sample spatio-temporal interest points, tracking them using optical flow and extracting local hand-crafted features in regions around the resulting point trajectories.
 
-\subsubsection{Action Recognition by Dense Trajectories -- Wang et al. (2011)}
+A basic version of the approach, called \textit{Dense Trajectories}, was first published in 2011 \cite{wang_action_2011} and later improved in 2013 (\textit{Improved Dense Trajectories}) \cite{wang_action_2013}.
 
+A comparison of hand-crafted feature approaches to recent deep learning methods in action recognition is given in section \ref{sec:evaluation}.
+Beyond \textit{Improved Dense Trajectories}, the following approaches have been considered state of the art \cite{wang_towards_2015}\cite{lan_beyond_2015}and are compared as well:
+\begin{itemize}
+    \item Multi-view super vector for action recognition (2014) \cite{cai_multi-view_2014}
+    \item Beyond Gaussian pyramid: Multi-skip feature stacking for action recognition (2015) \cite{lan_beyond_2015}
+\end{itemize}
+
+\subsubsection{Action Recognition by Dense Trajectories (2011)}
 \textcite{wang_action_2011} introduce a tracking technique called \textit{dense trajectories} for action classification from videos.
 Points are sampled densely from each frame and then tracked using a dense optical flow field.
 Local spatio-temporal features are extracted in regions around the resulting point trajectories to form trajectory descriptors, which are then aggregated into a global video descriptor using the bag-of-words paradigm.
@@ -294,15 +305,15 @@ The authors evaluate their approach on the KTH, YouTube, Hollywood2 and UCF-Spor
 
 \begin{enumerate}
     \item Construction of a codebook for each descriptor-type (trajectory, HOG, HOF and MBH).
-        $100.000$ descriptors for each type are randomly chosen from all extracted descriptors over the dataset's training split.
+        $100.000$ descriptors for each type are randomly chosen from all extracted descriptors over the training split.
         These descriptors are clustered into a 4000 words long codebook using $k$-means.
     \item Each extracted descriptor from a video is assigned to its nearest codebook-descriptor using the Euclidean distance.
-        The number of occurences are aggregated in a histogram, which builds the global video descriptor.
+        The number of occurrences are aggregated in a histogram, which builds the global video descriptor.
     \item A classifier (here a non-linear SVM with a $\chi^2$ kernel) is trained to assign the class-labels to the global video descriptors.
 \end{enumerate}
 
 Besides densely sampled trajectories, the authors evaluate baseline trajectories obtained from the KLT tracker for comparison.
-The same descriptors (trajectory, HOG, HOF and MBH) are used aorund the KLT-trajectories.
+The same descriptors (trajectory, HOG, HOF and MBH) are used around the KLT-trajectories.
 
 \begin{table}[H]
     \centering
@@ -315,23 +326,10 @@ Other approaches used feature trajectories for action recognition by either trac
 The results in table \ref{tab:densetrajectories_results} show the superiority of dense trajectories compared to the KLT baseline.
 The simple trajectory descriptor yields surprisingly good results, which according to the authors confirms the importance of motion information encoded in the trajectory shapes themselves.
 The MBH descriptor performs significantly better than all the other descriptors.
-On the youtube dataset, the advantage of using the MBH descriptor is most prominent, since the videos in this dataset contain a lot of noise from camera-motion (uncontrolled, realistic videos, often recorded by handheld cameras).
+On the YouTube dataset, the advantage of using the MBH descriptor is most prominent, since the videos in this dataset contain a lot of noise from camera-motion (uncontrolled, realistic videos, often recorded by handheld cameras).
 
 
-\subsubsection{Action recognition with improved trajectories -- Wang et al. (2013)}
+\subsubsection{Action recognition with improved trajectories (2013)}
+TODO
 \cite{wang_action_2013}
 ``Recently, Wang et al. proposed improved Dense Trajectories (iDT) [44] which is currently the state-of-the-art hand-crafted feature'' tran learning spatio-temporal features with 3D convolutional networks.
-
-
-\subsubsection{Multi-view super vector for action recognition -- Cai et al. (2014)}
-\cite{cai_multi-view_2014}
-
-
-\subsubsection{Bag of visual words and fusion methods for action recognition: Comprehensive study and good practice -- Peng et al. (2014)}
-\cite{peng_bag_2014}
-
-
-\subsubsection{Beyond gaussian pyramid: Multi-skip feature stacking for action recognition}
-iDT-based method
-UCF 101 - 89.1\%
-

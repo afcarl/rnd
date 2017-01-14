@@ -15,7 +15,25 @@
 \usepackage[hyperref = true, backend=biber, style=numeric, sorting = none]{biblatex}
 \addbibresource{bibliography.bib}
 \addbibresource{bibliography_related.bib}
-
+\AtEveryBibitem{\clearfield{note}}
+\AtEveryBibitem{\clearfield{timestamp}}
+\AtEveryBibitem{\clearfield{urldate}}
+\AtEveryBibitem{\clearfield{doi}}
+\AtEveryBibitem{\clearfield{isbn}}
+\AtEveryBibitem{\clearfield{series}}
+\AtEveryBibitem{\clearfield{volume}}
+\AtEveryBibitem{\clearfield{number}}
+\AtEveryBibitem{\clearfield{pages}}
+\AtEveryBibitem{\clearfield{issue}}
+\AtEveryBibitem{\clearfield{publisher}}
+\DeclareSourcemap{
+  \maps[datatype=bibtex, overwrite]{
+    \map{
+%      \step[fieldset=language, null]
+      \step[fieldset=urldate, null]
+    }
+  }
+}
 %---Packages---
 \usepackage{graphicx}
 \usepackage{float}
@@ -29,21 +47,23 @@
 \usepackage{wrapfig}
 \usepackage{enumitem}
 \usepackage{parskip}
+\usepackage{setspace}
 
 
 \begin{document}
-
+\thispagestyle{empty}
 \begin{center}
+\large
+\textbf{Research \& Development Report} \\
 \LARGE
-\textbf{Research \& Development} \\
-\textbf{--DRAFT--}
 
-\vspace{2cm}
+\vspace{1cm}
 
-\rule{\linewidth}{2pt}
+\vspace{-0.75\baselineskip}\rule{\linewidth}{1.5pt}
 \textbf{Evaluation of current Approaches for Situation-Awareness in Autonomous Systems from Action Recognition in Video Data} \\
-\rule{\linewidth}{2pt}
-\bigskip
+\vspace{-0.25\baselineskip}\rule{\linewidth}{1.5pt}
+
+\vspace{1cm}
 
 \normalsize
 \textit{Author:}\\
@@ -53,10 +73,25 @@ Maximilian Schöbel
 \textit{Advisors:}\\
 Prof. Dr. Erwin Prassler\\
 Prof. Dr. Paul G. Plöger\\
+\bigskip
 
-\vspace{4cm}
 January 12th, 2017
+
+\vfill
+
+\textbf{Abstract}
 \end{center}
+\small
+Situation awareness is an abstract concept, which includes several independent manifestations and sensory inputs.
+An important aspect of situation awareness is the knowledge of actions, that are performed by persons in the vicinity of an agent, to derive a suitable policy for the agent's own future actions.
+This report investigates vision-based human action recognition from video data as a key step towards the understanding of scenes by autonomous (robotic) systems.
+Recognition of actions furthermore enables applications in surveillance systems, patient monitoring, human-computer interfaces, assisted living environments and AI.
+So far, computer vision research produced two main approach classes of machine learning based algorithms for classifying actions in video-data:
+Either using arbitrary classification techniques on top of hand-crafted feature extractors or end-to-end trainable deep learning architectures.
+This report provides a detailed review of current deep learning approaches for video-based action recognition in addition to a comparison with conventional hand-crafted feature approaches.
+Furthermore, publicly available video datasets are reviewed, since the availability of labeled large-scale datasets is a big challenge in deep learning.
+Even very recent video-datasets do not match the size of existing image datasets.
+Results indicate, that deep learning techniques are competitive but not yet able to significantly outperform conventional hand-crafted feature methods in video-based action recognition.
 
 \newpage
 
@@ -64,6 +99,16 @@ January 12th, 2017
 \tableofcontents
 \normalsize
 
+\newpage
+\section*{Statement of Originality}
+
+This is to certify that the content of this report is my own work and that all sources have been acknowledged.
+
+
+Date:
+
+
+Signature: 
 \newpage
 
 \include{introduction}

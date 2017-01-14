@@ -1,15 +1,11 @@
-\section{Evaluation}
-What do we need, what do we have, what is best suited so far?
+\section{Comparison and Evaluation}
+\label{sec:evaluation}
 
-Using unsupervised features for action recognition is still in its beginning but promising.
-The amount of research that has been put into supervised methods, i.e.\ 3d convnets two-stream approaches can boost unsupervised methods when done there.
-Big advantage: no labeling, or less labeling needed when using semi-supervised learning.
-Amount of video on the internet huge -> potential.
+Results of the deep learning approaches, that were reviewed in this report, are given in the following table \ref{tab:deep_results}.
 
-table conventional:
-TODO
-
-table deep:\\
+\begin{minipage}[b]{.03\linewidth}
+\setstretch{1.25}
+\scriptsize
 \cite{ji_3d_2013}\\
 \cite{baccouche_sequential_2011}\\
 \cite{karpathy_large-scale_2014}\\
@@ -20,33 +16,91 @@ table deep:\\
 \cite{wang_towards_2015}\\
 \cite{feichtenhofer_convolutional_2016}\\
 \cite{wang_action_2015}\\
-\cite{srivastava_unsupervised_2015}\\
-
+\cite{srivastava_unsupervised_2015}
+\cite{palasek_action_2016}
+\cite{misra_shuffle_2016}
+\\\\
+\end{minipage}
+\begin{minipage}[b]{.96\linewidth}
 \begin{table}[H]
     \centering
     \includegraphics[width=\textwidth]{img_evaluation/deep_results}
     \caption{Best reported action recognition accuracies of reviewed deep learning approaches.}
     \label{tab:deep_results}
 \end{table}
+\end{minipage}
 
-table datasets:
-\begin{table}
+We first observe from the distribution of used benchmarking datasets, that UCF-101 and HMDB-51 can be seen as the current de facto standard benchmarks in action recognition.
+Judging by the best performance on UCF-101, the approaches of \textcite{wang_towards_2015}, \textcite{feichtenhofer_convolutional_2016} and \textcite{wang_action_2015} perform best.
+These approaches base on convolutional neural network architectures, that were initially designed for image processing tasks and employ pre-training on large-scale image datasets.
+\cite{wang_towards_2015} and \cite{feichtenhofer_convolutional_2016} utilise deep ConvNets in an two-stream setup.
+\cite{wang_action_2015} apply a hybrid conventional - deep learning approach by using a two-stream ConvNet as generic feature extractor along densely sampled trajectories.
+
+Among the approaches that apply an architecture, which explicitly incorporates the spatio-temporal structure of videos by implementing 3D convolutions, the \textit{C3D} approach of \textcite{tran_learning_2015} performs best.
+\textcite{tran_learning_2015} use a 3D ConvNet which is deeper than comparable approaches (three additional convolutional layers) and leverage pre-training on the Sports-1M dataset.
+Since \textit{C3D} is designed for reusability on different vision tasks, an implementation was made publicly available in the Caffe framework \cite{jia_caffe:_2014}.
+
+Given these results it can be derived, that deeper architectures and bigger datasets improve performance in action recognition from video using deep learning approaches.
+This has also been observed in the area of object recognition from still images \cite{simonyan_very_2014, szegedy_going_2015, he_deep_2015}.
+
+Table \ref{tab:conventional_results} shows the performance of state-of-the-art hand-crafted feature methods in action recognition.
+
+\begin{minipage}[b]{.03\linewidth}
+\setstretch{1.3}
+\scriptsize
+\cite{wang_action_2013}\\
+\cite{wang_action_2013}\\
+\cite{cai_multi-view_2014}\\
+\cite{lan_beyond_2015}\\
+\\
+\end{minipage}
+\begin{minipage}[b]{.96\linewidth}
+\begin{table}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img_evaluation/conventional_results}
+    \caption{Action recognition accuracies of state-of-the-art hand-crafted feature methods.}
+    \label{tab:conventional_results}
+\end{table}
+\end{minipage}
+
+The results on UCF-101 show: Although several deep learning based approaches outperform conventional hand-crafted feature based approaches, the latter nonetheless yield competitive results, especially the approach of \textcite{lan_beyond_2015}.
+
+Reasons for this can be found in the available action recognition video datasets.
+Table \ref{tab:benchmarks_results} provides a comparison of currently available datasets.
+
+\begin{table}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{img_evaluation/benchmarks_results}
-    \caption{Size comparison of reviewed benchmarking datasets}
+    \caption{Size comparison of reviewed benchmarking datasets.}
     \label{tab:benchmarks_results}
 \end{table}
 
-\begin{table}
+Considering these dataset sizes, only the YouTube-8M dataset matches roughly the size of common image datasets (ImageNet contains 14,197,122 images \cite{_imagenet_????})
+However, YouTube-8M has only very recently been released and has therefore not been used widely in the action recognition community.
+
+
+
+
+\begin{table}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{img_evaluation/adl_results}
-    \caption{Size comparison of reviewed daily-living datasets}
+    \caption{Size comparison of reviewed daily-living datasets.}
     \label{tab:adl_results}
 \end{table}
 
-see table in ``towards good practices'' (conventional methods state-of-the-art)
+table conventional:\\
+\cite{wang_action_2013}\\
+\cite{wang_action_2013}\\
+\cite{cai_multi-view_2014}\\
+\cite{lan_beyond_2015}\\
 
-available code for C3D and ``towards good practices''
+\begin{table}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img_evaluation/conventional_results}
+    \caption{Action recognition accuracies of state-of-the-art hand-crafted feature methods.}
+    \label{tab:conventional_results}
+\end{table}
+
 
 future directions: transfer learning, as done by karpathy, large scale
 pre-training, as done by varol et. al 2016
@@ -101,6 +155,11 @@ deep two-stream convnets. arXiv preprint arXiv:1507.02159 (2015)
 META: A.k.a methods to relax the need for large dataset sizes
 
 \subsubsection{Unsupervised pre-training}
+Using unsupervised features for action recognition is still in its beginning but promising.
+The amount of research that has been put into supervised methods, i.e.\ 3d convnets two-stream approaches can boost unsupervised methods when done there.
+Big advantage: no labeling, or less labeling needed when using semi-supervised learning.
+Amount of video on the internet huge -> potential.
+
 
 \subsubsection{Multi-task learning}
 

@@ -7,7 +7,7 @@ Using publicly available dataset for action recognition algorithms has two main 
     \item More importantly: Using the same datasets in different approaches, along with standardized evaluation schemes, enables the comparison between them. This is the basis of evaluating the quality of action recognition approaches. 
 \end{enumerate}
 
-The influence of the experimental setup on the accuracy of action recognition algorithms was assed by \cite{gao_comparing_2010} on the KTH dataset \cite{schuldt_recognizing_2004}.
+The influence of the experimental setup on the accuracy of action recognition algorithms was assessed by \cite{gao_comparing_2010} on the KTH dataset \cite{schuldt_recognizing_2004}.
 Their results show, that using different evaluation protocols can result in accuracy differences of up to 9\%.
 Therefore conclusions about the accuracy of different action recognition algorithms can be distorted and heavily biased by the method of evaluation \cite{baccouche_sequential_2011}, which emphasizes the importance of standardized evaluation strategies and benchmarks.
 
@@ -18,7 +18,7 @@ The review of \textcite{ahad_action_2011} and \textcite{liu_benchmarking_2011} w
 
 Building on \cite{chaquet_survey_2013}, this section gives a brief review of the most commonly used datasets and focusses on the newest ones.
 All datasets in this section are publicly available.
-Additionally, a review of datasets containing Activites of Daily Living (ADL) is given.
+Additionally, a review of datasets containing Activities of Daily Living (ADL) is given.
 These datasets could be used to design and train a real-world action recognition system, to be used in assisted living environments.
 
 \textcite{chaquet_survey_2013} provide a fine-grained classification according to the type of actions present in the datasets, as illustrated in figure~\ref{fig:datasetssurvey_taxonomy}.
@@ -40,7 +40,7 @@ As proposed in \cite{hassner_critical_2013} action recognition datasets can be r
 \begin{enumerate}
     \item \textbf{Early Benchmarking Datasets} provide low resolution videos of a few basic action classes. These datasets are usually recorded under controlled conditions with static cameras, uncluttered backgrounds and actions are performed by actors.
     \item \textbf{Intermediate Benchmarking Datasets} are larger and more challenging for action recognition algorithms compared to early datasets. Actions in this class are usually sampled from television broadcasts or movies and provide uncontrolled conditions, moving cameras, cluttered backgrounds and occlusion. Given their source, videos in these datasets can be considered high-quality.
-    \item \textbf{Modern Datasets} aim at providing a large number of action classes and examples. Videos in modern datasets are most often sampled from YouTube to provide real-world footage with varying resolutions, different lighting conditions, cuts, cluttered backgrounds and moving cameras. These are the most challennging datasets to date.
+    \item \textbf{Modern Datasets} aim at providing a large number of action classes and examples. Videos in modern datasets are most often sampled from YouTube to provide real-world footage with varying resolutions, different lighting conditions, cuts, cluttered backgrounds and moving cameras. These are the most challenging datasets to date.
 \end{enumerate}
 
 
@@ -49,7 +49,7 @@ As proposed in \cite{hassner_critical_2013} action recognition datasets can be r
 \subsubsection{KTH -- 2004}
 %\cite{schuldt_recognizing_2004}\\
 The KTH dataset \cite{schuldt_recognizing_2004} is an early and widely used benchmarking dataset containing grayscale video-clips of atomic actions performed by $25$ different actors in controlled environments.
-The dataset was created and released by the swedish KTH Royal Institute of Technology in 2004.
+The dataset was created and released by the Swedish KTH Royal Institute of Technology in 2004.
 It's considered a milestone in computer vision \cite{chaquet_survey_2013} and is the most commonly used publicly available dataset of human actions \cite{baccouche_sequential_2011}.
 It was the largest video dataset of human actions at that time and enabled a systematic and comparable evaluation of action recognition algorithms by using the same input data.
 
@@ -69,7 +69,7 @@ Figure ~\ref{fig:kth_example} shows example frames of the KTH dataset, ordered b
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{img_datasets/kth_example}
-    \caption{KTH dataset example frames -- 6 different actions classes in 4 different recording scenarios: (s1) outdoors, (s2) outdoors with scale change, (s3) outdoors with chaning clothes, (s4) indoors \cite{schuldt_recognizing_2004}}
+    \caption{KTH dataset example frames -- 6 different actions classes in 4 different recording scenarios: (s1) outdoors, (s2) outdoors with scale change, (s3) outdoors with changing clothes, (s4) indoors \cite{schuldt_recognizing_2004}}
     \label{fig:kth_example}
 \end{figure}
 
@@ -147,7 +147,7 @@ The UCF Sports Dataset was initially released in 2008 by the Department of Elect
 The dataset contains video clips of sport actions, recorded from broadcast television channels such as the BBC and ESPN.
 Because of its origin in television, the video data is of professional quality with moving cameras and changing backgrounds.
 
-The initial release of the dataset \cite{rodriguez_action_2008} contained nine action classes: diving, golf swining, kicking, lifting, horseback riding, running, skating, swinging a baseball bat and pole vaulting
+The initial release of the dataset \cite{rodriguez_action_2008} contained nine action classes: diving, golf swinging, kicking, lifting, horseback riding, running, skating, swinging a baseball bat and pole vaulting
 Example frames of the first release are shown in figure \ref{fig:ucfsports1_example}.
 For a second release \cite{soomro_action_2014} pole vaulting as well as swinging a baseball bat have been removed and the additional classes swinging on a bench, swinging on parallel bars and walking have been added.
 Example frames of the second release are shown in figure \ref{fig:ucfsports2_example}.
@@ -179,7 +179,7 @@ Dataset details (second, final release): \cite{_center_????}
 
 \subsubsection{Hollywood -- 2008}
 %\cite{laptev_learning_2008} \\
-The Hollywood dataset \cite{laptev_learning_2008} was released in 2008 at the IRISA Institue in France and contains video samples of human actions from $32$ movies, divided into $8$ different action classes.
+The Hollywood dataset \cite{laptev_learning_2008} was released in 2008 at the IRISA Institute in France and contains video samples of human actions from $32$ movies, divided into $8$ different action classes.
 The dataset provides a predefined split into training and test set.
 The test set contains $211$ video samples from $20$ movies.
 Two differently annotated training sets with action samples from the remaining $12$ movies are provided.
@@ -285,7 +285,7 @@ The Human Motion Database (HMDB51) \cite{kuehne_hmdb:_2011} was created by the B
 The HMDB51 dataset consists of $6,849$ action clips in $51$ classes sampled mostly from movies, public video databases and YouTube.
 Each action class contains a minimum of $101$ action clips.
 The source videos presented different resolutions and frame rates.
-To maintain consistency throughout the dataset, the authors scaled the videos to provide a frame-heigth of $240$ pixels and the width was scaled accordingly.
+To maintain consistency throughout the dataset, the authors scaled the videos to provide a frame-height of $240$ pixels and the width was scaled accordingly.
 The framerate of all videos was converted to $30$ \textit{fps}.
 
 Each video of the dataset contains one action but the exact temporal location of the action is not provided.
@@ -298,10 +298,10 @@ However, additionally to the action labels, the datasets provides detailed meta 
     \item Video quality: good, medium, bad.
 \end{itemize}
 
-Global movement caused by camera/background movement interfers with local motion in the scene, which is essential for action recognition.
+Global movement caused by camera/background movement interferes with local motion in the scene, which is essential for action recognition.
 The authors therefore calculated stabilization mask, which can be used to suppress global motions in the clips up to a certain degree. \cite{kuehne_hmdb:_2011}
 
-The action classes in the datset can be grouped into the following five categories: \cite{kuehne_hmdb:_2011}
+The action classes in the dataset can be grouped into the following five categories: \cite{kuehne_hmdb:_2011}
 \begin{enumerate}
     \item General facial actions (e.g.\ smile, laugh, chew, talk)
     \item Facial actions with object manipulation (e.g.\ smoke, eat, drink)
@@ -347,7 +347,7 @@ The action classes can be divided into five categories: \cite{soomro_ucf101:_201
 
 \subsubsection{ASLAN -- 2012}
 %\cite{kliper-gross_action_2012} \\
-In contrast to the previously presented benchmarking datasets, the \textit{Action Similarity Labeling} collection (ASLAN) \cite{kliper-gross_action_2012} emphasizes on a different evaluation protocoll for benchmarking action recognition performance.
+In contrast to the previously presented benchmarking datasets, the \textit{Action Similarity Labeling} collection (ASLAN) \cite{kliper-gross_action_2012} emphasizes on a different evaluation protocol for benchmarking action recognition performance.
 Generally multi-class mean recognition accuracy is used as a performance measure, ASLAN however was designed as binary \textit{same}/\textit{not same} classification benchmark.
 Specifically, an algorithm is trained on pairs of action video clips labeled \textit{same}/\textit{not same} and is then evaluated on determining the similarity of two unknown clips, i.e.\ determining if they belong to the same class or not.
 Thereby test-set clips are drawn from different action classes as the training-set clips, which means an algorithm is evaluated on never before seen examples of an unknown class.
@@ -371,7 +371,7 @@ Dataset details: \cite{kliper-gross_action_2012}
     \item Each clip contains one action, no detection needed.
 \end{itemize}
 
-The authors provide two different divisions of their database, wich they call \textit{Views}.
+The authors provide two different divisions of their database, which they call \textit{Views}.
 
 \begin{enumerate}
     \item \textit{View-1} is intended for algorithm development and consists of a training- and testing-set which are mutually exclusive, i.e.\ do not share action classes.
@@ -421,9 +421,9 @@ Because of the above stated properties of the Sports-1M it should be used with c
 %``Another large scale dataset is the THUMOS dataset [8] that has over 45M frames. Though, only a small fraction of these actually contain the labelled action and thus are useful for supervised feature learning.'' Feichtenhofer 2016
 
 \subsubsection{YouTube-8M -- 2016}
-The YouTube-8M dataset \cite{abu-el-haija_youtube-8m:_2016} is, comparable to Sports-1M, a large-scale collection of annotated YouTube video IDs realeased in 2016 by Google.
+The YouTube-8M dataset \cite{abu-el-haija_youtube-8m:_2016} is, comparable to Sports-1M, a large-scale collection of annotated YouTube video IDs released in 2016 by Google.
 The dataset is designed as a multi-class benchmark, featuring about 8 million videos with 4800 different video labels in total.
-Video labels were obtained automatically from video metadata and Google statistics.
+Video labels were obtained automatically from video meta-data and Google statistics.
 The authors therefore note, that the labelling is very precise \cite{abu-el-haija_youtube-8m:_2016}, yet not noiseless.
 
 The dataset is organized in 24 top-level categories, shown in figure \ref{fig:youtube8m_toplevel}.
@@ -435,7 +435,7 @@ The dataset is organized in 24 top-level categories, shown in figure \ref{fig:yo
     \label{fig:youtube8m_toplevel}
 \end{figure}
 
-Top 7 action labels for each category are shown in the follwing table \ref{tab:youtube8m_entities}.
+Top 7 action labels for each category are shown in the following table \ref{tab:youtube8m_entities}.
 
 \begin{table}[H]
     \centering
@@ -452,7 +452,7 @@ The University of Rochester Activities of Daily Living Dataset (URADL) \cite{mes
 It contains high-resolution videos of daily-living actions, which were recorded in front of a static background (kitchen) by a tripod-mounted, static camera.
 
 The dataset contains $10$ action classes: answering a phone, dialing a phone, looking up a phone number in a telephone directory, writing a phone number on a whiteboard, drinking a glass of water, eating snack chips, peeling a banana, eating a banana, chopping a banana, and eating food with silverware.
-Each action was performed three times by five different actors, resulting in a total of $150$ videos in the datset and $15$ actions per class.
+Each action was performed three times by five different actors, resulting in a total of $150$ videos in the dataset and $15$ actions per class.
 
 Each video provides a resolution of $1280 \times 720$ pixels at $30$\textit{fps}.
 A video contains a complete action and lasts between $10$ and $60$ seconds until the action is finished.
@@ -475,7 +475,7 @@ The Multiple Cameras Fall dataset \cite{auvinet_multiple_2010} was released in 2
 It is designed for developing healthcare vision systems to detect falls of elderly people at home.
 
 The dataset is small. It contains recordings of $24$ different events in eight different perspectives, performed by a single actor.
-$22$ of the events include a fall, which happen during confounding actions such as walking, housekeeping and activities with similiar appearance as falls (e.g.\ sitting down or crouching).
+$22$ of the events include a fall, which happen during confounding actions such as walking, housekeeping and activities with similar appearance as falls (e.g.\ sitting down or crouching).
 $2$ of the recorded events only include confounding actions and no falls.
 The scenes include occlusions from furniture or other moving objects (see figure \ref{fig:multiplecamerasfall_example}).
 The dataset only provides raw recordings without action annotations.
@@ -511,7 +511,7 @@ The videos have a resolution of $1624 \times 1224$ and were recorded in a realis
 %\cite{caba_heilbron_activitynet:_2015}
 ActivityNet \cite{caba_heilbron_activitynet:_2015} is a large-scale activity recognition dataset released in 2015 by researchers of the Universidad del Norte in Colombia and the King Abdullah University of Science and Technology in Saudi Arabia.
 The dataset contains a wide range of videos with daily living activities, which were obtained from YouTube and labelled manually.
-The latest release of the dataset (release 1.3 of march 2016, as available from the official website \cite{_activity_????}) consists of annotated links to YouTube videos, organized in $200$ activity classs.
+The latest release of the dataset (release 1.3 of march 2016, as available from the official website \cite{_activity_????}) consists of annotated links to YouTube videos, organized in $200$ activity class.
 The labels are provided in JSON-format and contain the video-ID, the activity labels along with beginning- and end-time of the action, total video-duration, resolution and url.
 A single video can contain multiple activity instances of different activity classes.
 The majority of videos is available in a resolution of $1280 \times 720$ pixels and lasts between $5$ and $10$ minutes.
@@ -550,9 +550,9 @@ Although not explicitly mentioned by the authors, it is unclear how many of the 
 \subsubsection{Charades -- 2016}
 The Charades dataset \cite{sigurdsson_hollywood_2016} was released in 2016 by the Allen Institute of Artificial Intelligence and contains a large number of real-world activities of the daily living.
 The authors note, that sampling this kind of actions from YouTube often yields atypical results, since YouTube videos are created for entertaining and do not represent real-world activities well.
-To address this problem, the Charades dataset was created by crowdsourcing: 267 people from three continents were provided with scripts of daily-living activities to perform and record in their homes.
+To address this problem, the Charades dataset was created by crowd-sourcing: 267 people from three continents were provided with scripts of daily-living activities to perform and record in their homes.
 This results in $9,848$ videos featuring a combination of 46 objects and 30 actions in 15 scenes.
-There are on average $6.8$ labelled actions per video and 15\% of the videos show more than one person.
+There are on average $6.8$ labeled actions per video and 15\% of the videos show more than one person.
 Video annotation include: multiple free-text descriptions, action class labels, action time-intervals and classes of interacted objects.
 
 \begin{figure}[H]

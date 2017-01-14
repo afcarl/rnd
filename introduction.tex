@@ -1,154 +1,149 @@
-Abstract:
-We investigate human action recognition from video data as a key step towards the autonomous understanding of scenes in the environment of an autonomous (robotic) system.
-Describe current approaches.
-Biggest problems: Availability of data
-How to overcome: Unsupervised learning
-
-
 \section{Introduction}
-META: Brief but concise review of the first two "W"s.
 
-The operation of autonomous mobile systems in public, uncontrolled environments is despite active research still a difficult task.
+%The operation of autonomous mobile systems in public, uncontrolled environments is despite active research still a difficult task.
 
-Humans are perfectly able to act and move in unknown, crowded environments and even react successfully to new situations because they are aware of their surroundings.
+Humans are perfectly able to act and move in unknown, crowded environments and even react successfully to unexpected situations because they are in general aware of their surroundings.
+Being able to localize and identify human actions, that are performed in the vicinity of an agent, helps predicting the future state of an agent's environment and therefore induces situation awareness.
+%Actions of interest thereby include single-person actions, person-person interactions, person-object interactions and group activities.
 
-An important part of Situation Awareness is the knowledge of what actions are currently performed by persons in the vicinity of an agent.
-This knowledge enables the agent to derive a suitable policy for its own future actions.
+In computer vision research, advances in action recognition from video are driven by the vast amount of possible applications, especially since video cameras are a cost-effective and widely utilized technology.
+Action recognition in robotics, could provide improved navigation by recognizing actions that imply an imminent movement trajectory of pedestrians.
+Video surveillance in public environments can profit from recognizing potentially dangerous actions.
+Other possible applications include surveillance of children or the elderly in assisted living environments, patient monitoring in hospitals, and human-computer interaction.
 
-Actions of interest are single-person actions, person-person interactions, person-object interactions and group activities.
-
-Enabling situation-awareness in autonomous systems is an important goal, which has an impact on other problems in autonomous systems.
-
-Possible applications:\\
-Pedestrian movement predicition in robotics,\\
-Risk and danger evaluation through video surveillance in public environements,\\
-surveillance of children or the elderly in assisted living environments,\\
-patient monitoring in hospitals,\\
-video retrieval (content-based video indexing),\\
-human-computer interaction.\\
-
-Requirement: Automated recognition of high-level actions.
-
-Situation awareness is an abstract concept, which includes lots of independent manifestations and involves multiple sensory inputs.
-
-This work focuses on approaches that process time-sequential video data, because video-cameras represent a cost-effective and widely used technology in many existing systems.
-
-Motivation for using videos: Promising results in classfication tasks from images.
-Video adds another (temporal) dimension, which conveys a lot of information that can be accessed for classification as well.
-Video provides natural data augmentation cite:simnoyan two-stream paper (??)
-
-For example, YouTube reported that over 300 hours of video are uploaded every minute to their servers [43]. YouTube statistics. http://www.youtube.com/yt/press/statistics.html, 2015.
-
-\subsection{Situation Awareness from Video Data}
-
-META: General Definition of Situation Awareness in the context of autonomous systems.
-
-Placement of Action Recognition among other vision-based methods, i.e.
-
-Categories: Segmentation, Detection, Tracking, Recognition, Prediction
-
-Segmentation:\\
-Scene Segmentation
-
-Detection:\\
-Person/Pedestrian Detection
-(Abandoned) Object Detection
-Fall Detection
-Action Detection
-Event Detection
-Abnormal Event (Anomaly) Detection: O. Boiman and M. Irani. Detecting irregularities in images and in video. 2007
-Saliency Detection
-
-Tracking:\\
-Person/Pedestrian Tracking
-Object Tracking
-
-Recognition:\\
-Human Action Recognition
-Human Interaction Recognition
-Crowd Behaviour Recognition
-Pose/Gesture Recognition
-Gait Recognition
-Scene Recognition (YUPENN, UMD)
-
-Prediction:\\
-Trajectory Prediction
-Action Prediction
-
-Abnormal event detection O. Boiman and M. Irani. Detecting irregularities in images and in video. IJCV, 2007
-
-Activity understanding ``activity forecasting''
-
-Definitions of the above methods.
-
-Simple case: Video contains the performance of a single human action which needs to be classified into one of several preknown classses.
-
-General real-world case: System operates on a video stream and needs to perform continuous recognition of human actions, including detection of beginning and endings times of containing acions.
-
-General Processing Pipeline for Action Recognition: Person Detection -> Tracking -> Action Detection -> Segmentation -> Action recognition.
-
-Action Recognition: A part of Computer Vision research, it's goal is to automatically analyze human actions/actitvities from video-data.
-
-Other sensory input than video possible 
 
 \subsection{The Action Recognition Problem}
-Action Recognition is a classification-task.
+Human action recognition is a classification task and denotes the process of labelling image sequences with action categories, that were introduced by an annotated training dataset.
+In contrast to object recognition in still images, videos provide an additional temporal dimension, which conveys information in the form of an actions temporal evolution.
+On the one hand, this information can be accessed for classification, on the other hand, the amount of possible variations poses additional challenges for robust action recognition algorithms.
+These challenges, as summarized by \textcite{poppe_survey_2010}, are described below.
 
-Difference to face/gate recognition: Generalize over person characteristics.
+\textbf{Intra-class variations and inter-class similarities:} \\
+Intra class variations are differences that occur in the appearance of actions, which belong to the same action category.
+These difference stem from each person having their very own characteristics in appearance and motion execution.
+Additionally actions may be superimposed by other actions, a person might gesture, close a jacket or use a mobile phone while \textit{walking}.
 
-Intra- and inter-class variances.
+Furthermore actions may appear similar, but belong to different action categories.
+This again stems from the large variations in execution styles among different persons.
 
-Background and recording settings.
+\textbf{Background and recording settings:} \\
+Recording settings and the environment in which an action is performed are sources for variety in the appearance of an action.
+There may be other moving objects behind a person, lighting conditions may differ drastically, a person may be occluded by an object and different view-points result in large differences in image observations.
 
-Temporal variations.
+\textbf{Temporal variations:} \\
+Substantial variations can occur from differences in the execution speed of an action, which can stem from different execution styles of persons or different rates of recording the video.
 
-Obtaining and labeling training data.
+The main task of action recognition research is to overcome these challenges and built systems, that recognize actions robustly, even when they are performed by different persons in different environments at different speeds.
+Requirements for such an approach are a discriminative architecture that is able to recognize the general characteristics of different action classes while ignoring personal characteristics of different performers and large datasets that provide this information by containing a lot of different examples for each action class.
 
-Main task of action recognition research: Overcome these challenges and built systems, that recognize actions robustly, even when performed by different persons in differently lighted environments at different speeds.
+Action recognition research can be broadly divided in two categories: Conventional hand-crafted feature methods and deep learning approaches.
+Hand-crafted feature methods (section \ref{chap:conventional} of this work) build a global video representation by processing extracted features from an input video.
+Feature extractors for this task are carefully hand-crafted to capture the important motion information in the video.
 
-Main components: (i) A discriminative architecture that is able to recognise the general characteristics of different action classes while ignoring personal characteristics of different performers.
-(ii) Large datasets that provide this information by containing many different examples for each action class.
+Motivated by the success of deep learning architectures in image classification \cite{simonyan_very_2014, szegedy_going_2015, he_deep_2015}, deep learning has been widely applied to human action recognition from video (section \ref{sec:deep} of this work).
+Deep Learning approaches require large amounts of input data, to train the parameters of a deep architecture for action recognition.
 
-\subsection{Survey Papers in Action Recognition (Related work)}
+%\subsection{Situation Awareness from Video Data}
+%
+%META: General Definition of Situation Awareness in the context of autonomous systems.
+%
+%Placement of Action Recognition among other vision-based methods, i.e.
+%
+%Categories: Segmentation, Detection, Tracking, Recognition, Prediction
+%
+%Segmentation:\\
+%Scene Segmentation
+%
+%Detection:\\
+%Person/Pedestrian Detection
+%(Abandoned) Object Detection
+%Fall Detection
+%Action Detection
+%Event Detection
+%Abnormal Event (Anomaly) Detection: O. Boiman and M. Irani. Detecting irregularities in images and in video. 2007
+%Saliency Detection
+%
+%Tracking:\\
+%Person/Pedestrian Tracking
+%Object Tracking
+%
+%Recognition:\\
+%Human Action Recognition
+%Human Interaction Recognition
+%Crowd Behaviour Recognition
+%Pose/Gesture Recognition
+%Gait Recognition
+%Scene Recognition (YUPENN, UMD)
+%
+%Prediction:\\
+%Trajectory Prediction
+%Action Prediction
+%
+%Abnormal event detection O. Boiman and M. Irani. Detecting irregularities in images and in video. IJCV, 2007
+%
+%Activity understanding ``activity forecasting''
+%
+%Definitions of the above methods.
+%
+%Simple case: Video contains the performance of a single human action which needs to be classified into one of several preknown classses.
+%
+%General real-world case: System operates on a video stream and needs to perform continuous recognition of human actions, including detection of beginning and endings times of containing acions.
+%
+%General Processing Pipeline for Action Recognition: Person Detection -> Tracking -> Action Detection -> Segmentation -> Action recognition.
+%
+%Action Recognition: A part of Computer Vision research, it's goal is to automatically analyze human actions/actitvities from video-data.
+%
+%Other sensory input than video possible 
+%
+%
+%
+\subsection{Action Recognition Surveys (Related Work)}
 \label{sec:relatedwork}
 
-Review of most important/recent review papers in Action Recognition with traditional and Deep Learning approaches.
+Given the large number of possible applications, the computer vision community has shown an increased interest in human action recognition from video, which resulted in the publication of several comprehensive survey articles
+\cite{poppe_survey_2010, aggarwal_human_2011, chaquet_survey_2013, langkvist_review_2014, herath_going_2016, kang_review_2016}.
 
-\subsubsection{A survey on vision-based human action recognition, Ronald Poppe (2010)}
+\textcite{poppe_survey_2010} uses a hierarchical categorization of human motion in action primitives, actions and activities with increasing complexity.
+Action primitives denote atomic movements of limbs.
+Actions are movements of the whole body and consist of multiple action primitives.
+Activities are formed by the subsequent execution of actions.
+The survey focuses on the recognition of single-person actions using hand-crafted features without explicitly considering context, such as the environment, object or other persons. 
+The main deficit of \cite{poppe_survey_2010} is, that deep learning methods are not included in the review and only a brief overview of available action recognition datasets is provided.
 
-\textbf{Definition of action:} Uses the hierarchical classification of human motion in action primitives, actions and activities as given in Moeslund et al. (cite ??)
+\textcite{aggarwal_human_2011} provide a very comprehensive and structured discussion of conventional methods in action recognition using an approach-based taxonomy, which has been adopted in other survey publications as well \cite{cheng_advances_2015}.
+The authors divide human motion into (atomic) actions and high-level activities.
+They review approaches for the recognition of actions, activities, human-object interactions and group activities, but focus on the recognition of high-level activities.
+Although providing an informative and detailed overview in the field of human action recognition with conventional hand-crafted feature methods, deep learning approaches are not included and only a brief section on available benchmarking datasets is provided.
 
-Action primitives are atomic movements at the limb-level.
+\textcite{chaquet_survey_2013} address the lack of a comprehensive description of publicly available datasets for human action and activity recognition from monocular video data.
+They provide a detailed overview and description of \textit{heterogeneous} action datasets, which contain actions that can occur in any context and any environment.
+Additionally examples of \textit{specific} action datasets are given, e.g.\ for the recognition of abandoned objects, activities of daily living, crowd behaviour, falls, gait and gesture.
+Datasets containing motion capture data and thermal/infrared imaging are discussed briefly as well.
+Since the survey was published in 2013, very recent large-scale datasets could not be covered.
+These are particularly important for deep learning algorithms, which require a large amount of training data.
 
-Actions are possibly cyclic whole body movements and consist of multiple action primitives.
+\textcite{langkvist_review_2014} provide a general overview of deep learning methods for the analysis of time-series data.
+They provide a comparative description of different deep architectures and how they can be applied to time series data.
+Action Recognition from video is discussed along other topics like stock-market prediction, speech recognition, music recognition as well as recognition from motion capture and electronic nose data.
+Given the wide range of the review, action recognition from video is not discussed in detail.
 
-Activities consist of multiple actions whose subsequent execution make the movement interpretable.
+The work of \textcite{herath_going_2016} is closely related to the scope of this work by considering conventional hand-crafted feature methods as well as deep learning approaches in action recognition.
+While providing an informative description of conventional approaches, the authors do not describe specifics of deep learning approaches in action recognition.
+Video action datasets are only discussed very briefly and recent developments are not covered.
 
-Example: Action primitives: Left/right leg forward -> Action: Starting, Running, Jumping -> Activity: Jumping hurdles.
+The review of \textcite{kang_review_2016} provides a very detailed description of datasets for action recognition algorithms and evaluation procedures.
+Additionally common techniques in using hand-crafted features for action recognition are discussed in detail.
+Main deficit is the lack of deep learning approaches.
 
-\textbf{Scope:} Gives a very good classification of conventional methods in human action recognition.
+\subsection{Scope and Structure of this Report}
+Throughout this work, the term \textit{action} is used to describe atomic actions as well as high-level activities.
+Whenever a distinction is necessary, we use either \textit{atomic action} or \textit{high-level action} to refer to actions or activities.
 
-The discussion is split according to video representations and classification methods.
+Given the amount of comprehensive and detailed publications reviewing conventional hand-crafted feature approaches in action recognition, we build on the approach-based taxonomy of \textcite{aggarwal_human_2011} to provide a condensed overview of the main research directions in this area in section \ref{chap:conventional}.
+%Additionally the \textit{(Improved) Dense Trajectories} approach \cite{wang_action_2011, wang_action_2013} is reviewed in detail, since it has often been considered state of the art among conventional hand-crafted feature methods \cite{tran_learning_2015, wang_towards_2015, simonyan_two-stream_2014}.
+This report focuses on deep learning approaches.
+Therefore section \ref{sec:deep} provides a classification and detailed description of recent deep learning approaches in action recognition.
+Given the importance of training data for deep learning, section \ref{chap:datasets} provides characteristics of the most common video action datasets usable for the training and evaluation of action recognition algorithms.
+Since this report aims at enabling an implementation of an action recognition system in an assisted living environment, we additionally identify and review datasets, that contain activities of daily-living (ADL datasets).
 
-Challenges of the domain are described very well.
 
-\textbf{Deficits:} No Deep Learning methods are discussed.
-
-Datasets and benchmarks are only discussed briefly.
-
-\subsubsection{Human Activity Analysis: A Review -- Aggarwal and Ryoo (2011)}
-
-Gives an approach-based taxonomy.
-
-\subsubsection{A survey on vision-based methods for action representation, segmentation and recognition -- Weinland et al. (2011)}
-
-\subsubsection{A survey of video datasets for human action and activity recognition -- Chaquet et al. (2013)}
-
-\subsubsection{A review of unsupervised feature learning and deep learning for time-series modeling -- Längkvist et al. (2014)}
-
-\subsubsection{Going Deeper into Action Recognition: A survey -- Herath et al. (2016)}
-
-\textbf{Definition of action:} 
-
-\subsection{Important aspects of Action Recognition Approaches}
-video representations, i.e.\ how to apply fixed length model to variable length videos.
