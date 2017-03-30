@@ -43,9 +43,6 @@ The approach aims at combining the advantages of hand-crafted feature methods (s
 
 \textbf{Generative Models} are introduced in section \ref{sec:generative} below.
 
-\subsection{Important aspects of Action Recognition Approaches}
-?? TODO video representations, i.e.\ how to apply fixed length model to variable length videos.
-
 \subsection{Convolutional Networks}
 
 \subsubsection{3D Convolutional Neural Networks for Human Action Recognition (2010/2013)}
@@ -506,7 +503,7 @@ Results are shown in the following figure \ref{fig:longterm_systematical}.
     \label{fig:longterm_systematical}
 \end{figure}
 
-To conclude, \textcite{varol_long-term_2016} show, that longer temporal extent increases the action recognition accuracy of 3D convolutional neural network for action recognition from video.
+To conclude, \textcite{varol_long-term_2016} show, that longer temporal extent increases the action recognition accuracy of 3D convolutional neural network for action recognition.
 
 %The networks are trained on the UCF-101 and HMDB-51 dataset using stochastic gradient descent with negative log-likelihood criterion.
 %
@@ -523,10 +520,8 @@ To conclude, \textcite{varol_long-term_2016} show, that longer temporal extent i
 %    \item Video-accuracy (i.e. the standard evaluation protocol): The per-clip softmax scores are averaged and the maximum value defines the class label for the video. The authors report their final resutlts by taking the mean over the results on the three test splits of the datasets.
 %\end{enumerate}
 
-%---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 \newpage
 \subsection{Multiple Stream Networks}
-
 
 \subsubsection{Two-Stream Convolutional Networks for Action Recognition in Videos (2014)}
 
@@ -576,14 +571,12 @@ This method constructs the input volume $I_\tau \in \mathbb{R}^{w \times h \time
 Instead of sampling at fixed locations in each frame, trajectory stacking samples the dense optical flow field along motion trajectories of the initial points in frame $\tau$.
 Let $\mathbf{p}_k$ denote the motion trajectory of initial point $(u,v)$.
 With $1 < k \leq L$ and \mbox{$\mathbf{p}_1 = (u,v)$} the trajectory is recursively defined by:
-
 \begin{align*}
     \mathbf{p}_k = \mathbf{p}_{k-1} + \mathbf{d}_{\tau + k - 2}(\mathbf{p}_{k-1})
 \end{align*}
 
 The optical flow input volume $I_\tau$ can then be constructed by sampling the horizontal and vertical optical flow components along these trajectories.
 Specifically:
-
 \begin{align*}
     I_\tau(u,v,2k-1) = d_{\tau + k - 1}^x(\mathbf{p}_{k}) \\
     I_\tau(u,v,2k) = d_{\tau + k - 1}^y(\mathbf{p}_{k})
@@ -1131,46 +1124,31 @@ Detailed results are shown in table \ref{tab:tdd_results}.
 
 \subsection{Generative Models}
 \label{sec:generative}
-
-TODO ??
-
-One of the most popular deep learning models that can be trained unsupervised is the restricted Boltzmann machine [5]. A nice property of RBMs is that they can be greedily trained and stacked on top of each other to form deep belief networks (DBNs) [6], allowing us to learn representations of gradually increasing complexity. Training of these models using maximum likelihood learning is intractable, but they can be trained using contrastive divergence [4]. (Palasek Patras)
-
-\textbf{Auto-Encoders:}\\
-The most common architecture used is an auto-encoder
-which learns representations based on its ability to recon-
-struct the input images [35, 3, 49, 37]. Wang an Gupta (Unsupervised learning of visual representations using video.
+\textcite{palasek_action_2016} describe the Restricted Boltzmann Machine as one of the most popular deep learning models, that can be trained in an unsupervised way.
 
 \textbf{Restricted Boltzmann Machine:}\\
-Boltzmann Machines are probabilistic networks, specifically undirected graphical models, that can learn the probability distribution inherent in a given dataset.
+Boltzmann Machines \cite{ackley_learning_1985} are probabilistic networks, specifically undirected graphical models, that can learn the probability distribution inherent in a given dataset.
 A Boltzmann Machine consists in its simplest form of two binary layers: A visible layer $x$ and a hidden layer $h$, which are fully connected to each other.
 The Boltzmann Machine allows connections between units of the same layer, which renders training computationally extremely demanding.
 
-The design of the Restricted Boltzmann Machine addresses this problem by restricting connections to nodes between different layers, which explains its name.
+The design of the Restricted Boltzmann Machine \cite{hinton_fast_2006} addresses this problem by restricting connections to nodes between different layers, which explains its name.
 Restricted Boltzmann Machines can be trained using a Markov Chain Monte Carlo algorithm, namely Contrastive Divergence.
-
-Once a Boltzmann Machine is trained, i.e.\ it learned the underlying probability distribution, data can be sampled from it.
+Once a Boltzmann Machine is trained, i.e.\ it learned the underlying probability distribution of a dataset, further data can be sampled from it.
 The visible layer functions as both, input-layer during training and output-layer during sampling.
 
 Restricted Boltzmann Machines can be trained with labeled as well as unlabeled data (supervised or unsupervised).
-
 When training in an unsupervised manner, the RBM is able to learn feature representations of the inputs by mapping them onto activations of its hidden layer.
-\ldots
-
 When labeled data is present, the RBM can perform classification. 
 For training, the labels are being concatenated with the input data and fed into the RBM.
 A prediction for a given test example can then be obtained by using it as input for the RBM and sampling the model for the missing input, that was used for the labels during training.
-The RBM then generates the most likely value for the missing label-input given the testing-input.
+The RBM then generates the most likely value for the missing label-input given the testing-input. \cite{fischer_introduction_2012}
 
-Restricted Boltzmann Machines correspond to feed-forward neural network models when reusing the learned weights in a topological equivalent NN model.
+Restricted Boltzmann Machines correspond to feed-forward neural network models when reusing the learned weights in a topological equivalent neural network model.
 This is how unsupervised pre-training is conducted.
-
-Models that can be trained in an unsupervised manner are especially attractive for the video-domain where labeling data is costly.
-
-The RBM can be extended to process real-valued inputs.
+Models that can be trained in an unsupervised manner are especially attractive for the video-domain where labeling data is costly. \cite{fischer_introduction_2012}
 
 Deep Belief Networks are stacked Restricted Boltzmann Machines.
-In general the learning capacity of a single RBM is limited, but it can be increased by stacking multiple RBMs to form so called Deep Belief Network. (Lee)
+In general the learning capacity of a single RBM is limited, but it can be increased by stacking multiple RBMs to form so called Deep Belief Network. \cite{lee_unsupervised_2011}
 
 \subsubsection{Unsupervised Learning of Video Representations using LSTMs (2015)}
 \textcite{srivastava_unsupervised_2015} design recurrent neural network models based on Long-Short-Term-Memory cells (LSTMs) \cite{hochreiter_long_1997} for unsupervised learning of video representations from unlabeled video data.
@@ -1196,7 +1174,7 @@ If the decoder is able to reconstruct the input sequence accurately from the rep
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{img_deep/unsupervisedlstms_autoencoder}
+    \includegraphics[width=0.55\textwidth]{img_deep/unsupervisedlstms_autoencoder}
     \caption{Auto-encoder model \cite{srivastava_unsupervised_2015}}
     \label{fig:unsupervisedlstms_autoencoder}
 \end{figure}
@@ -1211,7 +1189,7 @@ This decoder LSTM network can also be \textit{conditional} or \textit{unconditio
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{img_deep/unsupervisedlstms_futurepredictor}
+    \includegraphics[width=0.55\textwidth]{img_deep/unsupervisedlstms_futurepredictor}
     \caption{Future-predictor model \cite{srivastava_unsupervised_2015}}
     \label{fig:unsupervisedlstms_futurepredictor}
 \end{figure}
@@ -1222,7 +1200,7 @@ The composite model, as shown in figure \ref{fig:unsupervisedlstms_composite}, t
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{img_deep/unsupervisedlstms_composite}
+    \includegraphics[width=0.6\textwidth]{img_deep/unsupervisedlstms_composite}
     \caption{Composite model \cite{srivastava_unsupervised_2015}}
     \label{fig:unsupervisedlstms_composite}
 \end{figure}
@@ -1242,9 +1220,9 @@ The results for image reconstruction and future prediction are shown in figure \
 The first row of figure \ref{fig:unsupervisedlstms_movingmnist} shows the 10 frame input sequence and the following 10 future frames.
 The model is able to make fairly good predictions on this dataset.
 Adding a second layer of LSTM units and making the future predictor conditional further improves the predictions.
-When applying the model on $32 \times 32$ natural image patches of real-life videos from the UCF-101 dataset, results show however, that the future prediction quickly blurs out as illustrated in figure \ref{fig:unsupervisedlstms_ucfpatches}.
+When applying the model on $32 \times 32$ natural image patches of UCF-101 dataset, the future prediction quickly blurs out as illustrated in figure \ref{fig:unsupervisedlstms_ucfpatches}.
 
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{img_deep/unsupervisedlstms_ucfpatches.png}
     \caption{Image reconstruction and future prediction of a two-layer composite model with a different number of LSTM units in each layer. \cite{srivastava_unsupervised_2015}}

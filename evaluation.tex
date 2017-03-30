@@ -1,7 +1,7 @@
 \section{Comparison and Evaluation}
 \label{sec:evaluation}
-
-Results of the deep learning approaches, that were reviewed in this report, are given in the following table \ref{tab:deep_results}.
+Using the analysis of conventional and deep learning methods in action recognition, this section provides a comparison and evaluation of the presented methods.
+Results of deep learning approaches, which were reviewed in this report, are given in the following table \ref{tab:deep_results}.
 
 \begin{minipage}[b]{.03\linewidth}
 \setstretch{1.25}
@@ -30,13 +30,13 @@ Results of the deep learning approaches, that were reviewed in this report, are 
 \end{table}
 \end{minipage}
 
-We first observe from the distribution of used benchmarking datasets, that UCF-101 and HMDB-51 can be seen as the current de facto standard benchmarks in action recognition.
+We observe from the distribution of used benchmarking datasets, that UCF-101 and HMDB-51 can be seen as the current de facto standard benchmarks in action recognition, although UCF-101 is considered extremely small \cite{wang_towards_2015}.
 Judging by the best performance on UCF-101, the approaches of \textcite{wang_towards_2015}, \textcite{feichtenhofer_convolutional_2016} and \textcite{wang_action_2015} perform best.
-These approaches base on convolutional neural network architectures, that were initially designed for image processing tasks and employ pre-training on large-scale image datasets.
+These approaches base on 2D convolutional neural network architectures, that were initially designed for image processing tasks and take advantage of pre-training on large-scale image datasets.
 \cite{wang_towards_2015} and \cite{feichtenhofer_convolutional_2016} utilise deep ConvNets in an two-stream setup.
-\cite{wang_action_2015} apply a hybrid conventional - deep learning approach by using a two-stream ConvNet as generic feature extractor along densely sampled trajectories.
+\cite{wang_action_2015} apply a hybrid conventional-deep approach by using a two-stream ConvNet as generic feature extractor along densely sampled trajectories.
 
-Among the approaches that apply an architecture, which explicitly incorporates the spatio-temporal structure of videos by implementing 3D convolutions, the \textit{C3D} approach of \textcite{tran_learning_2015} performs best.
+Among the approaches, which explicitly incorporate the spatio-temporal structure of videos in the used architecture by implementing 3D convolutions, the \textit{C3D} approach of \textcite{tran_learning_2015} performs best.
 \textcite{tran_learning_2015} use a 3D ConvNet which is deeper than comparable approaches (three additional convolutional layers) and leverage pre-training on the Sports-1M dataset.
 Since \textit{C3D} is designed for reusability on different vision tasks, an implementation was made publicly available in the Caffe framework \cite{jia_caffe:_2014}.
 
@@ -63,9 +63,8 @@ Table \ref{tab:conventional_results} shows the performance of state-of-the-art h
 \end{table}
 \end{minipage}
 
-The results on UCF-101 show: Although several deep learning based approaches outperform conventional hand-crafted feature based approaches, the latter nonetheless yield competitive results, especially the approach of \textcite{lan_beyond_2015}.
-
-Reasons for this can be found in the available action recognition video datasets.
+The results on UCF-101 show: Although several deep learning based approaches outperform conventional hand-crafted feature methods, the latter nonetheless yield competitive results, especially the approach of \textcite{lan_beyond_2015}.
+Reasons for this can be found in the sizes of available action recognition video datasets.
 Table \ref{tab:benchmarks_results} provides a comparison of currently available datasets.
 
 \begin{table}[H]
@@ -75,11 +74,15 @@ Table \ref{tab:benchmarks_results} provides a comparison of currently available 
     \label{tab:benchmarks_results}
 \end{table}
 
-Considering these dataset sizes, only the YouTube-8M dataset matches roughly the size of common image datasets (ImageNet contains 14,197,122 images \cite{_imagenet_????})
-However, YouTube-8M has only very recently been released and has therefore not been used widely in the action recognition community.
+Although the Sports-1M dataset is roughly 100 times bigger than UCF101, most approaches rely on the smaller UCF101 or HMDB51 for action recognition, because of the label noise in YouTube-1M \cite{feichtenhofer_convolutional_2016}.
+There is a noticeable trend towards larger datasets however.
+The very recently released YouTube-8M dataset is roughly eight times bigger than YouTube-1M, but still does not match the size of common image datasets (ImageNet contains $14,197,122$ images \cite{_imagenet_????})
+The difficulty to obtain large-scale video datasets originates in videos being more difficult to store and annotate than images \cite{karpathy_large-scale_2014}.
 
+Given its recency, the YouTube-8M has not been used widely in the action recognition community.
+Considering its unmatched size in video datasets so far, the creators of the set note, that it will most likely improve the performance of deep learning approaches in action recognition \cite{abu-el-haija_youtube-8m:_2016}.
 
-
+Table \ref{tab:adl_results} summarizes the characteristics of currently available datasets, that contain videos of the daily-living.
 
 \begin{table}[H]
     \centering
@@ -88,89 +91,43 @@ However, YouTube-8M has only very recently been released and has therefore not b
     \label{tab:adl_results}
 \end{table}
 
-table conventional:\\
-\cite{wang_action_2013}\\
-\cite{wang_action_2013}\\
-\cite{cai_multi-view_2014}\\
-\cite{lan_beyond_2015}\\
+The Charades dataset \cite{sigurdsson_hollywood_2016} and ActivityNet \cite{caba_heilbron_activitynet:_2015} provide comparably large collections of ADL videos.
+Especially the Charades dataset has the advantage of containing videos, that were collected in real-world environments by regular people.
+In order to implement an action recognition system in an assisted living environment, we recommend applying the \textit{C3D} approach \cite{tran_learning_2015} to one or possibly both of these datasets.
+The advantages of \textit{C3D} are:
+\begin{enumerate}
+    \item It is the deepest model implementing 3D convolutions.
+    \item A model pre-trained on Sports-1M is publicly available.
+    \item It was designed to be repurposed on different vision tasks.
+\end{enumerate}
 
-\begin{table}[H]
-    \centering
-    \includegraphics[width=\textwidth]{img_evaluation/conventional_results}
-    \caption{Action recognition accuracies of state-of-the-art hand-crafted feature methods.}
-    \label{tab:conventional_results}
-\end{table}
+\newpage
+\section{Conclusion and Future Directions}
+This report provides a detailed review of current deep learning approaches in human action recognition from video along with a comparison to conventional hand-crafted feature based approaches.
+Results show, that deep learning yields state of the art performance, but conventional hand-crafted feature based methods still perform competitive.
+This has been observed in the action recognition community as well \cite{varol_long-term_2016}.
 
+Two reasons for this phenomenon can be identified:
+\begin{enumerate}
+    \item Current deep learning architectures in video action recognition are shallow compared to their image based counterparts \cite{wang_towards_2015}, because videos are higher dimensional than images and processing them is computationally more expensive.
+    \item Available action recognition datasets are too small, since videos are more difficult to store and annotate than images \cite{karpathy_large-scale_2014}\cite{simonyan_two-stream_2014}\cite{wang_towards_2015}
+\end{enumerate}
 
-future directions: transfer learning, as done by karpathy, large scale
-pre-training, as done by varol et. al 2016
-multi task learning as done by two stream approach simonyan and zisserman
+Considering the challenge of obtaining sufficient training data for deep learning architectures, approaches that leverage data from more than one dataset can be identified as future directions of research:
+\begin{itemize}
+    \item \textbf{Unsupervised Pre-training} as presented in section \ref{sec:generative} of this report and \textcite{varol_long-term_2016}.
+    \item \textbf{Transfer Learning} was conducted by \textcite{karpathy_large-scale_2014}.
+    \item \textbf{Multi-task Learning} as implemented by \textcite{simonyan_two-stream_2014}.
+\end{itemize}
 
-future directions: integrating recurrent structure directly into CNNs 
+%\subsubsection{Transfer learning}
 
-datasets too small. Citation: karpathy, large-scale classification: ``From a practical standpoint, there are currently no video classification benchmarks that match the scale and variety of existing image datasets because videos are significantly more difficult to collect, annotate and store.''
+%See Karparthy 'Large-scale video classification with convolutional neural networks' 2014
 
-datasets too small. citation: simonyan zisserman ``Unlike the spatial stream ConvNet, which can be pre-trained on a large still image classification dataset (such as ImageNet), the temporal ConvNet needs to be trained on video data – and the available datasets for video action classification are still rather small''.
+%A. S. Razavian, H. Azizpour, J. Sullivan, and S. Carls-
+%son. CNN features off-the-shelf: an astounding baseline for
+%recognition
 
-datasets too small, architectures too shallow \cite{wang_towards_2015}
-
-Due to the label noise, learning spatiotemporal ConvNets still largely relies on smaller, but temporally consistent datasets such as UCF101 [24] or HMDB51 [13] which contain short videos of actions.
-This facilitates learning, but comes with the risk of severe overfitting to the training data. Feichtenhofer 2016
-
-UCF101 is considered extremely small. cite Towards good practices for very deep two-stream ConvNets -- wang 2015.
-
-``From a practical standpoint, there are currently no video classification benchmarks that match the scale and variety of existing image datasets because videos are significantly more difficult to collect, annotate and store.'' cite large-scale image classification
-
-``In particular, commonly used datasets (KTH, Weizmann, UCF Sports, IXMAS, Hollywood 2, UCF-50) only contain up to few thousand clips and up to few dozen classes.
-Even the largest available datasets such as CCV (9,317 videos and 20 classes) and the recently introduced UCF-101[22] (13,320 videos and 101 classes) are still dwarfed by available image datasets in the number of instances and their variety [7].'' cite large-scale image classification
-
-``Extensions of CNNs to action recognition in video have been proposed in several recent works [6, 12, 13]. Such methods, however, currently show only moderate improvements over earlier methods using hand-crafted video features [5].''
-Varol Long term temporal convolutions.
-
-Most of the current CNN methods use architectures with 2D convolutions, enabling shift-invariant representations in the image plane. Meanwhile, the invariance to translations in time is also important for action recognition since the beginning and the end of actions is unknown in general. Laptev 2016
-
-improved trajectories identified as state-of-the-art approach. cite simonyan and zisserman ``There still remain some essential ingredients of the state-of-the-art shallow representation [26], which are missed in our current architecture''
-
-\subsection{Comparison Deep Learning Methods}
-Nice comparison in related work section of ``Beyond Temporal Pooling:  Recurrence and Temporal Convolutions for Gesture Recognition in Video''
-Convolutions for Gesture Recognition in Video
-
-One problem of deep learning methods is that they require a large number of labeled videos for training, while most available datasets are relatively small.
-Meanwhile, most of current deep learning based action recognition methods largely ignore the intrinsic difference between temporal domain and spatial domain, and just treat temporal dimension as feature channels when adapting the architectures of ConvNets to model videos.
-
-Introduction of Feichtenhofer: Current state of the art - Tran and TDD.
-
-\subsection{Data Augmentation Methods}
-
-refer to Imagenet classification with deep convolutional neural networks.
-
-RGB colour Jittering
-
-the improved data augmentation scheme (different aspect-ratio, fixed crops)
-from [61] for all our methods and baselines.
-61: Wang, L., Xiong, Y., Wang, Z., Qiao, Y.: Towards good practices for very
-deep two-stream convnets. arXiv preprint arXiv:1507.02159 (2015)
-
-\subsection{Inter-Dataset Approaches}
-META: A.k.a methods to relax the need for large dataset sizes
-
-\subsubsection{Unsupervised pre-training}
-Using unsupervised features for action recognition is still in its beginning but promising.
-The amount of research that has been put into supervised methods, i.e.\ 3d convnets two-stream approaches can boost unsupervised methods when done there.
-Big advantage: no labeling, or less labeling needed when using semi-supervised learning.
-Amount of video on the internet huge -> potential.
-
-
-\subsubsection{Multi-task learning}
-
-\subsubsection{Transfer learning}
-
-See Karparthy 'Large-scale video classification with convolutional neural networks' 2014
-
-A. S. Razavian, H. Azizpour, J. Sullivan, and S. Carls-
-son. CNN features off-the-shelf: an astounding baseline for
-recognition
-
-N. Zhang, M. Paluri, M. Ranzato, T. Darrell, and L. Bourdev. Panda: Pose aligned networks for deep attribute modeling. In CVPR, 2014.
-
-B. Zhou, A. Lapedriza, J. Xiao, A. Torralba, and A. Oliva. Learning deep features for scene recognition using places database. In NIPS, 2014.
+%N. Zhang, M. Paluri, M. Ranzato, T. Darrell, and L. Bourdev. Panda: Pose aligned networks for deep attribute modeling. In CVPR, 2014.
+%
+%B. Zhou, A. Lapedriza, J. Xiao, A. Torralba, and A. Oliva. Learning deep features for scene recognition using places database. In NIPS, 2014.

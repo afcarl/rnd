@@ -294,7 +294,7 @@ Feature descriptors evaluated in the context of dense trajectories are):
 
 The HOG descriptor encodes static appearance information by computing the orientations of image gradients and aggregating them in a histogram over all subframes of the current video volume along the trajectory. In this approach the histograms contain 8 bins.
 
-The HOF descriptor aggregates the orientations of optical flow vectors in a histogram and therefore captures local motion information. An additional bin is used here, i.e.\ 9 bins.
+The HOF descriptor aggregates the orientations of optical flow vectors in a histogram and therefore captures local motion information. An additional bin is used here.
 
 The MBH descriptor separately calculates the spatial derivatives of the $x$- and $y$-component of the optical flow field.
 The orientations of the derivatives are aggregated into histograms (similarly to the HOG descriptor), which represent the video volume.
@@ -330,6 +330,18 @@ On the YouTube dataset, the advantage of using the MBH descriptor is most promin
 
 
 \subsubsection{Action recognition with improved trajectories (2013)}
-TODO
-\cite{wang_action_2013}
-``Recently, Wang et al. proposed improved Dense Trajectories (iDT) [44] which is currently the state-of-the-art hand-crafted feature'' tran learning spatio-temporal features with 3D convolutional networks.
+\textcite{wang_action_2013} address a problem of their previously released \textit{Dense Trajectories} approach.
+Sampling of interest points and tracking them to from trajectories uses optical flow fields between frames.
+Motion that results from camera movement however, also produces optical flow in the background of an image, which results in trajectories that do not convey relevant information about the ongoing action in the scene.
+
+\textcite{wang_action_2013} address this problem by explicitly estimating a homography between two frames, to compensate camera motion. 
+Results of the approach are illustrated in figure \ref{fig:trajectories_improved}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{img_conventional/trajectories_improved}
+    \caption{Improved dense trajectories: First row shows two overlaid consecutive frames, second row shows the resulting optical flow (notice the background), third row shows the optical flow after removing camera motion, fourth row shows trajectories that were removed due to camera motion estimation (white). \cite{wang_action_2013}}
+    \label{fig:trajectories_improved}
+\end{figure}
+
+Camera motion estimation was able to further improve the performance of dense trajectories, resulting in the approach being considered state of the art \cite{tran_learning_2015}.

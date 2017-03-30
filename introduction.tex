@@ -3,7 +3,7 @@
 %The operation of autonomous mobile systems in public, uncontrolled environments is despite active research still a difficult task.
 
 Humans are perfectly able to act and move in unknown, crowded environments and even react successfully to unexpected situations because they are in general aware of their surroundings.
-Being able to localize and identify human actions, that are performed in the vicinity of an agent, helps predicting the future state of an agent's environment and therefore induces situation awareness.
+Being able to localize and identify human actions, that are performed in the vicinity of an agent, allows predicting the future state of an agent's environment and therefore induces situation awareness.
 %Actions of interest thereby include single-person actions, person-person interactions, person-object interactions and group activities.
 
 In computer vision research, advances in action recognition from video are driven by the vast amount of possible applications, especially since video cameras are a cost-effective and widely utilized technology.
@@ -13,8 +13,8 @@ Other possible applications include surveillance of children or the elderly in a
 
 
 \subsection{The Action Recognition Problem}
-Human action recognition is a classification task and denotes the process of labelling image sequences with action categories, that were introduced by an annotated training dataset.
-In contrast to object recognition in still images, videos provide an additional temporal dimension, which conveys information in the form of an actions temporal evolution.
+Human action recognition is a classification task and denotes the process of labeling image sequences with action categories, that were introduced by an annotated training dataset.
+In contrast to object recognition in still images, videos provide an additional temporal dimension, which conveys information in the form of the temporal evolution of motion.
 On the one hand, this information can be accessed for classification, on the other hand, the amount of possible variations poses additional challenges for robust action recognition algorithms.
 These challenges, as summarized by \textcite{poppe_survey_2010}, are described below.
 
@@ -24,12 +24,13 @@ These difference stem from each person having their very own characteristics in 
 Additionally actions may be superimposed by other actions, a person might gesture, close a jacket or use a mobile phone while \textit{walking}.
 
 Furthermore actions may appear similar, but belong to different action categories.
-This again stems from the large variations in execution styles among different persons.
+This stems from some action categories being distinguishable only by small details and the large variations in execution styles among different persons.
 
 \textbf{Background and recording settings:} \\
 Recording settings and the environment in which an action is performed are sources for variety in the appearance of an action.
 There may be other moving objects behind a person, lighting conditions may differ drastically, a person may be occluded by an object and different view-points result in large differences in image observations.
 
+\newpage
 \textbf{Temporal variations:} \\
 Substantial variations can occur from differences in the execution speed of an action, which can stem from different execution styles of persons or different rates of recording the video.
 
